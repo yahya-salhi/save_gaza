@@ -1,0 +1,25 @@
+/* .logo {
+  height: 5.2rem;
+} */
+.navbarLogo {
+  height: 40px; /* Adjust this size to fit your navbar */
+  width: auto;
+  display: inline-block;
+  margin-right: 15px; /* Add space if you need it beside other elements */
+}
+
+.navbarLogo img {
+  max-height: 100%;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  filter: drop-shadow(
+    0 0 5px rgba(255, 255, 255, 0.5)
+  ); /* Optional subtle glow */
+}
+
+.navbarLogo img:hover {
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.8));
+  transform: scale(1.05); /* Slight hover effect for interaction */
+  transition: all 0.3s ease-in-out;
+}
