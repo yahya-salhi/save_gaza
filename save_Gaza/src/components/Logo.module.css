@@ -1,25 +1,67 @@
 /* .logo {
   height: 5.2rem;
 } */
+.link {
+  text-decoration: none; /* Removes underline from the Link */
+}
+
 .navbarLogo {
-  height: 40px; /* Adjust this size to fit your navbar */
-  width: auto;
-  display: inline-block;
-  margin-right: 15px; /* Add space if you need it beside other elements */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  margin-right: 15px;
 }
 
 .navbarLogo img {
-  max-height: 100%;
-  max-width: 100%;
-  height: auto;
+  max-height: 40px; /* Fits the logo within the navbar */
   width: auto;
-  filter: drop-shadow(
-    0 0 5px rgba(255, 255, 255, 0.5)
-  ); /* Optional subtle glow */
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .navbarLogo img:hover {
-  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.8));
-  transform: scale(1.05); /* Slight hover effect for interaction */
-  transition: all 0.3s ease-in-out;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  transform: scale(1.05);
+}
+
+.logoText {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  opacity: 0.9;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.logoText:hover {
+  color: #ffcccb; /* Adds a light red tint on hover */
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbarLogo img {
+    max-height: 35px; /* Adjusts size for tablets */
+  }
+
+  .logoText {
+    font-size: 14px; /* Smaller text on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbarLogo {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .navbarLogo img {
+    max-height: 30px; /* Further reduction for mobile */
+  }
+
+  .logoText {
+    font-size: 12px;
+  }
 }

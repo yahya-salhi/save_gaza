@@ -3,8 +3,8 @@
 :root {
   --color-background-dark: #121212; /* Background color */
   --color-card-bg: #1c1c1e; /* Card background color */
-  --color-brand--1: #ffb545;
-  --color-brand--2: #00c46a;
+  --color-brand--1: red;
+  --color-brand--2: green;
 
   --color-dark--0: #242a2e;
   --color-dark--1: #2d3439;
@@ -88,8 +88,8 @@ input:focus {
 .cta:link,
 .cta:visited {
   display: inline-block;
-  background-color: var(--color-card-bg);
-  color: var(--color-text);
+  background-color: var(--color-brand--2);
+  color: var(--color-dark--1);
   text-transform: uppercase;
   text-decoration: none;
   font-size: 1.6rem;
@@ -105,7 +105,7 @@ input:focus {
 }
 .bloody-text {
   font-size: 2.5rem;
-  color: #b22222;
+  color: var(--color-brand--1);
   text-shadow: 2px 2px 0px #8b0000, 4px 4px 6px #ff0000;
   position: relative;
   display: inline-block;

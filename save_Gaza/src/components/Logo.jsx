@@ -9,8 +9,10 @@ function Logo() {
           alt="logo save Gaza"
           className={styles.logo}
         />
+        <span>
+          <p className={styles.logoText}> Save Gaza </p>
+        </span>
       </div>
-      <p className={styles.logoText}> Save Gaza </p>
     </Link>
   );
 }

@@ -56,6 +56,22 @@ function Homepages() {
           </button>
         </section>
       </div>
+      <section className={styles.statisticsSection}>
+        <img src="../public/gazaevryhour.webp" alt="war in gaza" />
+        <div className={styles.statisticsText}>
+          <p>Every hour in Gaza:</p>
+          <ul>
+            <li>15 people are killed. Six are children.</li>
+            <li>35 people are injured.</li>
+            <li>42 bombs are dropped.</li>
+            <li>12 buildings are destroyed.</li>
+          </ul>
+          <p className={styles.note}>
+            *Based on the first six days of the war, according to the Israeli
+            army.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
