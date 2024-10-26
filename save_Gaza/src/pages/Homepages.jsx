@@ -20,8 +20,8 @@ function Homepages() {
       <section>
         <h1>
           {" "}
-          Do <span className={styles.red}> Not</span> Ignore{" "}
-          <span className={styles.green}>Palestinian</span> Suffring
+          Do <span className="red"> Not</span> Ignore{" "}
+          <span className="green">Palestinian</span> Suffring
         </h1>
         <br />
         <h2>
@@ -49,7 +49,7 @@ function Homepages() {
             loop
             className={styles.video}
           >
-            <source src="../public/video.mp4" type="video/mp4" />
+            <source src="video.mp4" type="video/mp4" />
           </video>
           <button onClick={togglePlay} className={styles.playButton}>
             {isPlaying ? "Pause Video" : "Play Video"}

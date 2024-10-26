@@ -9,10 +9,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Homepages />} />
+        <Route index element={<Homepages />} />
         <Route path="page1" element={<Page1 />} />
         <Route path="page2" element={<Page2 />} />
-        <Route path="app" element={<AppLayout />} />
+        <Route path="app" element={<AppLayout />}>
+          <Route index element={<p>last update {Date()} </p>} />
+          <Route path="gaza" element={<p>summary gaza killed</p>} />
+          <Route path="westBank" element={<p>summary WastBan killed</p>} />
+        </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

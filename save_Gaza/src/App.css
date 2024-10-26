@@ -56,6 +56,13 @@ p {
   font-size: var(--font-size-text);
   line-height: 1.6;
 }
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
 
 /* Styling for Cards (like in your example layout) */
 .card {

@@ -4,11 +4,7 @@ function Logo() {
   return (
     <Link to="/">
       <div className={styles.navbarLogo}>
-        <img
-          src="../public/logo.png"
-          alt="logo save Gaza"
-          className={styles.logo}
-        />
+        <img src="/logo.png" alt="logo save Gaza" className={styles.logo} />
         <span>
           <p className={styles.logoText}> Save Gaza </p>
         </span>

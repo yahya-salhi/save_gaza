@@ -1,7 +1,142 @@
+/* AppLayout.module.css */
+
+:root {
+  --bg-color: #1b1b1b;
+  --header-bg-color: #333333;
+  --btn-bg-color: #444444;
+  --hover-bg-color: #555555;
+  --text-color: #ffffff;
+  --subtext-color: #cccccc;
+  --font-family: "Roboto", sans-serif;
+}
+
 .app {
-  height: 100vh;
-  padding: 2.4rem;
-  overscroll-behavior-y: none;
   display: flex;
-  position: relative;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: var(--header-bg-color);
+  font-size: 2rem;
+  font-weight: bold;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.learnMoreBtn {
+  padding: 0.8rem 1.5rem;
+  background-color: var(--btn-bg-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.learnMoreBtn:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+.sidebar {
+  overflow: hidden; /* Prevent scrolling in the sidebar */
+  height: 100vh; /* Set to full viewport height */
+  position: fixed; /* Fixed while scrolling */
+  top: 0;
+  left: 0; /* Adjust as needed */
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 2rem;
+}
+
+.map {
+  width: 100%; /* Full width on mobile */
+  height: 400px; /* Adjust height for better visibility */
+}
+
+.infoPanel {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+  background-color: var(--header-bg-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex-wrap: wrap; /* Allow stats to wrap */
+}
+
+.stat {
+  text-align: center;
+  flex: 1; /* Make each stat section flexible */
+  min-width: 150px; /* Minimum width to maintain layout */
+  margin: 0 1rem; /* Horizontal spacing */
+}
+
+.stat h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat p {
+  font-size: 1.6rem;
+  color: var(--subtext-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.5rem;
+  }
+
+  .learnMoreBtn {
+    width: 100%; /* Full-width button on small screens */
+    margin-top: 1rem;
+  }
+
+  .main {
+    padding: 1rem; /* Reduced padding for smaller screens */
+  }
+
+  .map {
+    height: 300px; /* Adjust height for mobile */
+  }
+
+  .infoPanel {
+    flex-direction: column; /* Stack stats vertically */
+  }
+
+  .stat {
+    margin: 1rem 0; /* Vertical spacing between stats */
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    font-size: 1.2rem; /* Smaller font size for very small screens */
+  }
+
+  .stat h2 {
+    font-size: 1.5rem; /* Adjust heading size */
+  }
+
+  .stat p {
+    font-size: 1.4rem; /* Adjust paragraph size */
+  }
 }

@@ -1,19 +1,45 @@
 .sidebar {
-  flex-basis: 56rem;
+  flex-basis: 56rem; /* Fixed width for larger screens */
   background-color: var(--color-dark--1);
   padding: 3rem 5rem 3.5rem 5rem;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: calc(100vh - 4.8rem);
+  height: calc(100vh - 4.8rem); /* Full height minus header/footer */
+  transition: flex-basis 0.3s ease; /* Smooth transition for responsiveness */
 }
 
 .footer {
-  margin-top: auto;
+  margin-top: auto; /* Pushes footer to the bottom */
+  padding: 1.5rem; /* Add some padding for aesthetics */
+  background-color: var(--color-dark--1); /* Background color for footer */
+  text-align: center; /* Center footer text */
 }
 
 .copyright {
   font-size: 1.2rem;
   color: var(--color-light--1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    flex-basis: 100%; /* Full width on smaller screens */
+    padding: 2rem; /* Adjust padding for smaller screens */
+    height: auto; /* Allow height to adjust based on content */
+  }
+
+  .footer {
+    padding: 1rem; /* Reduce padding for smaller screens */
+  }
+
+  .copyright {
+    font-size: 1rem; /* Smaller text for copyright on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .copyright {
+    font-size: 0.9rem; /* Further reduce font size on very small screens */
+  }
 }
