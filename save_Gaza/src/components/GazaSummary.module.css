@@ -28,32 +28,6 @@
   margin-right: 2rem; /* Space between icon and text */
 }
 
-/* Color-coded styles for each category */
-.massacres {
-  color: #ff6347;
-} /* Example color for massacres */
-.killed {
-  color: #ff4500;
-}
-.children {
-  color: #ff69b4;
-}
-.women {
-  color: #ff1493;
-}
-.civilDefence {
-  color: #ffd700;
-}
-.press {
-  color: #8a2be2;
-}
-.medical {
-  color: #48d1cc;
-}
-.injured {
-  color: #1e90ff;
-}
-
 .statisticValue {
   font-size: 2rem; /* Increase value font size for readability */
   font-weight: bold; /* Bold for emphasis */
