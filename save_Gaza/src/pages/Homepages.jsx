@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import styles from "./Homepages.module.css";
 import PageNav from "../components/PageNav";
 import { useRef, useState } from "react";
 
-function Homepages() {
+function Homepages({ gaza, isLoading, error }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const togglePlay = () => {
@@ -14,23 +15,26 @@ function Homepages() {
     }
     setIsPlaying(!isPlaying);
   };
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+  const { killed, injured } = gaza || {};
   return (
     <main className={styles.homepage}>
       <PageNav />
       <section>
         <h1>
-          {" "}
-          Do <span className="red"> Not</span> Ignore{" "}
+          Do <span className="red"> Not</span> Ignore
           <span className="green">Palestinian</span> Suffring
         </h1>
         <br />
         <h2>
           Stay up to date with the latest News From Gaza
           <br />
-          The latest death toll stands at{" "}
-          <span className="bloody-text"> 43,552 </span>
-          Palestinians and <span className="bloody-text">1,139</span> people
-          injured since October 7, 2023.
+          The latest death toll stands a
+          <span className="bloody-text">{killed?.total || 0} </span>
+          Palestinians and{" "}
+          <span className="bloody-text">{injured?.total || 0}</span>
+          people injured since October 7, 2023.
         </h2>
         <Link to="/app" className="cta">
           Get More Details
@@ -57,7 +61,7 @@ function Homepages() {
         </section>
       </div>
       <section className={styles.statisticsSection}>
-        <img src="../public/gazaevryhour.webp" alt="war in gaza" />
+        <img src="gazaevryhour.webp" alt="war in gaza" />
         <div className={styles.statisticsText}>
           <p>Every hour in Gaza:</p>
           <ul>
