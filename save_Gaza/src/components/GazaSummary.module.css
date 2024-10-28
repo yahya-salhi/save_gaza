@@ -1,49 +1,66 @@
 .statisticsContainer {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping of circles */
-  justify-content: center; /* Center align the circles */
-  gap: 1.6rem; /* Increased space between circles */
-  margin-top: 2rem; /* Margin above the circles */
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem; /* Increase padding for spacious look */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow-y: none;
+  width: 350px;
 }
 
 .statisticItem {
-  background: linear-gradient(
-    145deg,
-    var(--color-dark--2),
-    var(--color-dark--3)
-  );
-  color: var(--color-light--2);
-  width: 14rem; /* Circle diameter */
-  height: 14rem; /* Circle diameter */
   display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center the text vertically */
-  align-items: center; /* Center the text horizontally */
-  border-radius: 50%; /* Makes the element circular */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 10px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
-  transition: transform 0.3s, box-shadow 0.3s; /* Smooth scale effect on hover */
+  align-items: center;
+  padding: 1rem;
+  background: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
 }
 
 .statisticItem:hover {
-  transform: scale(1.05); /* Slightly enlarge on hover */
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  background-color: rgba(255, 255, 255, 0.2); /* Highlight on hover */
 }
 
-.statisticLabel {
-  font-size: 1.2rem; /* Adjust font size */
-  text-align: center; /* Center text */
-  font-weight: 600; /* Semi-bold text */
-  color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Slightly transparent white for better readability */
+.icon {
+  font-size: 4rem; /* Larger icon size for better visibility */
+  margin-right: 2rem; /* Space between icon and text */
+}
+
+/* Color-coded styles for each category */
+.massacres {
+  color: #ff6347;
+} /* Example color for massacres */
+.killed {
+  color: #ff4500;
+}
+.children {
+  color: #ff69b4;
+}
+.women {
+  color: #ff1493;
+}
+.civilDefence {
+  color: #ffd700;
+}
+.press {
+  color: #8a2be2;
+}
+.medical {
+  color: #48d1cc;
+}
+.injured {
+  color: #1e90ff;
 }
 
 .statisticValue {
-  font-size: 3.2rem; /* Adjust value size */
-  color: var(--color-accent); /* Use a defined accent color */
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow for depth */
+  font-size: 2rem; /* Increase value font size for readability */
+  font-weight: bold; /* Bold for emphasis */
+  margin-right: 0.5rem;
+}
+
+.statisticLabel {
+  font-size: 2rem; /* Slightly smaller than value */
+  color: var(--text-secondary); /* Secondary text color */
 }

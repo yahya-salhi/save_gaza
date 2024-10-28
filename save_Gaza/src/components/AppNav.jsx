@@ -9,7 +9,7 @@ export default function AppNav() {
           <NavLink to="gaza">Gaza Summary</NavLink>
         </li>
         <li>
-          <NavLink to="westBank">West Bank Summry</NavLink>
+          <NavLink to="westBank">West Bank Summary</NavLink>
         </li>
       </ul>
     </nav>

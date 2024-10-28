@@ -31,9 +31,13 @@ function Homepages({ gaza, isLoading, error }) {
           Stay up to date with the latest News From Gaza
           <br />
           The latest death toll stands a
-          <span className="bloody-text">{killed?.total || 0} </span>
+          <span className="bloody-text" style={{ margin: "5px" }}>
+            {killed?.total || 0}{" "}
+          </span>
           Palestinians and{" "}
-          <span className="bloody-text">{injured?.total || 0}</span>
+          <span className="bloody-text" style={{ margin: "5px" }}>
+            {injured?.total || 0}
+          </span>
           people injured since October 7, 2023.
         </h2>
         <Link to="/app" className="cta">
