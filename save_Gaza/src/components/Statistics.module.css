@@ -1,0 +1,37 @@
+.statsContainer {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.statCard {
+  background-color: #1a2e2e;
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: inline-block;
+}
+
+.statNumber {
+  color: white;
+  font-weight: bold;
+}
+
+.statLabel {
+  color: white;
+}
+
+.statType {
+  font-weight: bold;
+}
+
+.injured {
+  color: #ef4444;
+}
+
+.killed {
+  color: #ef4444;
+}
+
+.attacks {
+  color: #f97316;
+}

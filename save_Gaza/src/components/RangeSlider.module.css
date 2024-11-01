@@ -1,0 +1,42 @@
+/* RangeSlider.module.css */
+
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ffffff; /* White text color for dark theme */
+}
+
+.dateDisplay {
+  margin-bottom: 10px;
+  font-size: 3rem;
+  color: #e0e0e0; /* Light gray for date */
+}
+
+.slider {
+  width: 90%;
+  height: 15px;
+  border-radius: 5px;
+  background: #333; /* Dark gray background for unfilled part */
+}
+
+.track {
+  height: 100%;
+  border-radius: 5px;
+}
+.full {
+  background-color: #20c997; /* Teal color for filled section */
+}
+
+.empty {
+  background-color: #555; /* Gray color for empty section */
+}
+
+.thumb {
+  height: 15px;
+  width: 15px;
+  background-color: #20c997; /* Teal color for thumb */
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}

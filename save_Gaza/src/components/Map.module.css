@@ -67,3 +67,11 @@
     font-size: 1.5rem; /* Adjust size for the first child span */
   }
 }
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background-color: #121212;
+  min-height: 100vh;
+}
