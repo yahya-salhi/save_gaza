@@ -1,76 +1,71 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Slider from "react-slider";
 import styles from "./RangeSlider.module.css";
 
-const RangeSlider = ({ startDate = "2023-10-07", data = [] }) => {
+const RangeSlider = ({
+  startDate = "2023-10-07",
+  data = [],
+  onDateChange,
+  selectedDate,
+}) => {
   const [sliderValue, setSliderValue] = useState(0);
 
-  const getDaysDifference = () => {
-    const start = new Date(startDate);
-    const end = new Date();
-    return Math.floor((end - start) / (1000 * 60 * 60 * 24));
-  };
+  const { totalDays, formattedDates } = useMemo(() => {
+    if (data.length === 0) return { totalDays: 0, formattedDates: [] };
 
-  const formatDate = (date) => new Date(date).toISOString().split("T")[0];
+    const start = new Date(startDate);
+    const end = new Date(data[data.length - 1].report_date);
+    const totalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+    const formattedDates = Array.from({ length: totalDays + 1 }, (_, index) => {
+      const date = new Date(start);
+      date.setDate(date.getDate() + index);
+      return date.toISOString().split("T")[0];
+    });
+
+    return { totalDays, formattedDates };
+  }, [data, startDate]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const index = formattedDates.indexOf(selectedDate);
+      if (index !== -1) {
+        setSliderValue(index);
+      }
+    }
+  }, [selectedDate, formattedDates]);
+
+  const handleSliderChange = (value) => {
+    setSliderValue(value);
+    onDateChange(formattedDates[value]);
+  };
 
   const getTrackStyle = (index) => {
-    const targetDate = formatDate(
-      new Date(startDate).setDate(new Date(startDate).getDate() + index)
-    );
-
-    const isDataAvailable = data?.some(
+    const targetDate = formattedDates[index];
+    const isDataAvailable = data.some(
       (entry) => entry.report_date === targetDate
     );
-    if (isDataAvailable && index >= sliderValue) {
-      return styles.full;
-    } else {
-      return styles.empty;
-    }
+    return isDataAvailable && index <= sliderValue ? styles.full : styles.empty;
   };
-
-  const totalDays = getDaysDifference();
 
   return (
     <div className={styles.sliderContainer}>
       <div className={styles.dateDisplay}>
-        {formatDate(
-          new Date(startDate).setDate(
-            new Date(startDate).getDate() + sliderValue
-          )
-        )}{" "}
-        (Day {sliderValue})
+        {formattedDates[sliderValue]} (Day {sliderValue})
       </div>
       <Slider
         className={styles.slider}
         min={0}
         max={totalDays}
         value={sliderValue}
-        onChange={setSliderValue}
-        renderTrack={(props, state) => {
-          // Destructure the key to use it directly, then spread the remaining props
-          const { key, ...otherProps } = props;
-          return (
-            <div
-              key={`track-${state.index}`} // Use key directly here
-              {...otherProps}
-              className={`${styles.track} ${getTrackStyle(state.index)}} 
-            
-
-              `}
-            />
-          );
-        }}
-        renderThumb={(props, state) => {
-          const { key, ...otherProps } = props; // Destructure the key
-          return (
-            <div
-              key={`thumb-${state.index}`} // Use key directly here
-              {...otherProps}
-              className={styles.thumb}
-            />
-          );
-        }}
+        onChange={handleSliderChange}
+        renderTrack={(props, state) => (
+          <div
+            {...props}
+            className={`${styles.track} ${getTrackStyle(state.index)}`}
+          />
+        )}
+        renderThumb={(props) => <div {...props} className={styles.thumb} />}
       />
     </div>
   );
