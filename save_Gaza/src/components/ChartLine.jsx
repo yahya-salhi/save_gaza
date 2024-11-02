@@ -4,7 +4,6 @@ import {
   Line,
   LineChart,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
@@ -13,9 +12,8 @@ import {
 import styles from "./ChartLine.module.css";
 
 const events = [
-  { date: "2023-11-23", name: "Thanksgiving" },
-  { date: "2024-01-01", name: "NYE" },
-  { date: "2024-01-26", name: "ICJ Ruling" },
+  { date: "2024-01-01", name: "New Y" },
+
   { date: "2024-03-10", name: "Ramadan" },
   { date: "2024-04-01", name: "Rafah Attack" },
 ];
@@ -31,7 +29,7 @@ const CustomDot = ({ cx, cy, payload }) => {
           y={cy + 20}
           textAnchor="middle"
           fill="white"
-          fontSize="12"
+          fontSize="20"
           className={styles.chartLabel}
         >
           {event.name}
@@ -47,7 +45,7 @@ const formatDate = (date) => {
     (new Date(date).getTime() - new Date("2023-10-07").getTime()) /
       (1000 * 60 * 60 * 24)
   );
-  return `Day ${days}`;
+  return ` ${days} day`;
 };
 
 export default function ChartLine({ data, selectedDate }) {
@@ -62,7 +60,7 @@ export default function ChartLine({ data, selectedDate }) {
 
   return (
     <div className={styles.chartContainer}>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={350}>
         <LineChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
@@ -73,34 +71,27 @@ export default function ChartLine({ data, selectedDate }) {
             stroke="white"
             tickFormatter={formatDate}
           />
-          <YAxis
-            stroke="white"
-            label={{
-              value: "Deaths",
-              angle: -90,
-              position: "insideLeft",
-              fill: "white",
-            }}
-          />
           <Tooltip
             contentStyle={{ backgroundColor: "#1a2e2e", border: "none" }}
             labelStyle={{ color: "white" }}
             itemStyle={{ color: "rgb(45, 212, 191)" }}
-            formatter={(value) => `${value.toLocaleString()} killed`}
+            formatter={(value) =>
+              `${value ? value.toLocaleString() : "0"} killed`
+            }
             labelFormatter={formatDate}
           />
           <Line
             type="monotone"
             dataKey="killed_cum"
             stroke="rgb(45, 212, 191)"
-            strokeWidth={2}
+            strokeWidth={4}
             dot={<CustomDot />}
           />
-          {selectedPoint && (
+          {selectedPoint && selectedPoint.killed_cum !== undefined && (
             <ReferenceDot
               x={selectedPoint.report_date}
               y={selectedPoint.killed_cum}
-              r={6}
+              r={8}
               fill="red"
               stroke="none"
             />
@@ -108,9 +99,9 @@ export default function ChartLine({ data, selectedDate }) {
         </LineChart>
       </ResponsiveContainer>
       <div className={styles.totalKilled}>
-        {selectedPoint
+        {selectedPoint && selectedPoint.killed_cum !== undefined
           ? `${selectedPoint.killed_cum.toLocaleString()} killed`
-          : latestTotal
+          : latestTotal !== null
           ? `${latestTotal.toLocaleString()} killed`
           : "Loading..."}
       </div>

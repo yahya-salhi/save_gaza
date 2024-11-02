@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Map.module.css";
 import HeaderMap from "./HeaderMap";
 import RangeSlider from "./RangeSlider";
 import Statistics from "./Statistics";
 import ChartLine from "./ChartLine";
+import Message from "./Message";
 
 function Map() {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,30 +36,18 @@ function Map() {
     fetchStatistics();
   }, []);
 
-  const handleDateChange = (newDate) => {
-    setSelectedDate(newDate);
-  };
-
-  const filteredData = useMemo(() => {
-    return data.filter((item) => item.report_date <= selectedDate);
-  }, [data, selectedDate]);
-
   return (
     <>
       <div className={styles.mapContainer}>
         <HeaderMap />
-        {isLoading && <p>Loading data...</p>}
+        {isLoading && <Message Message={"Loading data..."} />}
         {error && <p className={styles.error}>{error}</p>}
         {!isLoading && !error && (
-          <ChartLine data={filteredData} selectedDate={selectedDate} />
+          <div>
+            <RangeSlider data={data} onDateChange={setSelectedDate} />
+            <ChartLine data={data} selectedDate={selectedDate} />
+          </div>
         )}
-        {/* <Statistics /> */}
-        {/* <RangeSlider
-          startDate="2023-10-07"
-          data={data}
-          onDateChange={handleDateChange}
-          selectedDate={selectedDate}
-        /> */}
       </div>
       <div className={styles.dashboard}></div>
     </>

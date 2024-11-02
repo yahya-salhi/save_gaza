@@ -1,72 +1,40 @@
-import { useState, useEffect, useMemo } from "react";
-import Slider from "react-slider";
-import styles from "./RangeSlider.module.css";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 
-const RangeSlider = ({
-  startDate = "2023-10-07",
-  data = [],
-  onDateChange,
-  selectedDate,
-}) => {
-  const [sliderValue, setSliderValue] = useState(0);
+const RangeSlider = ({ data, onDateChange }) => {
+  const reportDates = data.map((item) => item.report_date);
+  const [sliderIndex, setSliderIndex] = useState(0);
 
-  const { totalDays, formattedDates } = useMemo(() => {
-    if (data.length === 0) return { totalDays: 0, formattedDates: [] };
+  const referenceDate = new Date("2023-10-07");
 
-    const start = new Date(startDate);
-    const end = new Date(data[data.length - 1].report_date);
-    const totalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-
-    const formattedDates = Array.from({ length: totalDays + 1 }, (_, index) => {
-      const date = new Date(start);
-      date.setDate(date.getDate() + index);
-      return date.toISOString().split("T")[0];
-    });
-
-    return { totalDays, formattedDates };
-  }, [data, startDate]);
-
-  useEffect(() => {
-    if (selectedDate) {
-      const index = formattedDates.indexOf(selectedDate);
-      if (index !== -1) {
-        setSliderValue(index);
-      }
-    }
-  }, [selectedDate, formattedDates]);
-
-  const handleSliderChange = (value) => {
-    setSliderValue(value);
-    onDateChange(formattedDates[value]);
+  const formatDateWithDayCount = (dateStr) => {
+    const currentDate = new Date(dateStr);
+    const dayCount = Math.floor(
+      (currentDate - referenceDate) / (1000 * 60 * 60 * 24)
+    );
+    const options = { month: "long", day: "numeric" };
+    const formattedDate = currentDate.toLocaleDateString("en-US", options);
+    return `${formattedDate} (Day ${dayCount})`;
   };
 
-  const getTrackStyle = (index) => {
-    const targetDate = formattedDates[index];
-    const isDataAvailable = data.some(
-      (entry) => entry.report_date === targetDate
-    );
-    return isDataAvailable && index <= sliderValue ? styles.full : styles.empty;
+  const handleSliderChange = (e) => {
+    const newIndex = Number(e.target.value);
+    setSliderIndex(newIndex);
+    onDateChange(reportDates[newIndex]);
   };
 
   return (
-    <div className={styles.sliderContainer}>
-      <div className={styles.dateDisplay}>
-        {formattedDates[sliderValue]} (Day {sliderValue})
-      </div>
-      <Slider
-        className={styles.slider}
+    <div className="rangeSliderContainer">
+      <input
+        type="range"
         min={0}
-        max={totalDays}
-        value={sliderValue}
+        max={reportDates.length - 1}
+        value={sliderIndex}
         onChange={handleSliderChange}
-        renderTrack={(props, state) => (
-          <div
-            {...props}
-            className={`${styles.track} ${getTrackStyle(state.index)}`}
-          />
-        )}
-        renderThumb={(props) => <div {...props} className={styles.thumb} />}
       />
+      <div className="dateLabel">
+        {formatDateWithDayCount(reportDates[sliderIndex])}
+      </div>
     </div>
   );
 };
