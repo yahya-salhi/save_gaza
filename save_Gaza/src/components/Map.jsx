@@ -50,7 +50,11 @@ function Map() {
           </div>
         )}
       </div>
-      <div className={styles.dashboard}></div>
+      <div className={styles.dashboard}>
+        Use the slider above to see the human impact over time. These counts are
+        part of a wider picture of suffering, and do not include the many who
+        succumb to disease, famine, and the knock-on effects of mass destruction
+      </div>
     </>
   );
 }

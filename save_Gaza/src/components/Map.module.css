@@ -10,61 +10,10 @@
   height: 100%; /* Ensure map occupies full height of container */
 }
 
-/* Global styles for Leaflet popups */
-:global(.leaflet-popup .leaflet-popup-content-wrapper) {
-  background-color: var(--color-dark--1);
-  color: var(--color-light--2);
-  border-radius: 5px;
-  padding-right: 0.6rem;
-}
-
-:global(.leaflet-popup .leaflet-popup-content) {
-  font-size: 1.5rem; /* Base font size for popup content */
-  display: flex;
-  align-items: center;
-  gap: 1rem; /* Spacing between elements */
-}
-
-:global(.leaflet-popup .leaflet-popup-content span:first-child) {
-  font-size: 2.5rem; /* Larger font size for the first child span */
-  line-height: 1; /* Maintain line height for clarity */
-}
-
-:global(.leaflet-popup .leaflet-popup-tip) {
-  background-color: var(--color-dark--1); /* Tip background color */
-}
-
-:global(.leaflet-popup-content-wrapper) {
-  border-left: 5px solid var(--color-brand--2); /* Left border for emphasis */
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .map {
     font-size: 1.2rem; /* Adjust font size in popups for smaller screens */
-  }
-
-  :global(.leaflet-popup .leaflet-popup-content) {
-    flex-direction: column; /* Stack elements vertically */
-    align-items: flex-start; /* Align items to the start */
-  }
-
-  :global(.leaflet-popup .leaflet-popup-content span:first-child) {
-    font-size: 2rem; /* Reduce font size for mobile */
-  }
-
-  :global(.leaflet-popup-content-wrapper) {
-    padding: 1rem; /* Add padding for better spacing */
-  }
-}
-
-@media (max-width: 480px) {
-  :global(.leaflet-popup .leaflet-popup-content) {
-    font-size: 1rem; /* Further reduce font size for very small screens */
-  }
-
-  :global(.leaflet-popup .leaflet-popup-content span:first-child) {
-    font-size: 1.5rem; /* Adjust size for the first child span */
   }
 }
 .dashboard {
