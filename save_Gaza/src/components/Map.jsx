@@ -46,6 +46,7 @@ function Map() {
           <div>
             <RangeSlider data={data} onDateChange={setSelectedDate} />
             <ChartLine data={data} selectedDate={selectedDate} />
+            <Statistics />
           </div>
         )}
       </div>
