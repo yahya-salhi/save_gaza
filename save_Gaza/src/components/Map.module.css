@@ -1,26 +1,32 @@
+/* Map.module.css */
 .mapContainer {
-  flex: 1; /* Take available space */
-  height: 100%; /* Full height of parent */
-  background-color: var(--color-dark--2);
-  position: relative; /* For absolute positioning of map elements */
-  overflow: hidden; /* Prevent overflow if necessary */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
-.map {
-  height: 100%; /* Ensure map occupies full height of container */
+.pieChartContainer {
+  position: relative;
+  overflow: hidden;
+  margin-top: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Responsive adjustments */
+.loading,
+.error {
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
 @media (max-width: 768px) {
-  .map {
-    font-size: 1.2rem; /* Adjust font size in popups for smaller screens */
+  .mapContainer {
+    padding: 0.5rem;
   }
-}
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  background-color: #121212;
-  min-height: 100vh;
 }

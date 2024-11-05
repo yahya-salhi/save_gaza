@@ -5,6 +5,7 @@ import RangeSlider from "./RangeSlider";
 import Statistics from "./Statistics";
 import ChartLine from "./ChartLine";
 import Message from "./Message";
+import PieChart from "./PieChart";
 
 function Map() {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +36,8 @@ function Map() {
     };
     fetchStatistics();
   }, []);
-
+  const selectedData = data.find((item) => item.report_date === selectedDate);
+  const latestData = data[data.length - 1] || {};
   return (
     <>
       <div className={styles.mapContainer}>
@@ -46,14 +48,12 @@ function Map() {
           <div>
             <RangeSlider data={data} onDateChange={setSelectedDate} />
             <ChartLine data={data} selectedDate={selectedDate} />
-            <Statistics />
+            <Statistics data={selectedData} latestData={latestData} />
+            <div className={styles.pieChartContainer}>
+              <PieChart data={selectedData} />
+            </div>
           </div>
         )}
-      </div>
-      <div className={styles.dashboard}>
-        Use the slider above to see the human impact over time. These counts are
-        part of a wider picture of suffering, and do not include the many who
-        succumb to disease, famine, and the knock-on effects of mass destruction
       </div>
     </>
   );

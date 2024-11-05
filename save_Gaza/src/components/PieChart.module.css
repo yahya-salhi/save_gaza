@@ -1,0 +1,142 @@
+/* PieChart.module.css */
+
+.container {
+  background-color: rgb(17, 17, 17);
+  padding: 2rem 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  color: rgb(45, 212, 191);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.chartsContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+  flex-grow: 1;
+}
+
+.circleWrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.circle {
+  width: 200px;
+  height: 200px;
+  transform: rotate(-180deg);
+}
+
+.percentageText {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(45, 212, 191);
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.labelText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(45, 212, 191);
+  font-size: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.dashboard {
+  background-color: var(--header-bg-color);
+  padding: 4rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: rgb(156, 163, 175);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-top: -8rem;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .dashboard {
+    margin-top: 2rem; /* Normal margin on smaller screens */
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .chartsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .circleWrapper {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    min-height: 600px;
+  }
+
+  .chartsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .circleWrapper {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .circle {
+    width: 150px;
+    height: 150px;
+  }
+
+  .percentageText {
+    font-size: 2rem;
+  }
+
+  .labelText {
+    font-size: 1rem;
+  }
+
+  .dashboard {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    margin-top: 1rem;
+  }
+}

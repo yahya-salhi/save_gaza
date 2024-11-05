@@ -1,24 +1,44 @@
+/* eslint-disable react/prop-types */
 import styles from "./Statistics.module.css";
 
-function Statistics() {
+function Statistic({ title, value, latestData = "missing" }) {
+  // Display the cumulative value, or default to 0 if undefined
+  const displayValue = value !== undefined ? value : latestData;
+
+  return (
+    <div className={styles.stat}>
+      <h2>{title}</h2>
+      <p>{displayValue?.toLocaleString()}</p>
+    </div>
+  );
+}
+
+function Statistics({ data }) {
   return (
     <div className={styles.infoPanel}>
-      <div className={styles.stat}>
-        <h2>Deaths</h2>
-        <p>448</p>
-      </div>
-      <div className={styles.stat}>
-        <h2>Injuries</h2>
-        <p>240</p>
-      </div>
-      <div className={styles.stat}>
-        <h2>Displaced</h2>
-        <p>52,000</p>
-      </div>
-      <div className={styles.stat}>
-        <h2>Buildings Destroyed</h2>
-        <p>1,800</p>
-      </div>
+      <Statistic title="Injured" value={data?.injured_cum} />
+      <Statistic
+        title="Children Killed"
+        value={data?.ext_killed_children_cum}
+      />
+      <Statistic title="Women Killed" value={data?.ext_killed_women_cum} />
+      <Statistic
+        title="Medical Personnel Killed"
+        value={data?.ext_med_killed_cum}
+      />
+      <Statistic
+        title="Journalists Killed"
+        value={data?.ext_press_killed_cum}
+      />
+      <Statistic
+        title="Emergency Personnel Killed"
+        value={data?.ext_civdef_killed_cum}
+      />
+      {/* 
+      
+     
+      
+       */}
     </div>
   );
 }

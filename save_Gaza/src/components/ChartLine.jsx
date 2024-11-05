@@ -45,7 +45,7 @@ const formatDate = (date) => {
     (new Date(date).getTime() - new Date("2023-10-07").getTime()) /
       (1000 * 60 * 60 * 24)
   );
-  return ` ${days} day`;
+  return `day  ${days} `;
 };
 
 export default function ChartLine({ data, selectedDate }) {
