@@ -2,7 +2,6 @@
 import styles from "./Statistics.module.css";
 
 function Statistic({ title, value, latestData = "missing" }) {
-  // Display the cumulative value, or default to 0 if undefined
   const displayValue = value !== undefined ? value : latestData;
 
   return (

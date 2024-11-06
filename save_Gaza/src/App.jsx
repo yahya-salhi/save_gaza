@@ -27,6 +27,7 @@ function App() {
         setWestBank(data.west_bank);
       } catch (err) {
         setError("there was an error loading Api data");
+        console.error("Fetch error:", err);
       } finally {
         setIsLoading(false);
       }

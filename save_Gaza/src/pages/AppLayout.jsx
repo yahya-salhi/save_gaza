@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
 import Logo from "../components/Logo";
+import MapWest from "../components/MapWest";
 import styles from "./AppLayout.module.css";
 
 export default function AppLayout() {
@@ -11,6 +13,7 @@ export default function AppLayout() {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+  const location = useLocation();
 
   return (
     <div className={`${styles.app} ${sidebarOpen ? styles.sidebarActive : ""}`}>
@@ -48,7 +51,7 @@ export default function AppLayout() {
 
         <main className={styles.main}>
           <div className={styles.map}>
-            <Map />
+            {location.pathname === "/app/westBank" ? <MapWest /> : <Map />}
           </div>
         </main>
       </div>
