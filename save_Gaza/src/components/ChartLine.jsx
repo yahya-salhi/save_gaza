@@ -60,7 +60,7 @@ export default function ChartLine({ data, selectedDate }) {
 
   return (
     <div className={styles.chartContainer}>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
@@ -72,7 +72,10 @@ export default function ChartLine({ data, selectedDate }) {
             tickFormatter={formatDate}
           />
           <Tooltip
-            contentStyle={{ backgroundColor: "#1a2e2e", border: "none" }}
+            contentStyle={{
+              backgroundColor: "#1a2e2e",
+              border: "none",
+            }}
             labelStyle={{ color: "white" }}
             itemStyle={{ color: "rgb(45, 212, 191)" }}
             formatter={(value) =>

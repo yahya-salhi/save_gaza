@@ -15,8 +15,8 @@
 
 .totalKilled {
   position: absolute;
-  right: 32px;
-  top: 32px;
+  right: 250px;
+  top: 40px;
   font-size: 48px;
   font-weight: bold;
   color: rgb(45, 212, 191);
