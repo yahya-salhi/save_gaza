@@ -14,7 +14,6 @@ function Map({ error, selectedDate, data, isLoading, setSelectedDate }) {
   return (
     <>
       <div className={styles.mapContainer}>
-        {/* <HeaderMap /> */}
         {isLoading && <Message Message={"Loading data..."} />}
         {error && <p className={styles.error}>{error}</p>}
         {!isLoading && !error && (

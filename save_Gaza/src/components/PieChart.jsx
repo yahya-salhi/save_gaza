@@ -44,24 +44,33 @@ function PieChart({ data }) {
     const total = data?.killed_cum || 0;
     const children = data?.ext_killed_children_cum || 0;
     const women = data?.ext_killed_women_cum || 0;
+    const childrenwest = data?.killed_children_cum || 0;
 
     if (total === 0) {
-      return { children: 0, women: 0 };
+      return { children: 0, women: 0, childrenwest: 0 };
     }
 
     return {
       children: Math.round((children / total) * 100),
       women: Math.round((women / total) * 100),
+      childrenwest: Math.round((childrenwest / total) * 100),
     };
   }, [data]);
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Of those killed:</h2>
-      <div className={styles.chartsContainer}>
-        <Circle percentage={percentages.children} label="children" />
-        <Circle percentage={percentages.women} label="women" />
-      </div>
+      {location.pathname === "/app/gaza" ? (
+        <div className={styles.chartsContainer}>
+          <Circle percentage={percentages.children} label="children" />
+          <Circle percentage={percentages.women} label="women" />
+        </div>
+      ) : (
+        <div className={styles.chartsContainer}>
+          <Circle percentage={percentages.childrenwest} label="children" />
+        </div>
+      )}
+
       <div className={styles.dashboard}>
         Use the slider above to see the human impact over time. These counts are
         part of a wider picture of suffering, and do not include the many who

@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
 import Logo from "../components/Logo";
-import MapWest from "../components/MapWest";
+
 import HeaderMap from "../components/HeaderMap";
 
 import styles from "./AppLayout.module.css";
@@ -86,23 +86,13 @@ export default function AppLayout() {
         <main className={styles.main}>
           <HeaderMap />
           <div className={styles.map}>
-            {location.pathname === "/app/gaza" ? (
-              <Map
-                isLoading={isLoading}
-                data={data}
-                error={error}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-              />
-            ) : (
-              <MapWest
-                isLoading={isLoading}
-                data={data}
-                error={error}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-              />
-            )}
+            <Map
+              isLoading={isLoading}
+              data={data}
+              error={error}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
           </div>
         </main>
       </div>
