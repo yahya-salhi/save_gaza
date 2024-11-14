@@ -11,17 +11,16 @@ import styles from "./AppLayout.module.css";
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-  const location = useLocation();
-
   //fetching data
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+  const location = useLocation();
 
   useEffect(() => {
     const fetchStatistics = async () => {
@@ -29,7 +28,8 @@ export default function AppLayout() {
       setError(null);
       try {
         const res = await fetch(
-          location.pathname === "/app/gaza"
+          location.pathname.startsWith("/app/gaza") ||
+            location.pathname === "/app"
             ? "https://data.techforpalestine.org/api/v2/casualties_daily.json"
             : "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json"
         );

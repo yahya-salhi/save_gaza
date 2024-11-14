@@ -9,6 +9,7 @@ import {
   FaHeartBroken,
 } from "react-icons/fa";
 import styles from "./GazaSummary.module.css"; // Import the CSS module
+import { Link } from "react-router-dom";
 
 function GazaSummary({ gaza, isLoading }) {
   if (isLoading) return <p>Loading...</p>;
@@ -18,22 +19,28 @@ function GazaSummary({ gaza, isLoading }) {
 
   return (
     <div className={styles.statisticsContainer}>
-      <div className={styles.statisticItem}>
-        <FaUserShield className={styles.icon} />
-        <span className={styles.statisticValue}> {massacres} </span>
-        <span className={styles.statisticLabel}> Massacres </span>
+      <div>
+        <Link to={`${massacres}`} className={styles.statisticItem}>
+          <FaUserShield className={styles.icon} />
+          <span className={styles.statisticValue}> {massacres} </span>
+          <span className={styles.statisticLabel}> Massacres </span>
+        </Link>
       </div>
       <div className={styles.statisticItem}>
-        <FaHeartBroken className={styles.icon} />
-        <span className={styles.statisticValue}>
-          <strong>{killed.total}</strong>
-        </span>
-        <span className={styles.statisticLabel}>Total Killed</span>
+        <Link to={`${killed.total}`}>
+          <FaHeartBroken className={styles.icon} />
+          <span className={styles.statisticValue}>
+            <strong>{killed.total}</strong>
+          </span>
+          <span className={styles.statisticLabel}>Total Killed</span>
+        </Link>
       </div>
       <div className={styles.statisticItem}>
-        <FaChild className={styles.icon} />
-        <span className={styles.statisticValue}>{killed.children}</span>
-        <span className={styles.statisticLabel}>Children Killed</span>
+        <Link to={`${killed.children}`}>
+          <FaChild className={styles.icon} />
+          <span className={styles.statisticValue}>{killed.children}</span>
+          <span className={styles.statisticLabel}>Children Killed</span>
+        </Link>
       </div>
       <div className={styles.statisticItem}>
         <FaFemale className={styles.icon} />

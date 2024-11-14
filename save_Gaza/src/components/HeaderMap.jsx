@@ -10,7 +10,10 @@ function HeaderMap() {
       <p>
         {" "}
         Since October 7,2023 For{" "}
-        {location.pathname === "/app/gaza" ? "gaza" : "westbank"}
+        {location.pathname.startsWith("/app/gaza") ||
+        location.pathname === "/app"
+          ? "gaza"
+          : "westbank"}
       </p>
     </div>
   );

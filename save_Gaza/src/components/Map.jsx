@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-
+import { memo } from "react";
 import styles from "./Map.module.css";
 
 import RangeSlider from "./RangeSlider";
@@ -8,7 +8,13 @@ import ChartLine from "./ChartLine";
 import Message from "./Message";
 import PieChart from "./PieChart";
 
-function Map({ error, selectedDate, data, isLoading, setSelectedDate }) {
+const Map = memo(function Map({
+  error,
+  selectedDate,
+  data,
+  isLoading,
+  setSelectedDate,
+}) {
   const selectedData = data.find((item) => item.report_date === selectedDate);
   const latestData = data[data.length - 1] || {};
   return (
@@ -29,6 +35,6 @@ function Map({ error, selectedDate, data, isLoading, setSelectedDate }) {
       </div>
     </>
   );
-}
+});
 
 export default Map;

@@ -1,10 +1,11 @@
-import { Outlet } from "react-router-dom";
 import styeles from "./Sidebar.module.css";
 import AppNav from "./AppNav";
+import { Outlet } from "react-router-dom";
 function Sidebar() {
   return (
     <div className={styeles.sidebar}>
       <AppNav />
+
       <Outlet />
       <footer className={styeles.footer}>
         <p className={styeles.copyright}>

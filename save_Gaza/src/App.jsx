@@ -9,6 +9,8 @@ import GazaSummary from "./components/GazaSummary";
 import { useEffect, useState } from "react";
 import WestBankSummary from "./components/WestBankSummary";
 import IndexSummary from "./components/IndexSummary";
+
+import GazaDetails from "./components/GazaDetails";
 function App() {
   const [gaza, setGaza] = useState(null);
   const [westBank, setWestBank] = useState(null);
@@ -55,6 +57,8 @@ function App() {
             path="gaza"
             element={<GazaSummary gaza={gaza} isLoading={isLoading} />}
           />
+          <Route path="gaza/:parameter" element={<GazaDetails gaza={gaza} />} />
+
           <Route
             path="westBank"
             element={
