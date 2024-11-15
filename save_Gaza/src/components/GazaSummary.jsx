@@ -26,8 +26,8 @@ function GazaSummary({ gaza, isLoading }) {
           <span className={styles.statisticLabel}> Massacres </span>
         </Link>
       </div>
-      <div className={styles.statisticItem}>
-        <Link to={`${killed.total}`}>
+      <div>
+        <Link to={`${killed.total}`} className={styles.statisticItem}>
           <FaHeartBroken className={styles.icon} />
           <span className={styles.statisticValue}>
             <strong>{killed.total}</strong>
@@ -35,8 +35,8 @@ function GazaSummary({ gaza, isLoading }) {
           <span className={styles.statisticLabel}>Total Killed</span>
         </Link>
       </div>
-      <div className={styles.statisticItem}>
-        <Link to={`${killed.children}`}>
+      <div>
+        <Link to={`${killed.children}`} className={styles.statisticItem}>
           <FaChild className={styles.icon} />
           <span className={styles.statisticValue}>{killed.children}</span>
           <span className={styles.statisticLabel}>Children Killed</span>

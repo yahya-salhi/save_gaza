@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
@@ -17,19 +17,18 @@ export default function AppLayout() {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
+  const location = useLocation();
+  const isGazaDetailsRoute = location.pathname.includes("/app/gaza/");
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const location = useLocation();
-
   useEffect(() => {
     const fetchStatistics = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          location.pathname.startsWith("/app/gaza") ||
-            location.pathname === "/app"
+          location.pathname.includes("/app/gaza")
             ? "https://data.techforpalestine.org/api/v2/casualties_daily.json"
             : "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json"
         );
@@ -86,13 +85,17 @@ export default function AppLayout() {
         <main className={styles.main}>
           <HeaderMap />
           <div className={styles.map}>
-            <Map
-              isLoading={isLoading}
-              data={data}
-              error={error}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
+            {isGazaDetailsRoute ? (
+              <Outlet />
+            ) : (
+              <Map
+                isLoading={isLoading}
+                data={data}
+                error={error}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+              />
+            )}
           </div>
         </main>
       </div>
