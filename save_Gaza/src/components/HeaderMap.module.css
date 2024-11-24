@@ -1,0 +1,78 @@
+/* Header Container */
+.header {
+  padding: 1.5rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center; /* Center align for the entire header content */
+}
+
+/* Title */
+.title {
+  font-size: 1.75rem; /* Increased font size for better visibility */
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center align title content */
+  gap: 0.75rem;
+}
+
+/* Subtitle Text */
+.subtitle {
+  font-size: 1rem; /* Slightly larger for better readability */
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center align subtitle content */
+  gap: 0.5rem;
+}
+
+/* Location styling */
+.location {
+  color: #ef4444;
+  font-weight: 600; /* Increased weight for emphasis */
+  text-transform: capitalize;
+}
+
+/* Highlighted Green Text */
+.green {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* Separator */
+.separator {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 640px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.25rem; /* Reduce font size on smaller screens */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem; /* Adjust subtitle font size */
+  }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  .header {
+    border-bottom: 2px solid currentColor;
+  }
+
+  .green,
+  .location {
+    border-bottom: 1px solid currentColor;
+  }
+}
