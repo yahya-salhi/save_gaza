@@ -1,7 +1,7 @@
 .container {
   background-color: var(--color-card-bg);
   border-radius: var(--border-radius);
-  padding: 0.5rem;
+  padding: 0.8rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 1200px;
@@ -11,7 +11,7 @@
 .statisticsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
   width: 100%;
 }
 

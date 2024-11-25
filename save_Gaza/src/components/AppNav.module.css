@@ -1,30 +1,51 @@
 .nav {
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+  margin: 2rem 0; /* Adjusted margin for consistency */
+  padding: 0.5rem;
+  background-color: var(--color-dark--2);
+  border-radius: var(--border-radius); /* Using the global border-radius */
 }
 
 .nav ul {
   list-style: none;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack items vertically */
+  gap: 1rem;
   align-items: center;
-  background-color: var(--color-dark--2);
-  border-radius: 7px;
+  padding: 0; /* Remove default padding */
 }
 
-.nav a:link,
-.nav a:visited {
+.nav a {
   display: block;
-  color: inherit;
+  color: var(--color-light--2); /* Light color for readability */
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 0.5rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
   border-radius: 5px;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-/* CSS Modules feature */
-.nav a:global(.active) {
-  background-color: var(--color-dark--0);
+.nav a:hover {
+  background-color: var(--color-brand--2); /* Brand color on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.nav a.active {
+  background-color: var(
+    --color-brand--1
+  ); /* Different color for active state */
+  color: var(--color-light--0); /* Ensure contrast */
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+  .nav ul {
+    flex-direction: row; /* Horizontal layout for larger screens */
+    justify-content: space-around;
+  }
+
+  .nav a {
+    font-size: 1rem; /* Adjust font size for larger screens */
+  }
 }

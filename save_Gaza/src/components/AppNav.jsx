@@ -6,10 +6,20 @@ export default function AppNav() {
     <nav className={styles.nav}>
       <ul>
         <li>
-          <NavLink to="gaza">Gaza Summary</NavLink>
+          <NavLink
+            to="gaza"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
+            Gaza Summary
+          </NavLink>
         </li>
         <li>
-          <NavLink to="westBank">West Bank Summary</NavLink>
+          <NavLink
+            to="westBank"
+            className={({ isActive }) => (isActive ? styles.active : "")}
+          >
+            West Bank Summary
+          </NavLink>
         </li>
       </ul>
     </nav>
