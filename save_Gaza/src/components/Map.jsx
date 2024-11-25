@@ -17,23 +17,50 @@ const Map = memo(function Map({
 }) {
   const selectedData = data.find((item) => item.report_date === selectedDate);
   const latestData = data[data.length - 1] || {};
+
   return (
-    <>
-      <div className={styles.mapContainer}>
-        {isLoading && <Message Message={"Loading data..."} />}
-        {error && <p className={styles.error}>{error}</p>}
-        {!isLoading && !error && (
-          <div>
-            <RangeSlider data={data} onDateChange={setSelectedDate} />
-            <ChartLine data={data} selectedDate={selectedDate} />
-            <Statistics data={selectedData} latestData={latestData} />
-            <div className={styles.pieChartContainer}>
-              <PieChart data={selectedData} />
+    <div className={styles.mapContainer}>
+      <h2 className={styles.mapTitle}>Gaza Conflict Statistics</h2>
+      <p className={styles.mapDescription}>
+        Visualizing data and trends over time
+      </p>
+
+      {isLoading && (
+        <Message message="Loading data..." className={styles.loading} />
+      )}
+      {error && <p className={styles.error}>{error}</p>}
+
+      {!isLoading && !error && (
+        <>
+          <RangeSlider data={data} onDateChange={setSelectedDate} />
+
+          <div className={styles.pieChartContainer}>
+            <PieChart data={selectedData} />
+          </div>
+
+          <ChartLine data={data} selectedDate={selectedDate} />
+
+          <Statistics data={selectedData} latestData={latestData} />
+
+          <div className={styles.legendContainer}>
+            <div className={styles.legendItem}>
+              <div
+                className={styles.legendColor}
+                style={{ backgroundColor: "var(--color-brand--1)" }}
+              ></div>
+              <span>Casualties</span>
+            </div>
+            <div className={styles.legendItem}>
+              <div
+                className={styles.legendColor}
+                style={{ backgroundColor: "var(--color-brand--2)" }}
+              ></div>
+              <span>Injuries</span>
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </>
+      )}
+    </div>
   );
 });
 

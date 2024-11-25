@@ -1,19 +1,18 @@
-/* PieChart.module.css */
-
 .container {
-  background-color: rgb(17, 17, 17);
-  padding: 2rem 1rem;
-  border-radius: 8px;
+  background-color: var(--color-card-bg);
+  padding: 2rem;
+  border-radius: var(--border-radius);
   overflow: hidden;
   position: relative;
   min-height: 200px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  color: rgb(45, 212, 191);
-  font-size: 2rem;
+  font-size: var(--font-size-subtitle);
+  color: var(--color-light--1);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -42,6 +41,7 @@
   width: 200px;
   height: 200px;
   transform: rotate(-180deg);
+  transition: all 0.3s ease;
 }
 
 .percentageText {
@@ -49,9 +49,8 @@
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: rgb(45, 212, 191);
-  font-size: 3rem;
-  font-weight: bold;
+  font-size: var(--font-size-subtitle);
+  font-weight: 800;
 }
 
 .labelText {
@@ -59,39 +58,37 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: rgb(45, 212, 191);
-  font-size: 2rem;
+  font-size: var(--font-size-text);
   text-align: center;
   width: 100%;
+  font-weight: 600;
 }
 
 .dashboard {
-  background-color: var(--header-bg-color);
-  padding: 4rem;
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: rgb(156, 163, 175);
+  background-color: var(--color-dark--1);
+  padding: 2rem;
+  font-size: var(--font-size-text);
+  color: var(--color-light--2);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 -2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin-top: -8rem;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
   position: relative;
   z-index: 1;
+  border-radius: var(--border-radius);
 }
 
 @media (max-width: 1024px) {
   .dashboard {
-    margin-top: 2rem; /* Normal margin on smaller screens */
-    font-size: 1rem;
+    padding: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .chartsContainer {
@@ -106,12 +103,15 @@
 
 @media (max-width: 480px) {
   .container {
-    min-height: 600px;
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: calc(var(--font-size-subtitle) * 0.8);
   }
 
   .chartsContainer {
-    flex-direction: column;
-    align-items: center;
     gap: 1rem;
   }
 
@@ -127,16 +127,16 @@
   }
 
   .percentageText {
-    font-size: 2rem;
+    font-size: calc(var(--font-size-subtitle) * 0.8);
   }
 
   .labelText {
-    font-size: 1rem;
+    font-size: calc(var(--font-size-text) * 0.9);
   }
 
   .dashboard {
-    font-size: 0.8rem;
-    padding: 0.5rem;
+    font-size: calc(var(--font-size-text) * 0.8);
+    padding: 1rem;
     margin-top: 1rem;
   }
 }

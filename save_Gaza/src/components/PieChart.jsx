@@ -1,8 +1,7 @@
-/* eslint-disable react/prop-types */
 import { useMemo } from "react";
 import styles from "./PieChart.module.css";
 
-function Circle({ percentage, label }) {
+function Circle({ percentage, label, color }) {
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
   const safePercentage = isNaN(percentage)
@@ -18,7 +17,7 @@ function Circle({ percentage, label }) {
           cy="100"
           r={radius}
           fill="transparent"
-          stroke="rgb(38, 38, 38)"
+          stroke="var(--color-dark--2)"
           strokeWidth="20"
         />
         <circle
@@ -26,15 +25,19 @@ function Circle({ percentage, label }) {
           cy="100"
           r={radius}
           fill="transparent"
-          stroke="rgb(45, 212, 191)"
+          stroke={color}
           strokeWidth="20"
           strokeDasharray={`${circumference}`}
           strokeDashoffset={`${strokeDasharray}`}
           transform="rotate(-90 100 100)"
         />
       </svg>
-      <div className={styles.percentageText}>{safePercentage}%</div>
-      <div className={styles.labelText}>were {label}</div>
+      <div className={styles.percentageText} style={{ color }}>
+        {safePercentage}%
+      </div>
+      <div className={styles.labelText} style={{ color }}>
+        {label}
+      </div>
     </div>
   );
 }
@@ -59,22 +62,35 @@ function PieChart({ data }) {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Of those killed:</h2>
+      <h2 className={styles.title}>Casualty Distribution</h2>
       {location.pathname === "/app/gaza" ? (
         <div className={styles.chartsContainer}>
-          <Circle percentage={percentages.children} label="children" />
-          <Circle percentage={percentages.women} label="women" />
+          <Circle
+            percentage={percentages.children}
+            label="Children"
+            color="var(--color-brand--1)"
+          />
+          <Circle
+            percentage={percentages.women}
+            label="Women"
+            color="var(--color-brand--2)"
+          />
         </div>
       ) : (
         <div className={styles.chartsContainer}>
-          <Circle percentage={percentages.childrenwest} label="children" />
+          <Circle
+            percentage={percentages.childrenwest}
+            label="Children"
+            color="var(--color-brand--1)"
+          />
         </div>
       )}
 
       <div className={styles.dashboard}>
         Use the slider above to see the human impact over time. These counts are
         part of a wider picture of suffering, and do not include the many who
-        succumb to disease, famine, and the knock-on effects of mass destruction
+        succumb to disease, famine, and the knock-on effects of mass
+        destruction.
       </div>
     </div>
   );

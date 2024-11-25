@@ -12,8 +12,7 @@ import {
 import styles from "./ChartLine.module.css";
 
 const events = [
-  { date: "2024-01-01", name: "New Y" },
-
+  { date: "2024-01-01", name: "New Year" },
   { date: "2024-03-10", name: "Ramadan" },
   { date: "2024-04-01", name: "Rafah Attack" },
 ];
@@ -23,13 +22,13 @@ const CustomDot = ({ cx, cy, payload }) => {
   if (event) {
     return (
       <g>
-        <circle cx={cx} cy={cy} r={4} fill="white" />
+        <circle cx={cx} cy={cy} r={4} fill="var(--color-light--1)" />
         <text
           x={cx}
           y={cy + 20}
           textAnchor="middle"
-          fill="white"
-          fontSize="20"
+          fill="var(--color-light--1)"
+          fontSize="12"
           className={styles.chartLabel}
         >
           {event.name}
@@ -45,7 +44,7 @@ const formatDate = (date) => {
     (new Date(date).getTime() - new Date("2023-10-07").getTime()) /
       (1000 * 60 * 60 * 24)
   );
-  return `day  ${days} `;
+  return `Day ${days}`;
 };
 
 export default function ChartLine({ data, selectedDate }) {
@@ -60,34 +59,36 @@ export default function ChartLine({ data, selectedDate }) {
 
   return (
     <div className={styles.chartContainer}>
+      <h3 className={styles.chartTitle}>Cumulative Casualties Over Time</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-dark--2)" />
           <XAxis
             dataKey="report_date"
-            stroke="white"
+            stroke="var(--color-light--2)"
             tickFormatter={formatDate}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#1a2e2e",
+              backgroundColor: "var(--color-dark--1)",
               border: "none",
+              borderRadius: "var(--border-radius)",
             }}
-            labelStyle={{ color: "white" }}
-            itemStyle={{ color: "rgb(45, 212, 191)" }}
+            labelStyle={{ color: "var(--color-light--1)" }}
+            itemStyle={{ color: "var(--color-brand--2)" }}
             formatter={(value) =>
-              `${value ? value.toLocaleString() : "0"} killed`
+              `${value ? value.toLocaleString() : "0"} casualties`
             }
             labelFormatter={formatDate}
           />
           <Line
             type="monotone"
             dataKey="killed_cum"
-            stroke="rgb(45, 212, 191)"
-            strokeWidth={4}
+            stroke="var(--color-brand--2)"
+            strokeWidth={3}
             dot={<CustomDot />}
           />
           {selectedPoint && selectedPoint.killed_cum !== undefined && (
@@ -95,7 +96,7 @@ export default function ChartLine({ data, selectedDate }) {
               x={selectedPoint.report_date}
               y={selectedPoint.killed_cum}
               r={8}
-              fill="red"
+              fill="var(--color-brand--1)"
               stroke="none"
             />
           )}
@@ -103,9 +104,9 @@ export default function ChartLine({ data, selectedDate }) {
       </ResponsiveContainer>
       <div className={styles.totalKilled}>
         {selectedPoint && selectedPoint.killed_cum !== undefined
-          ? `${selectedPoint.killed_cum.toLocaleString()} killed`
+          ? `${selectedPoint.killed_cum.toLocaleString()} casualties`
           : latestTotal !== null
-          ? `${latestTotal.toLocaleString()} killed`
+          ? `${latestTotal.toLocaleString()} casualties`
           : "Loading..."}
       </div>
     </div>

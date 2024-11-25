@@ -1,17 +1,20 @@
-/* Map.module.css */
 .mapContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
+  background-color: var(--color-background-dark);
+  color: var(--color-light--2);
 }
 
 .pieChartContainer {
   position: relative;
   overflow: hidden;
   margin-top: 2rem;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: var(--color-card-bg);
+  padding: 1rem;
 }
 
 .loading,
@@ -21,12 +24,88 @@
   font-size: 1.2rem;
 }
 
+.loading {
+  color: var(--color-light--1);
+}
+
 .error {
-  color: #ff6b6b;
+  color: var(--color-brand--1);
+}
+
+.mapTitle {
+  font-size: var(--font-size-subtitle);
+  color: var(--color-light--1);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.mapDescription {
+  font-size: var(--font-size-text);
+  color: var(--color-light--2);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.legendContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--color-light--2);
+}
+
+.legendColor {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+}
+
+.tooltip {
+  background-color: var(--color-dark--1);
+  color: var(--color-light--2);
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {
   .mapContainer {
     padding: 0.5rem;
+  }
+
+  .mapTitle {
+    font-size: calc(var(--font-size-subtitle) * 0.8);
+  }
+
+  .mapDescription {
+    font-size: calc(var(--font-size-text) * 0.9);
+  }
+
+  .legendContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .mapTitle {
+    font-size: calc(var(--font-size-subtitle) * 0.7);
+  }
+
+  .mapDescription {
+    font-size: calc(var(--font-size-text) * 0.8);
+  }
+
+  .legendItem {
+    font-size: 0.8rem;
   }
 }

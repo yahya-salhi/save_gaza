@@ -16,7 +16,8 @@ function Statistic({ title, value, latestData = "missing" }) {
 function Statistics({ data }) {
   const location = useLocation();
   return (
-    <>
+    <div className={styles.statisticsContainer}>
+      <h3 className={styles.statisticsTitle}>Key Statistics</h3>
       {location.pathname === "/app/gaza" ? (
         <div className={styles.infoPanel}>
           <Statistic title="Injured" value={data?.injured_cum} />
@@ -51,7 +52,7 @@ function Statistics({ data }) {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }
 

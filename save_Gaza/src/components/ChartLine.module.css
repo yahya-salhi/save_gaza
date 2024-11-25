@@ -1,23 +1,67 @@
 .chartContainer {
   position: relative;
   width: 100%;
-  height: 400px;
-  background-color: #1a2e2e;
-  color: white;
+  height: 450px;
+  background-color: var(--color-card-bg);
+  color: var(--color-light--2);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.chartTitle {
+  font-size: var(--font-size-subtitle);
+  color: var(--color-light--1);
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .chartLabel {
   font-size: 12px;
-  fill: white;
+  fill: var(--color-light--2);
 }
 
 .totalKilled {
   position: absolute;
-  right: 250px;
+  right: 20px;
   top: 40px;
-  font-size: 48px;
+  font-size: 24px;
   font-weight: bold;
-  color: rgb(45, 212, 191);
+  color: var(--color-brand--2);
+  background-color: var(--color-dark--1);
+  padding: 10px;
+  border-radius: var(--border-radius);
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    height: 350px;
+  }
+
+  .chartTitle {
+    font-size: calc(var(--font-size-subtitle) * 0.8);
+  }
+
+  .totalKilled {
+    font-size: 20px;
+    right: 10px;
+    top: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chartContainer {
+    height: 300px;
+  }
+
+  .chartTitle {
+    font-size: calc(var(--font-size-subtitle) * 0.7);
+  }
+
+  .totalKilled {
+    font-size: 16px;
+    right: 5px;
+    top: 25px;
+  }
 }
