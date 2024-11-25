@@ -1,42 +1,116 @@
-/* RangeSlider.module.css */
-
-.sliderContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #ffffff; /* White text color for dark theme */
+.container {
+  background-color: var(--color-card-bg);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .dateDisplay {
-  margin-bottom: 10px;
-  font-size: 3rem;
-  color: #e0e0e0; /* Light gray for date */
+  text-align: center;
+  font-size: var(--font-size-subtitle);
+  color: var(--color-light--1);
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  padding: 0 1rem;
 }
 
 .slider {
-  width: 90%;
-  height: 15px;
-  border-radius: 5px;
-  background: #333; /* Dark gray background for unfilled part */
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--color-dark--2);
+  border-radius: 2px;
+  outline: none;
+  margin: 2rem 0;
 }
 
-.track {
-  height: 100%;
-  border-radius: 5px;
-}
-.full {
-  background-color: #20c997; /* Teal color for filled section */
-}
-
-.empty {
-  background-color: #555; /* Gray color for empty section */
-}
-
-.thumb {
-  height: 15px;
-  width: 15px;
-  background-color: #20c997; /* Teal color for thumb */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--color-brand--2);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--color-brand--2);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: var(--color-brand--1);
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: var(--color-brand--1);
+}
+
+.tickMarks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-top: -1rem;
+}
+
+.tick {
+  width: 2px;
+  height: 8px;
+  background-color: var(--color-dark--2);
+  transition: background-color 0.3s ease;
+}
+
+.activeTick {
+  background-color: var(--color-brand--2);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .dateDisplay {
+    font-size: calc(var(--font-size-subtitle) * 0.8);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .dateDisplay {
+    font-size: calc(var(--font-size-subtitle) * 0.7);
+  }
+
+  .slider::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tick {
+    height: 6px;
+  }
 }

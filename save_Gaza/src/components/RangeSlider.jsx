@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
+import styles from "./RangeSlider.module.css";
 
 const RangeSlider = ({ data, onDateChange }) => {
   const reportDates = data.map((item) => item.report_date);
@@ -24,16 +25,29 @@ const RangeSlider = ({ data, onDateChange }) => {
   };
 
   return (
-    <div className="rangeSliderContainer">
-      <input
-        type="range"
-        min={0}
-        max={reportDates.length - 1}
-        value={sliderIndex}
-        onChange={handleSliderChange}
-      />
-      <div className="dateLabel">
+    <div className={styles.container}>
+      <div className={styles.dateDisplay}>
         {formatDateWithDayCount(reportDates[sliderIndex])}
+      </div>
+      <div className={styles.sliderContainer}>
+        <input
+          type="range"
+          min={0}
+          max={reportDates.length - 1}
+          value={sliderIndex}
+          onChange={handleSliderChange}
+          className={styles.slider}
+        />
+        <div className={styles.tickMarks}>
+          {reportDates.map((_, index) => (
+            <div
+              key={index}
+              className={`${styles.tick} ${
+                index <= sliderIndex ? styles.activeTick : ""
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
