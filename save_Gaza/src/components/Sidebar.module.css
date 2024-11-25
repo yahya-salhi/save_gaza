@@ -1,19 +1,52 @@
 .sidebar {
-  flex-basis: 56rem; /* Fixed width for larger screens */
+  flex-basis: 56rem;
   background-color: var(--color-dark--1);
   padding: 3rem 5rem 3.5rem 5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  height: calc(100vh - 4.8rem); /* Full height minus header/footer */
-  transition: flex-basis 0.3s ease; /* Smooth transition for responsiveness */
+  height: calc(100vh - 4.8rem);
+  transition: flex-basis 0.3s ease;
+  overflow-y: auto;
+}
+
+.content {
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: var(--color-dark--2);
+  border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--color-brand--2);
+  border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand--1);
+}
+
+.summaryWrapper {
+  margin-top: 2rem;
 }
 
 .footer {
-  margin-top: auto; /* Pushes footer to the bottom */
-  padding: 1.5rem; /* Add some padding for aesthetics */
-  background-color: var(--color-dark--1); /* Background color for footer */
-  text-align: center; /* Center footer text */
+  margin-top: auto;
+  padding: 1.5rem;
+  background-color: var(--color-dark--1);
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .copyright {
@@ -21,25 +54,46 @@
   color: var(--color-light--1);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .sidebar {
-    flex-basis: 100%; /* Full width on smaller screens */
-    padding: 2rem; /* Adjust padding for smaller screens */
-    height: auto; /* Allow height to adjust based on content */
+    flex-basis: 100%;
+    padding: 2rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .summaryWrapper {
+    margin-top: 1.5rem;
   }
 
   .footer {
-    padding: 1rem; /* Reduce padding for smaller screens */
+    padding: 1rem;
+    margin-top: 2rem;
   }
 
   .copyright {
-    font-size: 1rem; /* Smaller text for copyright on mobile */
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
+  .sidebar {
+    padding: 1.5rem;
+  }
+
+  .content {
+    gap: 1rem;
+  }
+
+  .summaryWrapper {
+    margin-top: 1rem;
+  }
+
   .copyright {
-    font-size: 0.9rem; /* Further reduce font size on very small screens */
+    font-size: 0.9rem;
   }
 }

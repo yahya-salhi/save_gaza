@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useMemo } from "react";
 import {
   FaChild,
   FaUserMd,
@@ -8,64 +9,102 @@ import {
   FaAmbulance,
   FaHeartBroken,
 } from "react-icons/fa";
-import styles from "./GazaSummary.module.css"; // Import the CSS module
 import { Link } from "react-router-dom";
+import styles from "./GazaSummary.module.css";
 
-function GazaSummary({ gaza, isLoading }) {
-  if (isLoading) return <p>Loading...</p>;
-  if (!gaza || !gaza.killed || !gaza.injured) return <p>No data available</p>;
-
-  const { massacres, killed, injured } = gaza;
+function StatisticItem({ icon: Icon, value, label, to }) {
+  const Component = to ? Link : "div";
 
   return (
-    <div className={styles.statisticsContainer}>
-      <div>
-        <Link to={`${massacres}`} className={styles.statisticItem}>
-          <FaUserShield className={styles.icon} />
-          <span className={styles.statisticValue}> {massacres} </span>
-          <span className={styles.statisticLabel}> Massacres </span>
-        </Link>
+    <Component className={styles.statisticItem} {...(to && { to: `${to}` })}>
+      <Icon className={styles.icon} />
+      <div className={styles.statisticContent}>
+        <span className={styles.statisticValue}>{value}</span>
+        <span className={styles.statisticLabel}>{label}</span>
       </div>
-      <div>
-        <Link to={`${killed.total}`} className={styles.statisticItem}>
-          <FaHeartBroken className={styles.icon} />
-          <span className={styles.statisticValue}>
-            <strong>{killed.total}</strong>
-          </span>
-          <span className={styles.statisticLabel}>Total Killed</span>
-        </Link>
+    </Component>
+  );
+}
+
+function GazaSummary({ gaza, isLoading }) {
+  const statistics = useMemo(() => {
+    if (!gaza || !gaza.killed || !gaza.injured) return [];
+
+    return [
+      {
+        icon: FaUserShield,
+        value: gaza.massacres,
+        label: "Massacres",
+        to: `${gaza.massacres}`,
+      },
+      {
+        icon: FaHeartBroken,
+        value: gaza.killed.total,
+        label: "Total Killed",
+        to: `${gaza.killed.total}`,
+      },
+      {
+        icon: FaChild,
+        value: gaza.killed.children,
+        label: "Children Killed",
+        to: `${gaza.killed.children}`,
+      },
+      {
+        icon: FaFemale,
+        value: gaza.killed.women,
+        label: "Women Killed",
+      },
+      {
+        icon: FaUserShield,
+        value: gaza.killed.civil_defence,
+        label: "Civil Defense Killed",
+      },
+      {
+        icon: FaNewspaper,
+        value: gaza.killed.press,
+        label: "Press Killed",
+      },
+      {
+        icon: FaUserMd,
+        value: gaza.killed.medical,
+        label: "Medical Staff Killed",
+      },
+      {
+        icon: FaAmbulance,
+        value: gaza.injured.total,
+        label: "Total Injured",
+      },
+    ];
+  }, [gaza]);
+
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
       </div>
-      <div>
-        <Link to={`${killed.children}`} className={styles.statisticItem}>
-          <FaChild className={styles.icon} />
-          <span className={styles.statisticValue}>{killed.children}</span>
-          <span className={styles.statisticLabel}>Children Killed</span>
-        </Link>
+    );
+  }
+
+  if (!gaza || !gaza.killed || !gaza.injured) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>No data available</div>
       </div>
-      <div className={styles.statisticItem}>
-        <FaFemale className={styles.icon} />
-        <span className={styles.statisticValue}>{killed.women}</span>
-        <span className={styles.statisticLabel}>Women Killed</span>
-      </div>
-      <div className={styles.statisticItem}>
-        <FaUserShield className={styles.icon} />
-        <span className={styles.statisticValue}>{killed.civil_defence}</span>
-        <span className={styles.statisticLabel}>Civil Defense Killed</span>
-      </div>
-      <div className={styles.statisticItem}>
-        <FaNewspaper className={styles.icon} />
-        <span className={styles.statisticValue}>{killed.press}</span>
-        <span className={styles.statisticLabel}>Press Killed</span>
-      </div>
-      <div className={styles.statisticItem}>
-        <FaUserMd className={styles.icon} />
-        <span className={styles.statisticValue}>{killed.medical}</span>
-        <span className={styles.statisticLabel}>Medical Staff Killed</span>
-      </div>
-      <div className={styles.statisticItem}>
-        <FaAmbulance className={styles.icon} />
-        <span className={styles.statisticValue}>{injured.total}</span>
-        <span className={styles.statisticLabel}>Total Injured</span>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.statisticsGrid}>
+        {statistics.map((stat, index) => (
+          <StatisticItem
+            key={index}
+            icon={stat.icon}
+            value={stat.value}
+            label={stat.label}
+            to={stat.to}
+          />
+        ))}
       </div>
     </div>
   );
