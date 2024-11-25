@@ -28,7 +28,8 @@ function Homepages({ gaza, isLoading, error }) {
         </h1>
         <br />
         <h2>
-          Stay up to date with the latest News From Gaza
+          What's happening in Gaza in numbers? Stay up to date with the latest
+          News From Gaza
           <br />
           The latest death toll stands a
           <span className="bloody-text" style={{ margin: "5px" }}>

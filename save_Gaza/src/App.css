@@ -1,11 +1,11 @@
 @import "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap";
 
 :root {
-  --color-background-dark: #121212; /* Background color */
-  --color-card-bg: #1c1c1e; /* Card background color */
-  --color-brand--1: red;
-  --color-brand--2: green;
-
+  /* Colors */
+  --color-background-dark: #121212;
+  --color-card-bg: #1c1c1e;
+  --color-brand--1: #c41e3a;
+  --color-brand--2: #2ecc71;
   --color-dark--0: #242a2e;
   --color-dark--1: #2d3439;
   --color-dark--2: #42484d;
@@ -13,21 +13,28 @@
   --color-light--2: #ececec;
   --color-light--3: #d6dee0;
 
-  --font-size-title: 4.8rem; /* For main titles */
-  --font-size-subtitle: 2.4rem; /* For smaller headings */
-  --font-size-text: 1.6rem; /* Regular text */
-  --font-family-main: "Manrope", sans-serif; /* Font family */
+  /* Typography */
+  --font-size-title: 4.8rem;
+  --font-size-subtitle: 2.4rem;
+  --font-size-text: 1.6rem;
+  --font-family-main: "Manrope", sans-serif;
+
+  /* Other */
+  --border-radius: 10px;
 }
+
 .light-theme {
   --color-background: #f8f8f8;
   --color-text: #333;
   --color-card-bg: #fff;
 }
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: inherit;
 }
+
 html {
   font-size: 62.5%;
   box-sizing: border-box;
@@ -38,6 +45,7 @@ body {
   font-family: var(--font-family-main);
   font-size: var(--font-size-text);
   color: var(--color-light--2);
+  line-height: 1.6;
 }
 
 h1 {
@@ -56,26 +64,28 @@ p {
   font-size: var(--font-size-text);
   line-height: 1.6;
 }
+
 .green {
-  color: green;
+  color: var(--color-brand--2);
 }
 
 .red {
-  color: red;
+  color: var(--color-brand--1);
 }
 
-/* Styling for Cards (like in your example layout) */
 .card {
   background-color: var(--color-card-bg);
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   padding: 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   color: var(--color-light--2);
 }
+
 label {
   font-size: 1.6rem;
   font-weight: 600;
 }
+
 input,
 textarea {
   width: 100%;
@@ -87,7 +97,9 @@ textarea {
   background-color: var(--color-light--3);
   transition: all 0.2s;
 }
-input:focus {
+
+input:focus,
+textarea:focus {
   outline: none;
   background-color: #fff;
 }
@@ -103,13 +115,21 @@ input:focus {
   font-weight: 600;
   padding: 1rem 3rem;
   border-radius: 5px;
+  transition: all 0.3s;
 }
-/* Bar chart container */
+
+.cta:hover,
+.cta:active {
+  background-color: var(--color-brand--1);
+  color: var(--color-light--2);
+}
+
 .chart-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .bloody-text {
   font-size: 2.5rem;
   color: var(--color-brand--1);
