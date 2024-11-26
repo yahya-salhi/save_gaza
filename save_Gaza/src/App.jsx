@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import WestBankSummary from "./components/WestBankSummary";
 import IndexSummary from "./components/IndexSummary";
 
-import GazaDetails from "./components/GazaDetails";
+import DetailsSummary from "./components/DetailsSummary";
 function App() {
   const [gaza, setGaza] = useState(null);
   const [westBank, setWestBank] = useState(null);
@@ -57,7 +57,7 @@ function App() {
             path="gaza"
             element={<GazaSummary gaza={gaza} isLoading={isLoading} />}
           />
-          <Route path="gaza/:parameter" element={<GazaDetails gaza={gaza} />} />
+          <Route path="gaza/:param" element={<DetailsSummary gaza={gaza} />} />
 
           <Route
             path="westBank"

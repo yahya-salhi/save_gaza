@@ -2,11 +2,17 @@
   color: inherit;
   text-transform: uppercase;
   padding: 0.8rem 1.6rem;
-  font-family: inherit;
-  font-size: 1.5rem;
+  font-family: var(--font-family-main);
+  font-size: var(--font-size-text);
   border: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .primary {
@@ -15,21 +21,59 @@
   color: var(--color-dark--1);
 }
 
+.primary:hover {
+  background-color: var(--color-brand--1);
+  color: var(--color-light--2);
+}
+
 .back {
   font-weight: 600;
   background: none;
   border: 1px solid currentColor;
 }
 
+.back:hover {
+  background-color: var(--color-dark--2);
+}
+
 .position {
   font-weight: 700;
   position: absolute;
   z-index: 1000;
-  font-size: 1.4rem;
+  font-size: calc(var(--font-size-text) * 0.9);
   bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--color-brand--2);
   color: var(--color-dark--1);
   box-shadow: 0 0.4rem 1.2rem rgba(36, 42, 46, 0.16);
+}
+
+.position:hover {
+  background-color: var(--color-brand--1);
+  color: var(--color-light--2);
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: calc(var(--font-size-text) * 0.9);
+  }
+
+  .position {
+    font-size: calc(var(--font-size-text) * 0.8);
+    bottom: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: calc(var(--font-size-text) * 0.8);
+  }
+
+  .position {
+    font-size: calc(var(--font-size-text) * 0.7);
+    bottom: 2rem;
+  }
 }
