@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./DetailsSummary.module.css";
+import Buttons from "./Buttons";
 
 function DetailsSummary({ gaza }) {
-  const { param } = useParams();
+  const [searchParams] = useSearchParams();
+  const detail = searchParams.get("details");
+  const navigate = useNavigate();
 
   const getDescription = (value) => {
     if (value === gaza?.massacres?.toString()) {
@@ -30,9 +33,9 @@ function DetailsSummary({ gaza }) {
     };
   };
 
-  const details = getDescription(param);
+  const details = getDescription(detail);
 
-  if (!param || !gaza) {
+  if (!detail || !gaza) {
     return (
       <div className={styles.container}>
         <div className={styles.error}>No data available</div>
@@ -47,6 +50,9 @@ function DetailsSummary({ gaza }) {
         <div className={styles.content}>
           <p>{details.content}</p>
         </div>
+        <Buttons type="back" onClick={() => navigate(-1)}>
+          &larr; Back
+        </Buttons>
       </div>
     </>
   );

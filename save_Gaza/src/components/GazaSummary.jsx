@@ -35,7 +35,7 @@ function GazaSummary({ gaza, isLoading }) {
         icon: FaUserShield,
         value: gaza.massacres,
         label: "Massacres",
-        to: `${gaza.massacres}`,
+        to: `?details=${gaza.massacres}`,
       },
       {
         icon: FaHeartBroken,

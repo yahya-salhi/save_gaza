@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
@@ -8,8 +9,10 @@ import Logo from "../components/Logo";
 import HeaderMap from "../components/HeaderMap";
 
 import styles from "./AppLayout.module.css";
+import DetailsSummary from "../components/DetailsSummary";
 
-export default function AppLayout() {
+export default function AppLayout({ gaza }) {
+  const [searchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   //fetching data
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +21,9 @@ export default function AppLayout() {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const location = useLocation();
-  const isGazaDetailsRoute = location.pathname.includes("/app/gaza/");
+  const isGazaRoute = location.pathname.includes("/app/gaza");
+  const isWestBankRoute = location.pathname.includes("/app/westBank");
+  const isQueryStringRoute = searchParams.has("details"); // Example query string check
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -85,9 +90,8 @@ export default function AppLayout() {
         <main className={styles.main}>
           <HeaderMap />
           <div className={styles.map}>
-            {isGazaDetailsRoute ? (
-              <Outlet />
-            ) : (
+            {isQueryStringRoute && <DetailsSummary gaza={gaza} />}
+            {(isGazaRoute || isWestBankRoute) && !isQueryStringRoute ? (
               <Map
                 isLoading={isLoading}
                 data={data}
@@ -95,7 +99,7 @@ export default function AppLayout() {
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
               />
-            )}
+            ) : null}
           </div>
         </main>
       </div>
