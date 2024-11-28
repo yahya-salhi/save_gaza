@@ -7,7 +7,8 @@ import Logo from "../components/Logo";
 import HeaderMap from "../components/HeaderMap";
 import styles from "./AppLayout.module.css";
 import DetailsSummary from "../components/DetailsSummary";
-// import GazaMap from "../components/GazaMap";
+import GazaMap from "../components/GazaMap";
+
 // import { useSummary } from "../context/SummaryContext";
 
 export default function AppLayout() {
@@ -23,7 +24,7 @@ export default function AppLayout() {
   const isGazaRoute = location.pathname.includes("/app/gaza");
   const isWestBankRoute = location.pathname.includes("/app/westBank");
   const isQueryStringRoute = searchParams.has("details"); // Example query string check
-  // const isGazaMap = location.pathname.includes("app/gazaMap");
+  const isGazaMap = location.pathname.includes("app/gazaMap");
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -93,7 +94,9 @@ export default function AppLayout() {
           <HeaderMap />
           <div className={styles.map}>
             {isQueryStringRoute && <DetailsSummary />}
-            {(isGazaRoute || isWestBankRoute) && !isQueryStringRoute ? (
+            {(isGazaRoute || isWestBankRoute) &&
+            !isQueryStringRoute &&
+            !isGazaMap ? (
               <Map
                 isLoading={isLoading}
                 data={data}
@@ -101,7 +104,9 @@ export default function AppLayout() {
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
               />
-            ) : null}
+            ) : (
+              <GazaMap />
+            )}
           </div>
         </main>
       </div>
