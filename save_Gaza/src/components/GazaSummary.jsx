@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styles from "./GazaSummary.module.css";
+import { useSummary } from "../context/SummaryContext";
 
 function StatisticItem({ icon: Icon, value, label, to }) {
   const Component = to ? Link : "div";
@@ -26,7 +27,8 @@ function StatisticItem({ icon: Icon, value, label, to }) {
   );
 }
 
-function GazaSummary({ gaza, isLoading }) {
+function GazaSummary() {
+  const { gaza, isLoading } = useSummary();
   const statistics = useMemo(() => {
     if (!gaza || !gaza.killed || !gaza.injured) return [];
 

@@ -1,9 +1,10 @@
-/* eslint-disable react/prop-types */
 import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./DetailsSummary.module.css";
 import Buttons from "./Buttons";
+import { useSummary } from "../context/SummaryContext";
 
-function DetailsSummary({ gaza }) {
+function DetailsSummary() {
+  const { gaza } = useSummary();
   const [searchParams] = useSearchParams();
   const detail = searchParams.get("details");
   const navigate = useNavigate();

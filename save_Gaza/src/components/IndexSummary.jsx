@@ -1,5 +1,7 @@
-/* eslint-disable react/prop-types */
-function IndexSummary({ gaza, isLoading }) {
+import { useSummary } from "../context/SummaryContext";
+
+function IndexSummary() {
+  const { gaza, isLoading } = useSummary();
   if (isLoading) return <p>Loading...</p>;
   const { reports, last_update } = gaza;
   return (

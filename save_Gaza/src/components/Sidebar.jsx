@@ -11,15 +11,7 @@ function Sidebar() {
     <div className={styles.sidebar}>
       <AppNav />
 
-      <div className={styles.content}>
-        {!isGazaDetailsRoute && <Outlet />}
-        {/* {location.pathname === "/app/gaza" && (
-          <div className={styles.summaryWrapper}>
-            <GazaSummary />
-        
-          </div>
-        )} */}
-      </div>
+      <div className={styles.content}>{!isGazaDetailsRoute && <Outlet />}</div>
 
       <footer className={styles.footer}>
         <p className={styles.copyright}>

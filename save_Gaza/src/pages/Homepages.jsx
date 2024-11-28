@@ -1,10 +1,11 @@
-/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import styles from "./Homepages.module.css";
 import PageNav from "../components/PageNav";
 import { useRef, useState } from "react";
+import { useSummary } from "../context/SummaryContext";
 
-function Homepages({ gaza, isLoading, error }) {
+function Homepages() {
+  const { gaza, isLoading, error } = useSummary();
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const togglePlay = () => {

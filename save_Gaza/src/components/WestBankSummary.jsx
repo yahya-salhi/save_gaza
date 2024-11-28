@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import { useSummary } from "../context/SummaryContext";
 import styles from "./WestBankSummary.module.css";
 import {
   FaChild,
@@ -7,7 +7,8 @@ import {
   FaHeartBroken,
 } from "react-icons/fa";
 
-function WestBankSummary({ westBank, isLoading }) {
+function WestBankSummary() {
+  const { westBank, isLoading } = useSummary();
   if (isLoading) return <p>Loading...</p>;
   if (!westBank || !westBank.killed || !westBank.injured)
     return <p>No data available</p>;

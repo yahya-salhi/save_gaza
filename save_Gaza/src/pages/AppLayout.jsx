@@ -1,17 +1,16 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
 import Logo from "../components/Logo";
-
 import HeaderMap from "../components/HeaderMap";
-
 import styles from "./AppLayout.module.css";
 import DetailsSummary from "../components/DetailsSummary";
+// import GazaMap from "../components/GazaMap";
+// import { useSummary } from "../context/SummaryContext";
 
-export default function AppLayout({ gaza }) {
+export default function AppLayout() {
   const [searchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   //fetching data
@@ -24,6 +23,7 @@ export default function AppLayout({ gaza }) {
   const isGazaRoute = location.pathname.includes("/app/gaza");
   const isWestBankRoute = location.pathname.includes("/app/westBank");
   const isQueryStringRoute = searchParams.has("details"); // Example query string check
+  // const isGazaMap = location.pathname.includes("app/gazaMap");
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -61,7 +61,9 @@ export default function AppLayout({ gaza }) {
           <span className={styles.red}>War</span>{" "}
           <span className={styles.green}>in Gaza</span>
         </h1>
-        <button className={styles.learnMoreBtn}>Learn More</button>
+        <NavLink to="gazaMap">
+          <button className={styles.learnMoreBtn}>Learn More</button>
+        </NavLink>
         <button
           className={styles.menuBtn}
           onClick={toggleSidebar}
@@ -90,7 +92,7 @@ export default function AppLayout({ gaza }) {
         <main className={styles.main}>
           <HeaderMap />
           <div className={styles.map}>
-            {isQueryStringRoute && <DetailsSummary gaza={gaza} />}
+            {isQueryStringRoute && <DetailsSummary />}
             {(isGazaRoute || isWestBankRoute) && !isQueryStringRoute ? (
               <Map
                 isLoading={isLoading}

@@ -6,69 +6,34 @@ import Homepages from "./pages/Homepages";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./pages/AppLayout";
 import GazaSummary from "./components/GazaSummary";
-import { useEffect, useState } from "react";
+
 import WestBankSummary from "./components/WestBankSummary";
 import IndexSummary from "./components/IndexSummary";
+import GazaMap from "./components/GazaMap";
 
 import DetailsSummary from "./components/DetailsSummary";
+import { SummaryProvider } from "./context/SummaryContext";
+
 function App() {
-  const [gaza, setGaza] = useState(null);
-  const [westBank, setWestBank] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  useEffect(function () {
-    async function fetchSummary() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `https://data.techforpalestine.org/api/v3/summary.min.json`
-        );
-        if (!res.ok) throw new Error("network response was not ok");
-        const data = await res.json();
-        setGaza(data.gaza);
-        setWestBank(data.west_bank);
-      } catch (err) {
-        setError("there was an error loading Api data");
-        console.error("Fetch error:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchSummary();
-  }, []);
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          index
-          element={
-            <Homepages gaza={gaza} isLoading={isLoading} error={error} />
-          }
-        />
-        <Route path="page1" element={<Page1 />} />
-        <Route path="page2" element={<Page2 />} />
-        <Route path="app" element={<AppLayout gaza={gaza} />}>
-          <Route
-            index
-            element={<IndexSummary gaza={gaza} isLoading={isLoading} />}
-          />
-          <Route
-            path="gaza"
-            element={<GazaSummary gaza={gaza} isLoading={isLoading} />}
-          />
-          <Route path="gaza/:param" element={<DetailsSummary gaza={gaza} />} />
+    <SummaryProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Homepages />} />
+          <Route path="page1" element={<Page1 />} />
+          <Route path="page2" element={<Page2 />} />
+          <Route path="app" element={<AppLayout />}>
+            <Route index element={<IndexSummary />} />
+            <Route path="gaza" element={<GazaSummary />} />
+            <Route path="gaza/:param" element={<DetailsSummary />} />
 
-          <Route
-            path="westBank"
-            element={
-              <WestBankSummary westBank={westBank} isLoading={isLoading} />
-            }
-          />
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </BrowserRouter>
+            <Route path="westBank" element={<WestBankSummary />} />
+            <Route path="gazaMap" element={<GazaMap />} />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </SummaryProvider>
   );
 }
 
