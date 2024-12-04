@@ -7,7 +7,7 @@ import Logo from "../components/Logo";
 import HeaderMap from "../components/HeaderMap";
 import styles from "./AppLayout.module.css";
 import DetailsSummary from "../components/DetailsSummary";
-import GazaMap from "../components/GazaMap";
+import GazaMap from "../components/GazaMap/Components/GazaMap";
 
 // import { useSummary } from "../context/SummaryContext";
 

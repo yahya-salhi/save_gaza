@@ -9,7 +9,7 @@ import GazaSummary from "./components/GazaSummary";
 
 import WestBankSummary from "./components/WestBankSummary";
 import IndexSummary from "./components/IndexSummary";
-import GazaMap from "./components/GazaMap";
+import GazaMap from "./components/GazaMap/Components/GazaMap";
 
 import DetailsSummary from "./components/DetailsSummary";
 import { SummaryProvider } from "./context/SummaryContext";
