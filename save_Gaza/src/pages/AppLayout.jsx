@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useSearchParams, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
@@ -9,32 +9,43 @@ import styles from "./AppLayout.module.css";
 import DetailsSummary from "../components/DetailsSummary";
 import GazaMap from "../components/GazaMap/Components/GazaMap";
 
-// import { useSummary } from "../context/SummaryContext";
+const ROUTES = {
+  GAZA: "/app/gaza",
+  WEST_BANK: "/app/westBank",
+  GAZA_MAP: "/app/gazaMap",
+};
+
+const RouteComponents = {
+  [ROUTES.GAZA]: Map,
+  [ROUTES.WEST_BANK]: Map,
+  [ROUTES.GAZA_MAP]: GazaMap,
+};
 
 export default function AppLayout() {
   const [searchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  //fetching data
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
 
   const location = useLocation();
-  const isGazaRoute = location.pathname.includes("/app/gaza");
-  const isWestBankRoute = location.pathname.includes("/app/westBank");
-  const isQueryStringRoute = searchParams.has("details"); // Example query string check
-  const isGazaMap = location.pathname.includes("app/gazaMap");
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const currentRoute = Object.keys(ROUTES).find((key) =>
+    location.pathname.includes(ROUTES[key])
+  );
+  const isQueryStringRoute = searchParams.has("details");
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
   useEffect(() => {
     const fetchStatistics = async () => {
+      if (location.pathname.includes(ROUTES.GAZA_MAP)) return;
+
       setIsLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          location.pathname.includes("/app/gaza")
+          location.pathname.includes(ROUTES.GAZA)
             ? "https://data.techforpalestine.org/api/v2/casualties_daily.json"
             : "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json"
         );
@@ -52,7 +63,26 @@ export default function AppLayout() {
       }
     };
     fetchStatistics();
-  }, [location]);
+  }, [location.pathname]);
+
+  const renderMainContent = () => {
+    if (isQueryStringRoute) return <DetailsSummary />;
+
+    if (location.pathname.includes(ROUTES.GAZA_MAP)) {
+      return <GazaMap />;
+    }
+
+    const Component = RouteComponents[ROUTES[currentRoute]] || (() => null);
+    return (
+      <Component
+        isLoading={isLoading}
+        data={data}
+        error={error}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+    );
+  };
 
   return (
     <div className={`${styles.app} ${sidebarOpen ? styles.sidebarActive : ""}`}>
@@ -62,7 +92,7 @@ export default function AppLayout() {
           <span className={styles.red}>War</span>{" "}
           <span className={styles.green}>in Gaza</span>
         </h1>
-        <NavLink to="gazaMap">
+        <NavLink to={ROUTES.GAZA_MAP}>
           <button className={styles.learnMoreBtn}>Learn More</button>
         </NavLink>
         <button
@@ -92,22 +122,7 @@ export default function AppLayout() {
 
         <main className={styles.main}>
           <HeaderMap />
-          <div className={styles.map}>
-            {isQueryStringRoute && <DetailsSummary />}
-            {(isGazaRoute || isWestBankRoute) &&
-            !isQueryStringRoute &&
-            !isGazaMap ? (
-              <Map
-                isLoading={isLoading}
-                data={data}
-                error={error}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-              />
-            ) : (
-              <GazaMap />
-            )}
-          </div>
+          <div className={styles.map}>{renderMainContent()}</div>
         </main>
       </div>
     </div>
