@@ -13,7 +13,7 @@ import styles from "./GazaMap.module.css";
 import "leaflet/dist/leaflet.css";
 
 const GazaMap = () => {
-  const [mapPosition, setMapPosition] = useState([31.50188, 34.46687]);
+  const [mapPosition] = useState([31.50188, 34.46687]);
   const [mounted, setMounted] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState(null);
 
@@ -43,9 +43,23 @@ const GazaMap = () => {
             // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
           <ZoomControl position="bottomright" />
-          <Marker position={mapPosition}>
-            <Popup></Popup>
-          </Marker>
+
+          {gazaRegions.map((region) => {
+            return (
+              <Marker
+                position={[
+                  region.centerCoordinates.lat,
+                  region.centerCoordinates.lng,
+                ]}
+                key={region.name}
+                eventHandlers={{
+                  click: () => handleRegionClick(region), // Attach click event here
+                }}
+              >
+                <Popup>{region.name}</Popup>
+              </Marker>
+            );
+          })}
           {gazaRegions.map((region) => (
             <RegionPolygon
               key={region.name}
