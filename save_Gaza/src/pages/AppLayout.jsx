@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useSearchParams, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
@@ -8,6 +8,7 @@ import HeaderMap from "../components/HeaderMap";
 import styles from "./AppLayout.module.css";
 import DetailsSummary from "../components/DetailsSummary";
 import GazaMap from "../components/GazaMap/Components/GazaMap";
+import { useAppContext, ActionTypes } from "../context/AppContext"; // Import AppContext utilities
 
 const ROUTES = {
   GAZA: "/app/gaza",
@@ -22,27 +23,25 @@ const RouteComponents = {
 };
 
 export default function AppLayout() {
-  const [searchParams] = useSearchParams();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const { state, dispatch } = useAppContext();
+  const { sidebarOpen, isLoading, data, error, selectedDate } = state;
 
+  const [searchParams] = useSearchParams();
   const location = useLocation();
   const currentRoute = Object.keys(ROUTES).find((key) =>
     location.pathname.includes(ROUTES[key])
   );
   const isQueryStringRoute = searchParams.has("details");
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const toggleSidebar = () => dispatch({ type: ActionTypes.TOGGLE_SIDEBAR });
 
   useEffect(() => {
     const fetchStatistics = async () => {
       if (location.pathname.includes(ROUTES.GAZA_MAP)) return;
 
-      setIsLoading(true);
-      setError(null);
+      dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+      dispatch({ type: ActionTypes.SET_ERROR, payload: null });
+
       try {
         const res = await fetch(
           location.pathname.includes(ROUTES.GAZA)
@@ -50,20 +49,29 @@ export default function AppLayout() {
             : "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json"
         );
         if (!res.ok) throw new Error("Network response was not ok");
+
         const fetchedData = await res.json();
-        setData(fetchedData);
+        dispatch({ type: ActionTypes.SET_DATA, payload: fetchedData });
+
         if (fetchedData.length > 0) {
-          setSelectedDate(fetchedData[fetchedData.length - 1].report_date);
+          dispatch({
+            type: ActionTypes.SET_SELECTED_DATE,
+            payload: fetchedData[fetchedData.length - 1].report_date,
+          });
         }
       } catch (err) {
-        setError("There was an error loading API data");
+        dispatch({
+          type: ActionTypes.SET_ERROR,
+          payload: "There was an error loading API data",
+        });
         console.error("Fetch error:", err);
       } finally {
-        setIsLoading(false);
+        dispatch({ type: ActionTypes.SET_LOADING, payload: false });
       }
     };
+
     fetchStatistics();
-  }, [location.pathname]);
+  }, [location.pathname, dispatch]);
 
   const renderMainContent = () => {
     if (isQueryStringRoute) return <DetailsSummary />;
@@ -79,7 +87,9 @@ export default function AppLayout() {
         data={data}
         error={error}
         selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
+        setSelectedDate={(date) =>
+          dispatch({ type: ActionTypes.SET_SELECTED_DATE, payload: date })
+        }
       />
     );
   };

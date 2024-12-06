@@ -13,26 +13,28 @@ import GazaMap from "./components/GazaMap/Components/GazaMap";
 
 import DetailsSummary from "./components/DetailsSummary";
 import { SummaryProvider } from "./context/SummaryContext";
-
+import { AppProvider } from "./context/AppContext";
 function App() {
   return (
     <SummaryProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Homepages />} />
-          <Route path="page1" element={<Page1 />} />
-          <Route path="page2" element={<Page2 />} />
-          <Route path="app" element={<AppLayout />}>
-            <Route index element={<IndexSummary />} />
-            <Route path="gaza" element={<GazaSummary />} />
-            <Route path="gaza/:param" element={<DetailsSummary />} />
+      <AppProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<Homepages />} />
+            <Route path="page1" element={<Page1 />} />
+            <Route path="page2" element={<Page2 />} />
+            <Route path="app" element={<AppLayout />}>
+              <Route index element={<IndexSummary />} />
+              <Route path="gaza" element={<GazaSummary />} />
+              <Route path="gaza/:param" element={<DetailsSummary />} />
 
-            <Route path="westBank" element={<WestBankSummary />} />
-            <Route path="gazaMap" element={<GazaMap />} />
-          </Route>
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
+              <Route path="westBank" element={<WestBankSummary />} />
+              <Route path="gazaMap" element={<GazaMap />} />
+            </Route>
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AppProvider>
     </SummaryProvider>
   );
 }
