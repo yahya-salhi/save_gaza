@@ -43,38 +43,43 @@ function GazaSummary() {
         icon: FaHeartBroken,
         value: gaza.killed.total,
         label: "Total Killed",
-        to: `${gaza.killed.total}`,
+        to: `?details=${gaza.killed.total}`,
       },
       {
         icon: FaChild,
         value: gaza.killed.children,
         label: "Children Killed",
-        to: `${gaza.killed.children}`,
+        to: `?details=${gaza.killed.children}`,
       },
       {
         icon: FaFemale,
         value: gaza.killed.women,
         label: "Women Killed",
+        to: `?details=${gaza.killed.women}`,
       },
       {
         icon: FaUserShield,
         value: gaza.killed.civil_defence,
         label: "Civil Defense Killed",
+        to: `?details=${gaza.killed.civil_defence}`,
       },
       {
         icon: FaNewspaper,
         value: gaza.killed.press,
         label: "Press Killed",
+        to: `?details=${gaza.killed.press}`,
       },
       {
         icon: FaUserMd,
         value: gaza.killed.medical,
         label: "Medical Staff Killed",
+        to: `?details=${gaza.killed.medical}`,
       },
       {
         icon: FaAmbulance,
         value: gaza.injured.total,
         label: "Total Injured",
+        to: `?details=${gaza.injured.total}`,
       },
     ];
   }, [gaza]);
