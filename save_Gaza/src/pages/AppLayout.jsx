@@ -98,9 +98,8 @@ export default function AppLayout() {
     <div className={`${styles.app} ${sidebarOpen ? styles.sidebarActive : ""}`}>
       <header className={styles.header}>
         <Logo />
-        <h1>
-          <span className={styles.red}>War</span>{" "}
-          <span className={styles.green}>in Gaza</span>
+        <h1 className={styles.title}>
+          <span className={styles.accent}>War</span> in Gaza
         </h1>
         <NavLink to={ROUTES.GAZA_MAP}>
           <button className={styles.learnMoreBtn}>Learn More</button>

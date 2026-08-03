@@ -8,7 +8,7 @@ import { NAV_ITEMS } from "./navItems";
 
 function navLinkClass({ isActive }) {
   return `px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors duration-300 ${
-    isActive ? "text-brand-green" : "text-light-2 hover:text-brand-green"
+    isActive ? "text-brand-crimson" : "text-light-2 hover:text-brand-crimson"
   }`;
 }
 
@@ -38,7 +38,7 @@ export default function Navbar() {
             aria-label={
               isDark ? "Switch to light theme" : "Switch to dark theme"
             }
-            className="rounded-full p-2 text-light-2 hover:text-brand-green"
+            className="rounded-full p-2 text-light-2 hover:text-brand-crimson"
           >
             {isDark ? <Sun size={24} /> : <Moon size={24} />}
           </Button>
@@ -48,7 +48,7 @@ export default function Navbar() {
               <Button
                 type="button"
                 aria-label="Open navigation menu"
-                className="rounded-full p-2 text-light-2 hover:text-brand-green md:hidden"
+                className="rounded-full p-2 text-light-2 hover:text-brand-crimson md:hidden"
               >
                 <Menu size={24} />
               </Button>
@@ -63,7 +63,7 @@ export default function Navbar() {
                     <Button
                       type="button"
                       aria-label="Close navigation menu"
-                      className="rounded-full p-2 text-light-2 hover:text-brand-green"
+                      className="rounded-full p-2 text-light-2 hover:text-brand-crimson"
                     >
                       <X size={24} />
                     </Button>

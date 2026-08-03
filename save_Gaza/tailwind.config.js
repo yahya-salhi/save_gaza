@@ -9,8 +9,8 @@ export default {
         card: "#1c1c1e",
         brand: {
           crimson: "#c41e3a",
-          green: "#2ecc71",
         },
+        verified: "#2ecc71",
         dark: {
           0: "#242a2e",
           1: "#2d3439",
@@ -24,6 +24,8 @@ export default {
       },
       fontFamily: {
         sans: ["Manrope", "sans-serif"],
+        display: ["Archivo", "sans-serif"],
+        mono: ["IBM Plex Mono", "monospace"],
       },
       borderRadius: {
         DEFAULT: "10px",

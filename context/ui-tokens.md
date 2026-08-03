@@ -11,9 +11,9 @@ Design tokens for **Save Gaza** — a dark humanitarian dashboard for verified c
 | Subject | Humanitarian crisis data — Gaza & West Bank casualty tracking |
 | Audience | Advocates, researchers, journalists, general public |
 | Aesthetic | Dark observatory — data as testimony, not decoration |
-| Signature | Red/green duality (`War` / `in Gaza`) — destruction vs. resilience; green icons on layered dark stat cards |
+| Signature | Verified tally as an instrument — timestamped mono readout with a live ticker; crimson is the single data accent |
 
-**Palette intent:** Obsidian backgrounds keep focus on numbers. Crimson (`--color-brand--1`) marks loss and errors. Survival green (`--color-brand--2`) marks life metrics and interactive affordances. Never introduce a third accent color.
+**Palette intent:** Obsidian backgrounds keep focus on numbers. Crimson (`--color-brand--1`) is the single accent — it marks the data itself (figures, ticker dot, dates). A light crimson (`--color-brand--2`) carries hovers and secondary highlights. Green is reserved for keyboard focus rings and "verified" status dots only. Never introduce another accent color.
 
 ---
 
@@ -21,7 +21,7 @@ Design tokens for **Save Gaza** — a dark humanitarian dashboard for verified c
 
 Two systems share the same palette (Ticket 01):
 
-1. **Tailwind CSS** — for shared UI + layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`). Palette mapped in `save_Gaza/tailwind.config.js`: `background-dark`, `card`, `brand-crimson`, `brand-green`, `dark-0..2`, `light-1..3`. Dark mode is class-based (`darkMode: "class"` — `ThemeProvider` toggles `dark` on `<html>`).
+1. **Tailwind CSS** — for shared UI + layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`). Palette mapped in `save_Gaza/tailwind.config.js`: `background-dark`, `card`, `brand-crimson`, `verified`, `dark-0..2`, `light-1..3` + `font-display` / `font-mono`. Dark mode is class-based (`darkMode: "class"` — `ThemeProvider` toggles `dark` on `<html>`).
 2. **CSS Modules + global CSS variables** — for dashboard feature components (maps, stats, charts), matching existing patterns.
 
 ```jsx
@@ -67,19 +67,24 @@ Defined in `save_Gaza/src/App.css`:
   --color-light--2: #ececec;
   --color-light--3: #d6dee0;
 
-  /* Brand — crimson (loss) & green (life/resilience) */
+  /* Brand — crimson (data/accent) & light crimson (hover/secondary) */
   --color-brand--1: #c41e3a;
-  --color-brand--2: #2ecc71;
+  --color-brand--2: #e0556b;
 
-  /* Layout (AppLayout.module.css) */
-  --bg-color: #121212;
-  --header-bg-color: #1e1e1e;
-  --btn-bg-color: #2c2c2c;
-  --hover-bg-color: #3a3a3a;
-  --text-color: #ffffff;
-  --subtext-color: #b3b3b3;
-  --accent-color: #4caf50;
-  --sidebar-width: 450px;
+  /* Reserved — focus rings & "verified" status dots only */
+  --color-verified: #2ecc71;
+
+  /* Typography */
+  --font-family-main: "Manrope", sans-serif;
+  --font-display: "Archivo", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-size-title: 4.8rem;
+  --font-size-subtitle: 2.4rem;
+  --font-size-text: 1.6rem;
+
+  /* Other */
+  --border-radius: 10px;
+  --hairline: rgba(255, 255, 255, 0.08);
 }
 ```
 
@@ -95,9 +100,10 @@ Defined in `save_Gaza/src/App.css`:
 | Primary text (muted) | `--color-light--1` | Headings, stat values, titles |
 | Primary text (bright) | `--color-light--2` | Body copy, labels, nav links |
 | Input background | `--color-light--3` | Form inputs (global) |
-| Loss / error / active nav | `--color-brand--1` | Errors, `.red`, active nav, hover on green |
-| Life / icon / CTA | `--color-brand--2` | Icons, CTAs, chart highlights, scrollbar thumb |
-| Header bar | `--header-bg-color` | App layout header, sidebar |
+| Data accent / figures | `--color-brand--1` | The tally, ticker dot, dates, errors, active nav |
+| Secondary accent / hover | `--color-brand--2` | Hover states, chart line, slider thumb, stat icons |
+| Focus / verified | `--color-verified` | Keyboard focus rings, "verified" status dots |
+| Hairline rule | `--hairline` | 1px section dividers, ticker border, card borders |
 
 ### Light Theme Override (optional)
 
@@ -115,30 +121,34 @@ Dark theme is the default and primary design target.
 
 ## Typography
 
-Font: **Manrope** — imported in `App.css` from Google Fonts.
+Three-role type system, imported in `App.css` from Google Fonts:
 
 ```css
---font-family-main: "Manrope", sans-serif;
---font-size-title: 4.8rem;    /* 48px at 62.5% root */
---font-size-subtitle: 2.4rem; /* 24px */
---font-size-text: 1.6rem;     /* 16px */
+--font-display: "Archivo", sans-serif;    /* 900 — headlines & hero headings */
+--font-mono: "IBM Plex Mono", monospace;  /* 400/500 — data, figures, labels, ticker */
+--font-family-main: "Manrope", sans-serif;/* 400–700 — body copy, UI chrome */
+--font-size-title: 4.8rem;
+--font-size-subtitle: 2.4rem;
+--font-size-text: 1.6rem;
 ```
 
-Root font-size is `62.5%` on `html` (1rem = 10px).
+Root font-size is `62.5%` on `html` (1rem = 10px). Data is set in IBM Plex Mono with `font-weight: 500` and `font-variant-numeric: tabular-nums` so digits never shift width. Do not add fonts per-component — reuse the three roles.
 
-| Element | Size | Weight | Color | Context |
-| ------- | ---- | ------ | ----- | ------- |
-| Hero title (homepage) | 4.5rem | 800 | `--color-light--1` | Landing |
-| App header "War in Gaza" | inherit h1 | 800 | red/green split | AppLayout |
-| Section title | `--font-size-subtitle` | 600–800 | `--color-light--1` | Cards, charts |
-| Stat number | `--font-size-subtitle` | 800 | `--color-light--1` | GazaSummary |
-| Stat number (accent) | 2rem | 700 | `--color-brand--2` | Statistics panel |
-| Body / label | `--font-size-text` | 400–600 | `--color-light--2` | Descriptions |
-| Nav link | 1.2rem → 1rem | 600 | `--color-light--2` | AppNav |
-| Nav link (active) | same | 600 | on `--color-brand--1` bg | AppNav |
-| Logo text | 16px | bold | `#ffffff` | Logo |
-| Chart axis | 12px | 400 | `--color-light--2` | Recharts |
-| Copyright | 1.2rem | 400 | `--color-light--1` | Sidebar footer |
+| Element | Family | Size | Weight | Color | Context |
+| ------- | ------ | ---- | ------ | ----- | ------- |
+| Hero figure (the tally) | mono | 100px (clamps to 70px mobile) | 500 | `--color-brand--1` | Homepages hero |
+| Hero heading "The death toll in Gaza" | display | 2rem → 3.4rem | 900 | `--color-light--1` | Homepages hero |
+| App header "WAR IN GAZA" | display | 1.8rem | 900 | `--color-light--1` + crimson accent | AppLayout |
+| Live ticker / kicker | mono | 1.1rem | 500 | `--color-brand--1` | Homepages / HeaderMap |
+| Section title | main | `--font-size-subtitle` | 600–800 | `--color-light--1` | Cards, charts |
+| Stat number | mono | `--font-size-subtitle` | 500 | `--color-light--1` | GazaSummary |
+| Stat number (accent) | mono | 2rem | 500 | `--color-brand--2` | Statistics panel |
+| Body / label | main | `--font-size-text` | 400–600 | `--color-light--2` | Descriptions |
+| Nav link | main | 1.2rem → 1rem | 600 | `--color-light--2` | AppNav |
+| Nav link (active) | main | same | 600 | on `--color-brand--1` bg | AppNav |
+| Logo text | main | 16px | bold | `#ffffff` | Logo |
+| Chart axis | main | 12px | 400 | `--color-light--2` | Recharts |
+| Copyright | main | 1.2rem | 400 | `--color-light--1` | Sidebar footer |
 
 Nav links and buttons use `text-transform: uppercase`.
 
@@ -155,8 +165,8 @@ Nav links and buttons use `text-transform: uppercase`.
 | Sidebar width | 450px (fixed overlay) / 56rem (flex) | AppLayout / Sidebar |
 | Map height | 600px | GazaMap container |
 | Chart height | 450px → 300px (mobile) | ChartLine |
-| Page margin (homepage) | 2.5rem | Homepages hero |
-| Header padding | 1.5rem 2rem | AppLayout |
+| Homepage container | max-width 1200px, padding 0 2rem | Homepages hero |
+| Header padding | 1rem 2rem | AppLayout |
 
 Breakpoints used consistently: **480px**, **768px**, **1024px**.
 
@@ -169,7 +179,7 @@ Breakpoints used consistently: **480px**, **768px**, **1024px**.
 | Card default | `0 4px 6px rgba(0, 0, 0, 0.1)` |
 | Card elevated | `0 4px 12px rgba(0, 0, 0, 0.15)` |
 | Map container | `0 4px 16px rgba(0, 0, 0, 0.1)` |
-| Homepage overlay | `0px 6px 15px rgba(0, 0, 0, 0.6)` |
+| Video frame | `1px solid var(--hairline)`, radius `var(--border-radius)` | Homepages video section |
 | Logo image | `drop-shadow(0 0 5px rgba(255, 255, 255, 0.5))` |
 
 ---
@@ -193,7 +203,7 @@ border-radius: var(--border-radius)
 padding: 1.5rem
 display: flex, align-items: center
 icon color: var(--color-brand--2), 2.4rem
-value: var(--font-size-subtitle), weight 800, --color-light--1
+value: var(--font-mono), 500, tabular-nums, var(--font-size-subtitle), --color-light--1
 label: var(--font-size-text), --color-light--2
 hover: translateY(-2px), background --color-dark--0
 ```
@@ -214,10 +224,10 @@ hover motion: translateY(-2px)
 ### Secondary / Ghost Button
 
 ```
-background: var(--btn-bg-color) or transparent
+background: var(--color-dark--2) or transparent
 color: var(--text-color)
 border-radius: 8px
-hover: var(--hover-bg-color)
+hover: var(--color-dark--0)
 ```
 
 ### Range Slider
@@ -248,14 +258,14 @@ border-radius: 5px
 tip: var(--color-dark--1)
 ```
 
-### HeaderMap (target — spec only)
+### HeaderMap (implemented)
 
 ```
-container: transparent, no white background — sits on AppLayout --bg-color
-title: var(--font-size-subtitle), weight 700, --color-light--1
-accent span: --color-brand--2
+container: var(--color-card-bg) dark panel, top corners radius var(--border-radius)
+kicker: "LIVE RECORD", var(--font-mono), 500, --color-brand--1, uppercase, letter-spacing
+title: "The human toll · Gaza/West Bank", display 900, --color-light--1
+location / accent span: --color-brand--2
 subtitle: var(--font-size-text), --color-light--2
-location: --color-brand--1, capitalize
 ```
 
 ### RegionInfo Panel (target — spec only)
@@ -270,6 +280,8 @@ label: 1.4rem, --color-light--1, weight 500
 value: var(--font-size-text), --color-light--2
 colorIndicator: 8px bar, inline background from region GeoJSON color
 ```
+
+> Accent references here use `--color-brand--2`, which now resolves to light crimson `#e0556b`.
 
 ### RegionTooltip (target — spec only)
 
@@ -292,15 +304,18 @@ thumb: var(--color-brand--2)
 thumb hover: var(--color-brand--1)
 ```
 
-### Signature: Bloody Text (homepage only)
+### Signature: Instrument Hero (homepage only)
 
 ```
-color: var(--color-brand--1)
-text-shadow: layered crimson
-animated drip pseudo-element
+container: max-width 1200px, min-height 72vh, centered
+live ticker: mono 500, --color-brand--1, hairline underline, pulsing dot
+hero figure: the documented tally, mono 500 tabular-nums, clamp(70px–100px), --color-brand--1
+caption: "verified killed · since 07 Oct 2023", mono, --color-light--1
+stats dl: injured / West Bank killed, mono figures, --color-light--2
+hairline rule: 1px var(--hairline) separates figure from ticker and stats
 ```
 
-Use only on the landing page hero — not in the data dashboard.
+Use on the landing page hero only — the figure must open the page with the data itself, not a template slogan.
 
 ---
 
@@ -320,10 +335,10 @@ Use only on the landing page hero — not in the data dashboard.
 ## Invariants
 
 - Never hardcode hex in JSX or CSS Modules — always use `var(--color-*)` tokens from `App.css`
-- Font is Manrope only — loaded via Google Fonts in `App.css`
+- Three-role type system only — Archivo 900 for display, IBM Plex Mono for data, Manrope for body; no per-component fonts
 - Dark theme is default — light theme is opt-in via `.light-theme` class
-- Crimson is for loss/errors; green is for life/actions — do not swap their roles
-- Stat numbers are the visual thesis — always largest weight (800) in their container
-- CSS Modules for dashboard feature styles; Tailwind utilities for shared UI/layouts; global utilities only in `App.css` (`.card`, `.cta`, `.red`, `.green`)
-- One signature animation (`bloody-text`) — do not add decorative motion elsewhere without purpose
+- Crimson is the single data accent; green is focus rings / "verified" status dots only — do not swap their roles
+- Stat numbers are the visual thesis — always IBM Plex Mono 500 with tabular-nums in their container
+- CSS Modules for dashboard feature styles; Tailwind utilities for shared UI/layouts; global utilities only in `App.css` (`.card`, `.cta`, `.red`)
+- One signature motion (live ticker pulse on the homepage) — do not add decorative motion elsewhere without purpose
 - Respect `@media (prefers-reduced-motion: reduce)` when adding new animations

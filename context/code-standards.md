@@ -103,7 +103,7 @@ Order within a component file:
 
 - All component styles in **CSS Modules** — import as `styles`
 - Reference global tokens: `var(--color-brand--2)`, never hardcoded hex
-- Global utilities only in `App.css` (`.card`, `.cta`, `.red`, `.green`)
+- Global utilities only in `App.css` (`.card`, `.cta`, `.red`, `.green` — legacy, resolves to light crimson)
 - Leaflet overrides use `:global()` in the module file
 - Responsive breakpoints: 480px, 768px, 1024px
 - See `ui-rules.md` for full patterns

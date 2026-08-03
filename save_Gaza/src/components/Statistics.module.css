@@ -40,7 +40,9 @@
 
 .stat p {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--color-brand--2);
 }
 

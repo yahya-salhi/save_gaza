@@ -41,7 +41,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NavLink, Link, useLocation, useSearchParams } from "react-router-dom";
 
 // Active nav styling (Navbar)
-<NavLink to="/app/gaza" className={({ isActive }) => isActive ? "text-brand-green" : "text-light-2 hover:text-brand-green"}>
+<NavLink to="/app/gaza" className={({ isActive }) => isActive ? "text-brand-crimson" : "text-light-2 hover:text-brand-crimson"}>
 
 // Stat card links (GazaSummary)
 <Link to={`?details=${value}`} className={styles.statisticItem}>
@@ -282,7 +282,7 @@ import ReactSlider from "react-slider";
 
 **Rules:**
 
-- Slider thumb: green (`--color-brand--2`), hover crimson
+- Slider thumb: light crimson (`--color-brand--2`), hover crimson
 - Track: dark (`--color-dark--2`)
 - Display selected date above slider in subtitle-sized text
 - Sync selected index with AppContext `selectedDate`
@@ -302,11 +302,14 @@ darkMode: "class",
 colors: {
   "background-dark": "#121212",
   card: "#1c1c1e",
-  brand: { crimson: "#c41e3a", green: "#2ecc71" },
+  brand: { crimson: "#c41e3a" },
+  verified: "#2ecc71",
   dark: { 0: "#242a2e", 1: "#2d3439", 2: "#42484d" },
   light: { 1: "#aaa", 2: "#ececec", 3: "#d6dee0" },
 }
 ```
+
+`fontFamily` also maps the three roles: `sans` (Manrope), `display` (Archivo 900), `mono` (IBM Plex Mono). Green is **only** exposed as `verified` — for focus rings and "verified" status dots.
 
 ### Usage
 
@@ -321,7 +324,7 @@ colors: {
 **Rules:**
 
 - Only shared UI/layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`) use Tailwind — dashboard feature components keep CSS Modules
-- Use the mapped palette classes (`bg-card`, `text-light-2`, `text-brand-green`…) — never arbitrary hex in `[#hex]` classes
+- Use the mapped palette classes (`bg-card`, `text-light-2`, `text-brand-crimson`, `ring-verified`…) — never arbitrary hex in `[#hex]` classes
 - `border-white/5`, `bg-black/60`, `bg-black/80` opacity utilities are fine for overlays/borders
 - Preflight is enabled (`src/index.css` has `@tailwind base`) — verify dashboard feature modules still render correctly after new global base styles
 

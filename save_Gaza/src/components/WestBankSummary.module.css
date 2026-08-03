@@ -30,7 +30,9 @@
 
 .statisticValue {
   font-size: 2rem; /* Increase value font size for readability */
-  font-weight: bold; /* Bold for emphasis */
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   margin-right: 0.5rem;
 }
 

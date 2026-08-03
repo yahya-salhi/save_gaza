@@ -3,81 +3,117 @@ import styles from "./Homepages.module.css";
 import { useRef, useState } from "react";
 import { useSummary } from "../context/SummaryContext";
 
+function formatNumber(value) {
+  if (value === null || value === undefined) return "—";
+  return value.toLocaleString("en-US");
+}
+
 function Homepages() {
-  const { gaza, isLoading, error } = useSummary();
+  const { gaza, westBank, isLoading, error } = useSummary();
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
+
+  const killed = gaza?.killed?.total;
+  const injured = gaza?.injured?.total;
+  const westBankKilled = westBank?.killed?.total;
+  const reportDate = gaza?.report_date || westBank?.report_date || null;
+
   const togglePlay = () => {
+    if (!videoRef.current) return;
     if (isPlaying) {
       videoRef.current.pause();
     } else {
       videoRef.current.play();
     }
-    setIsPlaying(!isPlaying);
+    setIsPlaying((prev) => !prev);
   };
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-  const { killed, injured } = gaza || {};
+
   return (
     <div className={styles.homepage}>
-      <section>
-        <h1>
-          Do <span className="red"> Not</span> Ignore
-          <span className="green">Palestinian</span> Suffring
+      <section className={styles.hero} aria-labelledby="toll-heading">
+        <p className={styles.ticker}>
+          <span className={styles.liveDot} aria-hidden="true" />
+          Gaza · verified data feed
+          {reportDate ? ` · report ${reportDate}` : ""}
+        </p>
+
+        <h1 id="toll-heading" className={styles.heading}>
+          The death toll in Gaza
         </h1>
-        <br />
-        <h2>
-          What’s happening in Gaza in numbers? Stay up to date with the latest
-          News From Gaza
-          <br />
-          The latest death toll stands a
-          <span className="bloody-text" style={{ margin: "5px" }}>
-            {killed?.total || 0}{" "}
-          </span>
-          Palestinians and{" "}
-          <span className="bloody-text" style={{ margin: "5px" }}>
-            {injured?.total || 0}
-          </span>
-          people injured since October 7, 2023.
-        </h2>
-        <Link to="/app" className="cta">
-          Get More Details
+        <p className={styles.figure} aria-live="polite">
+          {isLoading || error ? "—" : formatNumber(killed)}
+        </p>
+        <p className={styles.figureCaption}>verified killed · since 07 Oct 2023</p>
+
+        <div className={styles.rule} aria-hidden="true" />
+
+        <dl className={styles.instrument}>
+          <div className={styles.instrumentItem}>
+            <dt>Injured</dt>
+            <dd>{isLoading || error ? "—" : formatNumber(injured)}</dd>
+          </div>
+          <div className={styles.instrumentItem}>
+            <dt>West Bank killed</dt>
+            <dd>{isLoading || error ? "—" : formatNumber(westBankKilled)}</dd>
+          </div>
+        </dl>
+
+        {error && (
+          <p className={styles.dataNotice} role="status">
+            Live figures are unreachable right now. Open the dashboard to retry
+            the daily feed.
+          </p>
+        )}
+
+        <Link to="/app" className={styles.ctaLink}>
+          Open the dashboard
         </Link>
       </section>
-      <div className={styles.homeContainer}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>What’s happening in Gaza in numbers</h1>
-        </header>
-        <section className={styles.vedioSection}>
+
+      <section
+        className={styles.everyHour}
+        aria-labelledby="every-hour-heading"
+      >
+        <h2 id="every-hour-heading">Every hour in Gaza</h2>
+        <ul className={styles.everyHourList}>
+          <li>
+            <span>15</span> people killed · six are children
+          </li>
+          <li>
+            <span>35</span> people injured
+          </li>
+          <li>
+            <span>42</span> bombs dropped
+          </li>
+          <li>
+            <span>12</span> buildings destroyed
+          </li>
+        </ul>
+        <p className={styles.note}>
+          Based on reports from the first six days of the war.
+        </p>
+      </section>
+
+      <section className={styles.videoSection} aria-label="Documentary video">
+        <h2 className={styles.videoTitle}>Watch: ground reports from Gaza</h2>
+        <div className={styles.videoFrame}>
           <video
             ref={videoRef}
-            width="800"
             controls
-            autoPlay
-            loop
+            preload="none"
+            poster="/image5.jpg"
             className={styles.video}
+            onEnded={() => setIsPlaying(false)}
           >
-            <source src="video.mp4" type="video/mp4" />
+            <source src="/video.mp4" type="video/mp4" />
           </video>
-          <button onClick={togglePlay} className={styles.playButton}>
-            {isPlaying ? "Pause Video" : "Play Video"}
+          <button
+            type="button"
+            onClick={togglePlay}
+            className={styles.playButton}
+          >
+            {isPlaying ? "Pause" : "Play"}
           </button>
-        </section>
-      </div>
-      <section className={styles.statisticsSection}>
-        <img src="gazaevryhour.webp" alt="war in gaza" />
-        <div className={styles.statisticsText}>
-          <p>Every hour in Gaza:</p>
-          <ul>
-            <li>15 people are killed. Six are children.</li>
-            <li>35 people are injured.</li>
-            <li>42 bombs are dropped.</li>
-            <li>12 buildings are destroyed.</li>
-          </ul>
-          <p className={styles.note}>
-            *Based on the first six days of the war, according to the Israeli
-            army.
-          </p>
         </div>
       </section>
     </div>

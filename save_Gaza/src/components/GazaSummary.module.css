@@ -45,7 +45,9 @@
 
 .statisticValue {
   font-size: var(--font-size-subtitle);
-  font-weight: 800;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--color-light--1);
   line-height: 1.2;
 }

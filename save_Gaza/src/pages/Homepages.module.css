@@ -1,278 +1,296 @@
 .homepage {
-  min-height: calc(100vh - 5rem);
-  margin: 2.5rem;
-  background-image: linear-gradient(
-      rgba(110, 130, 140, 0.2),
-      rgba(36, 42, 46, 0.8)
-    ),
-    url("/image5.jpg");
-  background-size: cover;
-  background-position: center;
-  padding: 2.5rem 5rem;
-  border-radius: 8px;
-  color: var(--color-light--2);
-}
-
-.homepage section {
-  display: flex;
-  flex-direction: column;
-  min-height: 85vh;
-  align-items: center;
-  justify-content: center;
-  gap: 2.5rem;
-  text-align: center;
-}
-
-.homepage h1 {
-  font-size: 4.5rem;
-  line-height: 1.3;
-  color: var(--color-light--1);
-}
-
-.homepage h2 {
-  width: 90%;
-  font-size: 1.9rem;
-  color: var(--color-light--1);
-  margin-bottom: 2.5rem;
-}
-
-.homeContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 150px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: var(--color-card-bg);
+  padding: 0 2rem;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 72vh;
+  padding: 5rem 0 6rem;
+  text-align: center;
+}
+
+.ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--border-radius);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-light--1);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-brand--1);
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+.heading {
+  margin-top: 3rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--color-light--2);
-  padding: 2rem;
-  border-radius: 8px;
-  position: relative;
-  top: -50px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 20px;
+.figure {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: clamp(5rem, 16vw, 10rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand--1);
 }
 
-.title {
-  font-size: 2.5rem;
-  margin: 50px 0;
+.figureCaption {
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-light--1);
+}
+
+.rule {
+  width: 320px;
+  max-width: 70%;
+  height: 1px;
+  margin: 3rem auto 2.5rem;
+  background-color: var(--hairline);
+}
+
+.instrument {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.instrumentItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.instrumentItem dt {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-light--1);
+}
+
+.instrumentItem dd {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-light--2);
+}
+
+.dataNotice {
+  margin-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--color-brand--2);
+}
+
+.ctaLink {
+  margin-top: 3.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--border-radius);
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: var(--color-light--2);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.ctaLink:hover {
+  border-color: var(--color-brand--1);
+  color: var(--color-brand--1);
+}
+
+.everyHour {
+  padding: 5rem 0;
+  border-top: 1px solid var(--hairline);
   text-align: center;
+}
+
+.everyHour h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-light--2);
+}
+
+.everyHourList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 2.5rem auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.everyHourList li {
+  padding: 2rem 1.5rem;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--hairline);
+  border-radius: var(--border-radius);
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: var(--color-light--1);
+}
+
+.everyHourList span {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 3.2rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand--1);
+}
+
+.note {
+  margin-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 1rem;
   color: var(--color-light--1);
 }
 
 .videoSection {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 5rem 0 7rem;
+  border-top: 1px solid var(--hairline);
   text-align: center;
 }
 
+.videoTitle {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-light--2);
+}
+
+.videoFrame {
+  position: relative;
+  max-width: 800px;
+  margin: 2.5rem auto 0;
+}
+
 .video {
+  display: block;
   width: 100%;
-  max-width: 65%;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-  margin: 15px auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--border-radius);
+  background-color: var(--color-card-bg);
 }
 
 .playButton {
   position: absolute;
-  bottom: 20px;
+  bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 0.8rem 1.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.65);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--color-light--2);
-  background-color: rgba(0, 0, 0, 0.6);
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .playButton:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  border-color: var(--color-brand--1);
+  color: var(--color-brand--1);
 }
 
-.statisticsSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 700px;
-  background-color: rgba(28, 28, 30, 0.9);
-  padding: 2.5rem;
-  border-radius: 10px;
-  margin: 2.5rem auto;
-  text-align: center;
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.6);
+.ctaLink:focus-visible,
+.playButton:focus-visible,
+.video:focus-visible {
+  outline: 2px solid var(--color-verified);
+  outline-offset: 3px;
 }
 
-.statisticsSection img {
-  width: 100%;
-  max-width: 450px;
-  border-radius: 10px;
-  margin-bottom: 0.5rem;
-  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.6);
-}
-
-.statisticsText p {
-  font-size: 1.5rem;
-  color: var(--color-light--2);
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.statisticsText ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-
-.statisticsText ul li {
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: var(--color-light--1);
-  margin-bottom: 0.8rem;
-}
-
-.note {
-  font-size: 1rem;
-  color: var(--color-light--1);
-  margin-top: 1.2rem;
-  font-style: italic;
-}
-
-.cta {
-  display: inline-block;
-  background-color: var(--color-brand--2);
-  color: var(--color-dark--1);
-  text-transform: uppercase;
-  text-decoration: none;
-  font-size: 1.6rem;
-  font-weight: 600;
-  padding: 1rem 3rem;
-  border-radius: 5px;
-  transition: all 0.3s;
-}
-
-.cta:hover,
-.cta:active {
-  background-color: var(--color-brand--1);
-  color: var(--color-light--2);
-}
-
-@media (max-width: 1024px) {
-  .homepage {
-    margin: 1.5rem;
-    padding: 2rem 4rem;
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
   }
-
-  .homepage h1 {
-    font-size: 3.5rem;
-  }
-
-  .homepage h2 {
-    font-size: 1.6rem;
-  }
-
-  .title {
-    font-size: 2rem;
+  50% {
+    opacity: 0.35;
   }
 }
 
 @media (max-width: 768px) {
-  .homepage {
-    padding: 1.5rem 3rem;
+  .hero {
+    min-height: auto;
+    padding: 4rem 0;
   }
 
-  .homeContainer {
-    padding: 1.5rem;
+  .heading {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
   }
 
-  .homepage h1 {
-    font-size: 2.5rem;
+  .figure {
+    font-size: clamp(4.2rem, 20vw, 7rem);
   }
 
-  .homepage h2 {
-    font-size: 1.4rem;
-  }
-
-  .title {
-    font-size: 1.8rem;
-    margin: 40px 0;
-  }
-
-  .videoSection {
-    max-width: 90%;
-  }
-
-  .statisticsSection {
-    padding: 2rem;
-    max-width: 95%;
-  }
-
-  .statisticsText p {
-    font-size: 1.3rem;
-  }
-
-  .statisticsText ul li {
-    font-size: 1.2rem;
-  }
-
-  .statisticsSection img {
-    max-width: 300px;
+  .instrument {
+    gap: 2rem;
   }
 }
 
 @media (max-width: 480px) {
   .homepage {
-    margin: 1rem;
-    padding: 1rem 2rem;
+    padding: 0 1.25rem;
   }
 
-  .homeContainer {
-    top: 0;
-    padding: 1rem;
+  .instrumentItem dd {
+    font-size: 1.8rem;
   }
 
-  .homepage h1 {
-    font-size: 2rem;
+  .everyHourList {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
+}
 
-  .homepage h2 {
-    font-size: 1.2rem;
-  }
-
-  .title {
-    font-size: 1.6rem;
-    margin: 30px 0;
-  }
-
-  .playButton {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  .statisticsSection {
-    padding: 1.5rem;
-  }
-
-  .statisticsText p {
-    font-size: 1.2rem;
-  }
-
-  .statisticsText ul li {
-    font-size: 1.1rem;
-  }
-
-  .statisticsSection img {
-    max-width: 250px;
+@media (prefers-reduced-motion: reduce) {
+  .liveDot {
+    animation: none;
   }
 }

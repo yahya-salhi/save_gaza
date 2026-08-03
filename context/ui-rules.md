@@ -1,6 +1,6 @@
 # UI Rules
 
-Concise rules for building Save Gaza UI. The app is a dark humanitarian dashboard — verified statistics first, maps second, advocacy copy on the landing page only. Match existing CSS Module patterns before inventing new ones.
+Concise rules for building Save Gaza UI. The app is a dark humanitarian dashboard styled as a **verified tally as an instrument** — the documented figure opens the page, timestamped and in mono type; maps and charts follow; advocacy copy stays on the landing page only. Match existing CSS Module patterns before inventing new ones.
 
 ---
 
@@ -16,13 +16,17 @@ Concise rules for building Save Gaza UI. The app is a dark humanitarian dashboar
 
 ## Font
 
-Manrope is loaded globally in `App.css`:
+Three roles, loaded globally in `App.css` via Google Fonts:
 
 ```css
-@import "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap";
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@900&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap");
 ```
 
-Applied via `--font-family-main` on `body`. Do not swap fonts per component.
+- **Archivo 900** (`--font-display`) — headlines, hero heading, app header
+- **IBM Plex Mono** (`--font-mono`) — data figures, labels, ticker, kickers; use weight 500 + `font-variant-numeric: tabular-nums`
+- **Manrope** (`--font-family-main`) — body copy and UI chrome
+
+Applied via tokens on `body` (`--font-family-main`). Do not add fonts per component — reuse the three roles.
 
 ---
 
@@ -30,9 +34,9 @@ Applied via `--font-family-main` on `body`. Do not swap fonts per component.
 
 ### Landing Page (`/`)
 
-- Full-viewport hero with background image + dark gradient overlay
-- Centered content column, max-width ~1200px
-- CTA links to `/app` routes
+- Hero opens with the documented figure itself: live ticker, mono crimson tally, "verified killed · since 07 Oct 2023" caption, hairline baseline
+- Centered content column, max-width 1200px, min-height 72vh
+- CTA ("Open the dashboard") links to `/app`
 - Uses global classes from `App.css` (`.cta`, `.bloody-text`, `.card`)
 
 ### App Dashboard (`/app/*`)
@@ -58,14 +62,15 @@ Split layout with collapsible sidebar:
 
 | Color | Token | When to use |
 | ----- | ----- | ----------- |
-| Crimson | `--color-brand--1` | Errors, "War" text, active nav, button hover, injury/loss emphasis |
-| Green | `--color-brand--2` | Icons, CTAs, "in Gaza" text, chart highlights, scrollbar, borders |
+| Crimson | `--color-brand--1` | The tally, ticker dot, dates, errors, active nav, button hover |
+| Light crimson | `--color-brand--2` | Hover states, chart line, stat icons, slider thumb, section borders |
+| Verified green | `--color-verified` | Keyboard focus rings, "verified" status dots — nothing else |
 | Dark cards | `--color-card-bg` | Panel containers |
 | Nested items | `--color-dark--1` | Individual stat cards, popups |
 | Muted text | `--color-light--1` | Headings, large numbers |
 | Body text | `--color-light--2` | Labels, descriptions, nav links |
 
-Never use green for error states or crimson for success/CTA backgrounds.
+Crimson is the single data accent. Never use green for CTAs, data, or error states — green is focus/verified only.
 
 ---
 
@@ -91,8 +96,10 @@ Three levels, used consistently:
 **Stat numbers** — the thesis of each panel
 
 ```
+font-family: var(--font-mono)
+font-weight: 500
+font-variant-numeric: tabular-nums
 font-size: var(--font-size-subtitle)  /* 2.4rem */
-font-weight: 800
 color: var(--color-light--1)
 ```
 
@@ -112,7 +119,7 @@ font-weight: 400–600
 color: var(--color-light--2)
 ```
 
-Section titles in DetailsSummary add a green bottom border:
+Section titles in DetailsSummary add a crimson bottom border:
 
 ```
 border-bottom: 2px solid var(--color-brand--2)
@@ -136,7 +143,7 @@ Public routes render inside `RootLayout` (`src/layouts/RootLayout.jsx`): `Navbar
 **Navbar** (`src/layouts/Navbar.jsx`):
 
 - Sticky header, `bg-background-dark/95` + backdrop-blur, `z-40`
-- Links: uppercase, `text-light-2`, hover `text-brand-green`; active route `text-brand-green` via NavLink `isActive`
+- Links: uppercase, `text-light-2`, hover `text-brand-crimson`; active route `text-brand-crimson` via NavLink `isActive`
 - Theme toggle button (Sun/Moon) — flips `sg-theme` via `useTheme()`
 - Mobile (<md): Radix Dialog menu (right slide-over), toggle button opens/closes
 - Nav items from `src/layouts/navItems.js`: Map (`/app/gazaMap`), Statistics (`/app/gaza`), Submit Incident (`/submit`), Admin (`/login`)
@@ -164,10 +171,10 @@ hover: var(--color-brand--1) background, var(--color-light--2) text
 **Header buttons (Learn More, Menu):**
 
 ```
-background: var(--btn-bg-color)
+background: var(--color-dark--2)
 color: var(--text-color)
 border-radius: 8px
-hover: var(--hover-bg-color), translateY(-2px)
+hover: var(--color-dark--0), translateY(-2px)
 ```
 
 **Back button:**
@@ -190,26 +197,23 @@ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
 gap: 1.25rem
 ```
 
-Each item: flex row with icon (green, 2.4rem) + value/label column. Clickable items wrap in React Router `<Link>`.
+Each item: flex row with icon (light crimson, 2.4rem) + value/label column. Clickable items wrap in React Router `<Link>`.
 
 ---
 
 ## Map Sub-Components — Dark Token Spec
 
-Three map-related components have a documented dark migration spec in `ui-registry.md`. **Do not use their current light-theme code as reference** — use the spec below.
+### HeaderMap (implemented)
 
-### HeaderMap
-
-Sits above the map/chart in AppLayout main area. No own background — transparent on dashboard `--bg-color`.
+Dark panel above the map/chart in the AppLayout main area. Uses `HeaderMap.module.css` — no global classes.
 
 | Element | Spec |
 | ------- | ---- |
-| Heading | `--color-light--1`, subtitle size, weight 700 |
-| "Daily casualties" accent | `--color-brand--2` via `.accent` class |
-| Region label (gaza/westbank) | `--color-brand--1`, capitalize |
-| Body context line | `--color-light--2`, text size |
-
-Must import and use `HeaderMap.module.css` — do not rely on global `.green`.
+| Container | `--color-card-bg`, top corners radius `var(--border-radius)`, padding 1.5rem–2rem |
+| Kicker "LIVE RECORD" | `--font-mono` 500, `--color-brand--1`, uppercase, letter-spacing |
+| Title "The human toll · Gaza/West Bank" | display 900, `--color-light--1` |
+| Accent span | `--color-brand--2` |
+| Subtitle | `--color-light--2`, text size |
 
 ### RegionInfo
 
@@ -218,7 +222,7 @@ Fixed panel beside GazaMap (400px grid column). Same card language as DetailsSum
 | Element | Spec |
 | ------- | ---- |
 | Panel surface | `--color-card-bg` |
-| Title | Green bottom border (`--color-brand--2`), same as DetailsSummary |
+| Title | Crimson bottom border (`--color-brand--2`), same as DetailsSummary |
 | Labels | `--color-light--1` |
 | Values / lists | `--color-light--2` |
 | Region color bar | Inline `background-color` from GeoJSON only exception |
@@ -236,13 +240,11 @@ Hover tooltip on map polygons. Must visually match Leaflet popup overrides.
 | Title | `--color-light--1` |
 | Stat lines | `--color-light--2` with `--color-light--1` labels |
 
-### Migration Checklist (implement in code when ready)
+### Migration Checklist (RegionInfo / RegionTooltip only — implement in code when ready)
 
-- [ ] HeaderMap.jsx imports module CSS, drops global `.green`
-- [ ] HeaderMap.module.css — all hex replaced with tokens
 - [ ] RegionInfo.module.css — white/`#333`/`#666`/`#eee` replaced
 - [ ] RegionInfo.module.css — add missing `.subTitle` class
-- [ ] RegionTooltip.module.css — dark surface + green accent border
+- [ ] RegionTooltip.module.css — dark surface + crimson accent border
 - [ ] Visual parity: RegionTooltip ≈ Leaflet popup in GazaMap
 
 ---
@@ -297,7 +299,7 @@ Existing motion patterns (keep consistent):
 - Hover lift: `transform: translateY(-2px)` on cards and buttons
 - Transition: `all 0.3s ease` standard
 - Spinner: conic-gradient rotation, 1.5s linear infinite
-- Bloody-text drip: landing page only — do not replicate elsewhere
+- Live ticker pulse: homepage hero dot, opacity/glow cycle — landing page only, do not replicate elsewhere
 
 Add `@media (prefers-reduced-motion: reduce)` overrides when introducing new animations.
 
@@ -318,9 +320,8 @@ Add `@media (prefers-reduced-motion: reduce)` overrides when introducing new ani
 - Never add gradients to dashboard cards (gradients are for homepage hero only)
 - Never use more than two levels of `--border-radius` nesting
 - Never use `position: fixed` for layout elements except the sidebar overlay and toggle button
-- Never introduce a third accent color — crimson and green carry all semantic weight
+- Never introduce a third accent color — crimson (single accent) and verified green carry all semantic weight
 - Never show raw API/JSON errors to users
 - Never mix CSS Module class names with inline styles for colors
 - Never use RegionInfo's **current** light theme (`white`, `#333`) in new work — use the dark spec in `ui-registry.md` and `ui-tokens.md`
-- Never use HeaderMap's **current** unused module CSS (white bg, slate hex) — use the transparent dark spec
-- Never use RegionTooltip's **current** white tooltip — match `--color-dark--1` + green left border
+- Never use RegionTooltip's **current** white tooltip — match `--color-dark--1` + crimson left border
