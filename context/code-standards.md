@@ -20,15 +20,17 @@ Implementation rules for Save Gaza. Follow these in every session to prevent pat
 | ----- | ---- | ----- |
 | Framework | React 18 + Vite | SPA, not Next.js (yet) |
 | Routing | react-router-dom v6 | BrowserRouter, nested routes under `/app` |
-| Styling | CSS Modules + App.css tokens | See `ui-tokens.md` |
+| Styling | Tailwind CSS + CSS Modules + App.css tokens | Tailwind for shared UI/layouts; CSS Modules for dashboard features |
+| UI primitives | @radix-ui/react-slot, @radix-ui/react-dialog | Accessible `Button` (Slot), Navbar mobile menu |
+| Testing | Vitest + React Testing Library | `npm run test`, jsdom, `src/test/setup.js` |
 | Maps | Leaflet + react-leaflet | GazaMap feature |
 | Charts | Recharts | ChartLine, PieChart |
 | Icons | react-icons/fa + lucide-react | Stat icons vs UI chrome |
-| State | React Context | `AppContext`, `SummaryContext` |
+| State | React Context | `AppContext`, `SummaryContext`, `ThemeProvider` |
 | Data | TechForPalestine API | External JSON endpoints |
 | Lint | ESLint 9 | `npm run lint` |
 
-Target stack (future phases) is documented in `architecture.md` — do not introduce Next.js, Prisma, or Tailwind without an explicit migration ticket.
+Target stack (future phases) is documented in `architecture.md` — do not introduce Next.js or Prisma without an explicit migration ticket. Tailwind + Radix are approved (Ticket 01).
 
 ---
 
@@ -38,9 +40,16 @@ Current structure under `save_Gaza/src/`:
 
 ```
 src/
-├── components/          → UI components (PascalCase.jsx + .module.css)
-├── context/             → React Context providers
+├── components/          → Dashboard UI components (PascalCase.jsx + .module.css)
+├── context/             → React Context providers (AppContext, SummaryContext)
+├── core/                → Clean Architecture core layer (entities/, use-cases/, errors/) — .gitkeep until Ticket 02
+├── features/            → Feature modules (map/, statistics/, summary/, moderation/) — .gitkeep until later phases
+├── layouts/             → Page shells + base layout (RootLayout, Navbar, Footer, navItems)
 ├── pages/               → Route-level page components
+├── shared/              → Cross-feature code (ui/, api/, utils/, providers/)
+│   ├── ui/              → Reusable primitives (Button)
+│   ├── providers/       → Global providers (ThemeProvider)
+│   └── test/            → Vitest setup (setup.js)
 └── App.jsx              → Router setup
 ```
 
@@ -48,6 +57,8 @@ src/
 - Context files: **PascalCase** — `AppContext.jsx`
 - Page files: **PascalCase** — `AppLayout.jsx`, `Homepages.jsx`
 - CSS Modules: same name as component — `ComponentName.module.css`
+- Shared layout files: **PascalCase** — `Navbar.jsx`, `Footer.jsx` (Tailwind utilities, no module file)
+- Test files: colocated `ComponentName.test.jsx`
 - One component per file (small sub-components like `StatisticItem` are acceptable inline)
 
 ---
@@ -195,6 +206,9 @@ Approved dependencies (see `save_Gaza/package.json`):
 - `react-icons` — stat category icons
 - `lucide-react` — UI icons (menu, close)
 - `react-slider` — range slider
+- `tailwindcss` + `postcss` + `autoprefixer` — utility-first styling (Ticket 01)
+- `@radix-ui/react-slot`, `@radix-ui/react-dialog` — accessible UI primitives
+- `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event` — unit tests
 - `json-server` — local dev mock server
 
 Do not install new packages without updating this list and `library-docs.md`.
@@ -204,11 +218,13 @@ Do not install new packages without updating this list and `library-docs.md`.
 ## Scripts
 
 ```bash
-npm run dev       # Vite dev server
-npm run build     # Production build
-npm run lint      # ESLint
-npm run preview   # Preview production build
-npm run server    # json-server mock (port 8000)
+npm run dev          # Vite dev server
+npm run build        # Production build
+npm run lint         # ESLint
+npm run preview      # Preview production build
+npm run server       # json-server mock (port 8000)
+npm run test         # Vitest (single run)
+npm run test:watch   # Vitest (watch mode)
 ```
 
 ---

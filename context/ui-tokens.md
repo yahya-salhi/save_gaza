@@ -19,10 +19,16 @@ Design tokens for **Save Gaza** — a dark humanitarian dashboard for verified c
 
 ## How to Use
 
-This project uses **CSS Modules + global CSS variables** — not Tailwind.
+Two systems share the same palette (Ticket 01):
+
+1. **Tailwind CSS** — for shared UI + layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`). Palette mapped in `save_Gaza/tailwind.config.js`: `background-dark`, `card`, `brand-crimson`, `brand-green`, `dark-0..2`, `light-1..3`. Dark mode is class-based (`darkMode: "class"` — `ThemeProvider` toggles `dark` on `<html>`).
+2. **CSS Modules + global CSS variables** — for dashboard feature components (maps, stats, charts), matching existing patterns.
 
 ```jsx
-// Correct — CSS Module referencing global token
+// Tailwind (shared UI) — colors map to the tokens below
+<div className="bg-card text-light-2">...</div>
+
+// CSS Module referencing global token (dashboard features)
 import styles from "./GazaSummary.module.css";
 <div className={styles.statisticItem} />
 
@@ -39,7 +45,7 @@ import styles from "./GazaSummary.module.css";
 color: green;
 ```
 
-When adding a new token, define it once in `App.css` `:root`, then reference it everywhere else.
+When adding a new token, define it once in `App.css` `:root` **and** add the matching entry in `tailwind.config.js`, then reference it everywhere else.
 
 ---
 
@@ -318,6 +324,6 @@ Use only on the landing page hero — not in the data dashboard.
 - Dark theme is default — light theme is opt-in via `.light-theme` class
 - Crimson is for loss/errors; green is for life/actions — do not swap their roles
 - Stat numbers are the visual thesis — always largest weight (800) in their container
-- CSS Modules for component styles; global utilities only in `App.css` (`.card`, `.cta`, `.red`, `.green`)
+- CSS Modules for dashboard feature styles; Tailwind utilities for shared UI/layouts; global utilities only in `App.css` (`.card`, `.cta`, `.red`, `.green`)
 - One signature animation (`bloody-text`) — do not add decorative motion elsewhere without purpose
 - Respect `@media (prefers-reduced-motion: reduce)` when adding new animations

@@ -40,8 +40,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 ```jsx
 import { NavLink, Link, useLocation, useSearchParams } from "react-router-dom";
 
-// Active nav styling (PageNav)
-<NavLink to="/app/gaza" className={({ isActive }) => isActive ? "active" : ""}>
+// Active nav styling (Navbar)
+<NavLink to="/app/gaza" className={({ isActive }) => isActive ? "text-brand-green" : "text-light-2 hover:text-brand-green"}>
 
 // Stat card links (GazaSummary)
 <Link to={`?details=${value}`} className={styles.statisticItem}>
@@ -62,15 +62,36 @@ const isDetailView = searchParams.has("details");
 
 ## React Context
 
-Two providers wrap the app in `App.jsx`:
+Three providers wrap the app:
 
 ```jsx
+// main.jsx — ThemeProvider wraps the whole tree
+<ThemeProvider>
+  <App />
+</ThemeProvider>
+
+// App.jsx — data/UI providers inside the router tree
 <SummaryProvider>
   <AppProvider>
     <BrowserRouter>...</BrowserRouter>
   </AppProvider>
 </SummaryProvider>
 ```
+
+### ThemeProvider (`src/shared/providers/ThemeProvider.jsx`)
+
+Class-based dark mode for the whole app.
+
+```jsx
+import { useTheme } from "../shared/providers/ThemeProvider";
+
+const { theme, toggleTheme } = useTheme();
+// theme: "dark" | "light"
+```
+
+- Toggles `dark` / `light-theme` class on `document.documentElement` (pair with `darkMode: "class"` in `tailwind.config.js`)
+- Persists under localStorage key `sg-theme`; default `dark`
+- Throws if `useTheme` used outside the provider
 
 ### AppContext
 
@@ -265,6 +286,110 @@ import ReactSlider from "react-slider";
 - Track: dark (`--color-dark--2`)
 - Display selected date above slider in subtitle-sized text
 - Sync selected index with AppContext `selectedDate`
+
+---
+
+## Tailwind CSS
+
+**Version:** ^3.4.19 (approved via Ticket 01 — shared UI/layouts only)
+
+### Config
+
+`save_Gaza/tailwind.config.js` maps the `App.css` token palette to Tailwind color names. Dark mode is class-based — `ThemeProvider` toggles the `dark` class.
+
+```js
+darkMode: "class",
+colors: {
+  "background-dark": "#121212",
+  card: "#1c1c1e",
+  brand: { crimson: "#c41e3a", green: "#2ecc71" },
+  dark: { 0: "#242a2e", 1: "#2d3439", 2: "#42484d" },
+  light: { 1: "#aaa", 2: "#ececec", 3: "#d6dee0" },
+}
+```
+
+### Usage
+
+```jsx
+<header className="sticky top-0 z-40 border-b border-white/5 bg-background-dark/95 backdrop-blur">
+  <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    ...
+  </nav>
+</header>
+```
+
+**Rules:**
+
+- Only shared UI/layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`) use Tailwind — dashboard feature components keep CSS Modules
+- Use the mapped palette classes (`bg-card`, `text-light-2`, `text-brand-green`…) — never arbitrary hex in `[#hex]` classes
+- `border-white/5`, `bg-black/60`, `bg-black/80` opacity utilities are fine for overlays/borders
+- Preflight is enabled (`src/index.css` has `@tailwind base`) — verify dashboard feature modules still render correctly after new global base styles
+
+---
+
+## Radix UI
+
+**Versions:** @radix-ui/react-slot ^1.3.3, @radix-ui/react-dialog ^1.1.23
+
+### Slot (Button)
+
+```jsx
+// src/shared/ui/Button.jsx — asChild merges className onto the child element
+<Button asChild><NavLink to="/app/gaza">Map</NavLink></Button>
+```
+
+### Dialog (Navbar mobile menu)
+
+```jsx
+<Dialog.Root>
+  <Dialog.Trigger asChild>...</Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60" />
+    <Dialog.Content className="fixed right-0 top-0 z-50 flex h-full w-72 flex-col bg-card p-6 shadow-xl">
+      <Dialog.Title className="sr-only">Navigation menu</Dialog.Title>
+      ...
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+**Rules:**
+
+- `Dialog.Trigger` / `Dialog.Close` must use `asChild` when wrapping a `<Button>` so the button renders as the actual DOM node
+- `Dialog.Title` is required for a11y — use `sr-only` when invisible
+- Always provide `aria-label` on icon-only buttons
+
+---
+
+## Vitest + Testing Library
+
+**Versions:** vitest ^2.1.9, jsdom ^29.1.1, @testing-library/react ^16.3.2, @testing-library/jest-dom ^7.0.0, @testing-library/user-event ^14.6.1
+
+### Setup
+
+- Test block in `vite.config.js`: `environment: "jsdom"`, `globals: true`, `setupFiles: "./src/test/setup.js"` (imports jest-dom)
+- Run: `npm run test` (single run) / `npm run test:watch`
+
+### Example
+
+```jsx
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+test("toggles theme", async () => {
+  const user = userEvent.setup();
+  render(<Navbar />);
+  await user.click(screen.getByRole("button", { name: /switch to light/i }));
+  expect(document.documentElement).toHaveClass("light-theme");
+});
+```
+
+**Rules:**
+
+- Colocate tests as `ComponentName.test.jsx` next to the component
+- Use `@testing-library/jest-dom` matchers (`toHaveClass`, `toBeInTheDocument`)
+- Components that need routing (Navbar, Footer) render inside `MemoryRouter`
+- LocalStorage/jsdom globals — reset between tests when persisting state
 
 ---
 

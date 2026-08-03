@@ -8,7 +8,7 @@ alwaysApply: true
 
 # This is NOT the Next.js you know
 
-This project is a **React 18 + Vite single-page app** — there is no Next.js, no SSR, and no app/pages router. Ignore Next.js conventions from your training data. Routing is `react-router-dom` v6, styling is CSS Modules + `App.css` tokens (no Tailwind), and data comes from the external TechForPalestine API. Read `context/architecture.md` and `context/library-docs.md` before writing any code.
+This project is a **React 18 + Vite single-page app** — there is no Next.js, no SSR, and no app/pages router. Ignore Next.js conventions from your training data. Routing is `react-router-dom` v6, styling is Tailwind CSS (shared UI/layouts) + CSS Modules with `App.css` tokens (dashboard features), and data comes from the external TechForPalestine API. Read `context/architecture.md` and `context/library-docs.md` before writing any code.
 
 <!-- END:nextjs-agent-rules -->
 
@@ -133,6 +133,9 @@ Libraries in use:
 - `react-icons` - stat category icons (Font Awesome subset)
 - `lucide-react` - UI chrome icons only
 - `react-slider` - date range selection
+- `tailwindcss` - v3 utility classes; design tokens mapped in `tailwind.config.js`
+- `@radix-ui/react-slot`, `@radix-ui/react-dialog` - accessible UI primitives
+- `vitest` + `@testing-library/react` - unit tests (`npm run test`, `npm run test:watch`)
 
 Data source:
 
@@ -164,10 +167,10 @@ Everything is JavaScript (JSX). PropTypes are optional in the current codebase.
 - No vendor SDK — talk to data via the browser `fetch` API and handle `res.ok`/errors explicitly
 - Handle missing nested fields (`gaza.killed`, `gaza.injured`) before rendering
 - Consume Context only via custom hooks (`useAppContext`, `useSummary`)
-- Style with CSS Modules (`*.module.css`); global utilities live in `App.css` (`.card`, `.cta`, `.red`, `.green`)
+- Style shared UI/layouts with Tailwind utilities; dashboard features keep CSS Modules (`*.module.css`); global utilities live in `App.css` (`.card`, `.cta`, `.red`, `.green`)
 - Leaflet popups/tooltips need `:global()` overrides — CSS Modules won't scope them otherwise
 - Use `<NavLink>` / `<Link>` for internal navigation — never `<a href>`
-- **EXTRA IMPORTANT**: Styling is CSS Modules + `App.css` tokens — do NOT introduce Tailwind. Do not change React (18) or Vite (5) versions in `package.json` without a migration ticket
+- **EXTRA IMPORTANT**: Styling is Tailwind + CSS Modules + `App.css` tokens — Tailwind was approved via Ticket 01 for shared UI/layouts; dashboard feature components keep CSS Modules. Never hardcode raw hex — use `var(--color-*)` tokens from `App.css` or the mapped palette in `tailwind.config.js`. Do not change React (18) or Vite (5) versions in `package.json` without a migration ticket
 
 <!-- INSFORGE:START -->
 ## Data & Tooling

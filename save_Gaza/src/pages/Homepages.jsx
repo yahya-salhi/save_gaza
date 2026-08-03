@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import styles from "./Homepages.module.css";
-import PageNav from "../components/PageNav";
 import { useRef, useState } from "react";
 import { useSummary } from "../context/SummaryContext";
 
@@ -20,8 +19,7 @@ function Homepages() {
   if (error) return <p>{error}</p>;
   const { killed, injured } = gaza || {};
   return (
-    <main className={styles.homepage}>
-      <PageNav />
+    <div className={styles.homepage}>
       <section>
         <h1>
           Do <span className="red"> Not</span> Ignore
@@ -29,7 +27,7 @@ function Homepages() {
         </h1>
         <br />
         <h2>
-          What's happening in Gaza in numbers? Stay up to date with the latest
+          What’s happening in Gaza in numbers? Stay up to date with the latest
           News From Gaza
           <br />
           The latest death toll stands a
@@ -82,7 +80,7 @@ function Homepages() {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

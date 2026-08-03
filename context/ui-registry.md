@@ -89,19 +89,6 @@ Sidebar route navigation (Gaza, West Bank, Gaza Map).
 | `.nav a:hover` | Green background, lift |
 | `.nav a.active` | Crimson background (active route) |
 
-### PageNav
-
-**File:** `save_Gaza/src/components/PageNav.jsx` + `PageNav.module.css`
-
-Top-level site navigation with CTA.
-
-| Class | Purpose |
-| ----- | ------- |
-| `.nav` | Horizontal flex nav |
-| `.nav a` | Uppercase links, 1.5rem |
-| `.nav a:global(.active)` | Green active state |
-| `.ctaLink` | Green background button link |
-
 ### Logo
 
 **File:** `save_Gaza/src/components/Logo.jsx` + `Logo.module.css`
@@ -111,6 +98,62 @@ Top-level site navigation with CTA.
 | `.navbarLogo` | Flex row: image + text |
 | `.navbarLogo img` | 40px max-height, white glow drop-shadow |
 | `.logoText` | 16px bold white, hover crimson tint |
+
+---
+
+## Shared Shell (Tailwind)
+
+Ticket 01 base layout. Styled with Tailwind utilities (palette mapped in `tailwind.config.js`) — no module files. All live under `save_Gaza/src/layouts` / `save_Gaza/src/shared`.
+
+### Navbar
+
+**File:** `save_Gaza/src/layouts/Navbar.jsx`
+
+Sticky top nav for public routes. Sticky, backdrop-blur, dark translucent bg.
+
+| Element | Classes / behavior |
+| ------- | ------------------ |
+| `.header` | `sticky top-0 z-40 border-b border-white/5 bg-background-dark/95 backdrop-blur` |
+| Nav container | `mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8` |
+| Desktop links | `hidden md:flex`, uppercase `text-light-2`, active/hover `text-brand-green` |
+| Theme toggle | `Button` rounded-full, Sun (dark) / Moon (light), `aria-label` "Switch to light theme" / "Switch to dark theme" |
+| Mobile menu | Radix Dialog slide-over, `bg-card`, `w-72`, hidden `md:hidden` trigger |
+| Nav items | From `src/layouts/navItems.js` — Map `/app/gazaMap`, Statistics `/app/gaza`, Submit Incident `/submit`, Admin `/login` |
+
+### Footer
+
+**File:** `save_Gaza/src/layouts/Footer.jsx`
+
+| Element | Classes / behavior |
+| ------- | ------------------ |
+| Root | `border-t border-white/5 bg-background-dark` |
+| Container | `mx-auto flex max-w-7xl flex-col md:flex-row items-center md:items-start justify-between gap-6 px-4 py-10` |
+| Brand | "Save Gaza" bold `text-light-2`, tagline `text-light-1` |
+| Links | Same `NAV_ITEMS`, uppercase, `hover:text-brand-green` |
+| Copyright | `© {year} Save Gaza` |
+
+### ThemeProvider
+
+**File:** `save_Gaza/src/shared/providers/ThemeProvider.jsx`
+
+Not visual — class-based theme context. Wraps `App` in `main.jsx`.
+
+| Item | Value |
+| ---- | ----- |
+| Storage key | `sg-theme` (`"dark"` default / `"light"`) |
+| DOM effect | toggles `dark` and `light-theme` classes on `<html>` |
+| Hook | `useTheme()` → `{ theme, toggleTheme }` |
+
+### Button
+
+**File:** `save_Gaza/src/shared/ui/Button.jsx`
+
+Radix Slot button primitive — renders a `<button>` or merges props into child with `asChild`.
+
+| Item | Value |
+| ---- | ----- |
+| Base classes | `inline-flex items-center justify-center rounded-[10px] px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green disabled:opacity-50` |
+| Props | `asChild`, `className` (appended to base), rest spread |
 
 ---
 
@@ -421,12 +464,16 @@ Spec-only (documented in context, not yet applied in source). When implementing,
 
 | Route | Primary UI |
 | ----- | ---------- |
-| `/` | Homepages |
+| `/` | Homepages (inside RootLayout shell) |
+| `/page1`, `/page2` | Page1 / Page2 (inside RootLayout shell) |
+| `/submit`, `/login` | Planned (Ticket 08) — currently resolve to PageNotFound |
 | `/app` | IndexSummary (via Sidebar) |
 | `/app/gaza` | Map + GazaSummary in Sidebar |
 | `/app/westBank` | Map + WestBankSummary in Sidebar |
 | `/app/gazaMap` | GazaMap |
 | `/app/gaza?details=N` | DetailsSummary |
+
+`RootLayout` (Navbar + Footer) wraps all public routes; `/app/*` uses the `AppLayout` dashboard shell (no global footer).
 
 ---
 

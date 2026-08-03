@@ -6,10 +6,11 @@ Concise rules for building Save Gaza UI. The app is a dark humanitarian dashboar
 
 ## Styling System
 
-- **CSS Modules** for all component styles (`ComponentName.module.css`)
+- **Tailwind CSS** for shared UI + layouts (`src/layouts`, `src/shared/ui`, `src/shared/providers`) — palette mapped in `tailwind.config.js` from the `App.css` tokens, `darkMode: "class"`
+- **CSS Modules** for dashboard feature components (`ComponentName.module.css`) — match existing patterns before inventing new ones
 - **Global tokens** in `save_Gaza/src/App.css` (`:root` variables)
-- **No Tailwind** in the current codebase — do not introduce it without a dedicated migration ticket
-- Reference tokens as `var(--color-brand--2)` — never raw hex in module files
+- Tailwind approved via Ticket 01 — do not use Tailwind inside dashboard feature components (keep them on CSS Modules), and do not use raw hex in either system
+- Reference tokens as `var(--color-brand--2)` in modules / Tailwind color classes in JSX — never raw hex
 
 ---
 
@@ -128,13 +129,22 @@ border-bottom: 2px solid var(--color-brand--2)
 - Hover: `--color-brand--2` background, translateY(-2px)
 - Active: `--color-brand--1` background
 
-### PageNav (top-level site nav)
+### RootLayout / Navbar (top-level site shell)
 
-- Horizontal links, uppercase, 1.5rem
-- Active (React Router): `--color-brand--2` via `:global(.active)`
-- CTA link: green background button variant
+Public routes render inside `RootLayout` (`src/layouts/RootLayout.jsx`): `Navbar` → `<Outlet />` → `Footer`. Styled with Tailwind utilities.
 
-Routes: `/app/gaza`, `/app/westBank`, `/app/gazaMap`
+**Navbar** (`src/layouts/Navbar.jsx`):
+
+- Sticky header, `bg-background-dark/95` + backdrop-blur, `z-40`
+- Links: uppercase, `text-light-2`, hover `text-brand-green`; active route `text-brand-green` via NavLink `isActive`
+- Theme toggle button (Sun/Moon) — flips `sg-theme` via `useTheme()`
+- Mobile (<md): Radix Dialog menu (right slide-over), toggle button opens/closes
+- Nav items from `src/layouts/navItems.js`: Map (`/app/gazaMap`), Statistics (`/app/gaza`), Submit Incident (`/submit`), Admin (`/login`)
+
+**Footer** (`src/layouts/Footer.jsx`):
+
+- `bg-background-dark`, top border `border-white/5`
+- Brand ("Save Gaza" + tagline), nav links (same `NAV_ITEMS`), copyright `© {year}`
 
 ---
 
