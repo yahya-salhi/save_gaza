@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+:root {
+  /* Accent — cool-crimson ramp */
+  --accent-50:  #fff1f3;
+  --accent-100: #ffe0e5;
+  --accent-200: #fdc6cf;
+  --accent-300: #fa9db0;
+  --accent-400: #f5648a;
+  --accent-500: #e11d48;
+  --accent-600: #be123c;
+  --accent-700: #9f1239;
+  --accent-800: #881337;
+  --accent-900: #4c0519;
+
+  /* Surfaces — obsidian, layered */
+  --bg:         #0b0d0f;
+  --surface-1:  #14171a;
+  --surface-2:  #1b1f23;
+  --surface-3:  #23282d;
+  --overlay-bg: rgba(11, 13, 15, 0.75);
+
+  /* Text */
+  --text-1:         #f4f6f7;
+  --text-2:         #c2c9ce;
+  --text-3:         #8b949c;
+  --text-on-accent: #ffffff;
+
+  /* Structure */
+  --hairline:        rgba(255, 255, 255, 0.08);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  /* Reserved — focus rings & verified status dots only */
+  --verified: #22c55e;
+
+  /* Status */
+  --danger:  var(--accent-500);
+  --warning: #f59e0b;
+  --info:    #38bdf8;
+
+  /* Typography */
+  --font-display: "Archivo", sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+  --font-sans:    "Manrope", sans-serif;
+
+  --text-xs:   1.2rem;
+  --text-sm:   1.4rem;
+  --text-base: 1.6rem;
+  --text-lg:   2.0rem;
+  --text-xl:   2.4rem;
+  --text-2xl:  3.2rem;
+  --text-3xl:  4.0rem;
+  --text-4xl:  clamp(5.6rem, 12vw, 9.6rem);
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+  --tracking-wide: 0.06em;
+  --tracking-widest: 0.14em;
+
+  /* Spacing */
+  --space-1: 0.4rem;
+  --space-2: 0.8rem;
+  --space-3: 1.2rem;
+  --space-4: 1.6rem;
+  --space-5: 2.4rem;
+  --space-6: 3.2rem;
+  --space-8: 4.8rem;
+  --space-10: 6.4rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --content-max: 1200px;
+  --sidebar-width: 420px;
+  --map-height: 600px;
+
+  --icon-sm: 1.6rem;
+  --icon-md: 2.4rem;
+  --icon-lg: 3.2rem;
+
+  --motion-lift: -2px;
+
+  /* Elevation */
+  --elevation-0: none;
+  --elevation-1: 0 1px 2px rgba(0,0,0,0.30);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.35);
+  --elevation-3: 0 10px 28px rgba(0,0,0,0.45);
+  --focus-ring:  0 0 0 3px color-mix(in srgb, var(--verified) 55%, transparent);
+}
+
+/* Tailwind 4 theme mapping — maps CSS variables to Tailwind utilities */
+@theme {
+  --color-bg: var(--bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-overlay: var(--overlay-bg);
+
+  --color-text-1: var(--text-1);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-text-on-accent: var(--text-on-accent);
+
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-verified: var(--verified);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans);
+
+  --shadow-e1: var(--elevation-1);
+  --shadow-e2: var(--elevation-2);
+  --shadow-e3: var(--elevation-3);
+  --shadow-focus: var(--focus-ring);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+}
+
+/* Global resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-2);
+  background-color: var(--bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--text-1);
+  line-height: var(--leading-tight);
+}
+
+h1 { font-size: var(--text-3xl); font-weight: 900; }
+h2 { font-size: var(--text-2xl); font-weight: 700; }
+h3 { font-size: var(--text-xl); font-weight: 700; }
+
+a {
+  color: var(--accent-500);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-400);
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  outline: none;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-500);
+}
+
+::selection {
+  background-color: var(--accent-600);
+  color: var(--text-on-accent);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: var(--radius-full);
+}
+
+/* Focus visible global */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

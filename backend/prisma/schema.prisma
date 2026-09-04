@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Statistic {
+  id         Int      @id @default(autoincrement())
+  region     String
+  reportDate DateTime @map("report_date")
+  type       String
+  label      String
+  value      Int
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([region, reportDate, type])
+  @@index([region, reportDate])
+  @@map("statistics")
+}
+
+model Incident {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  reportDate  DateTime @map("report_date")
+  region      String
+  latitude    Float
+  longitude   Float
+  sourceUrl   String   @map("source_url")
+  evidenceUrl String?  @map("evidence_url")
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([region])
+  @@index([createdAt])
+  @@map("incidents")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  passwordHash   String   @map("password_hash")
+  role           String   @default("ADMIN")
+  createdAt      DateTime @default(now()) @map("created_at")
+  lastLoginAt    DateTime? @map("last_login_at")
+
+  @@map("users")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  action     String
+  targetId   String   @map("target_id")
+  targetType String   @map("target_type")
+  details    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
