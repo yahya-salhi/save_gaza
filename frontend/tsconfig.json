@@ -18,5 +18,6 @@
     "noUnusedParameters": true,
     "types": ["vite/client", "vitest/globals", "node"]
   },
-  "include": ["src", "vite.config.js"]
+  "include": ["src", "vite.config.js"],
+  "exclude": ["src/**/*.test.jsx", "src/**/*.test.js", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }

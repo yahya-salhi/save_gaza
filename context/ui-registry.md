@@ -29,8 +29,29 @@ Before building a component:
 | Envelope client | `frontend/src/shared/api/client.js` | ✅ Built (`apiGet`/`apiPost`/`apiPatch`) |
 | `ThemeProvider` | `frontend/src/shared/providers/ThemeProvider.jsx` | ✅ Built (hooks ready) |
 | `I18nProvider` | `frontend/src/shared/providers/I18nProvider.jsx` | ✅ Built (scaffold) |
+| `ErrorBoundary` | `frontend/src/shared/providers/ErrorBoundary.jsx` | ✅ Built (class component, getDerivedStateFromError) |
 
-> Canonical primitives (`Card`, `Button`, `StatItem`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`) are **not yet built** — they land in Slice 1.3 as listed below.
+## Built So Far (Slice 1.3)
+
+| Primitive | Final Path | Status | Tests |
+| --------- | ---------- | ------ | ----- |
+| `Card` | `frontend/src/shared/ui/Card.jsx` | ✅ Built | 7 tests |
+| `Button` | `frontend/src/shared/ui/Button.jsx` | ✅ Built (Radix Slot, primary/ghost variants) | 8 tests |
+| `Skeleton` | `frontend/src/shared/ui/Skeleton.jsx` | ✅ Built (animate-pulse, aria-busy) | 7 tests |
+| `EmptyState` | `frontend/src/shared/ui/EmptyState.jsx` | ✅ Built (muted text + action slot) | 6 tests |
+| `ErrorState` | `frontend/src/shared/ui/ErrorState.jsx` | ✅ Built (danger dot + retry button) | 7 tests |
+| `VerifiedDot` | `frontend/src/shared/ui/VerifiedDot.jsx` | ✅ Built (8px green dot, never badge) | 7 tests |
+| `StatItem` | `frontend/src/shared/ui/StatItem.jsx` | ✅ Built (mono tabular-nums, bidi-isolated) | 9 tests |
+
+### BE Error Handling (Slice 1.3)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| Domain errors (`DomainError`, `NotFoundError`, `ExternalApiError`, `ValidationError`) | `backend/src/core/errors/DomainError.ts` | ✅ Built |
+| Global error middleware | `backend/src/middlewares/errorHandler.ts` | ✅ Built (envelope format) |
+| `successResponse()` helper | `backend/src/middlewares/errorHandler.ts` | ✅ Built |
+
+> Canonical primitives (`Card`, `Button`, `StatItem`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`) are **built in Slice 1.3** — see below.
 
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
@@ -44,9 +65,9 @@ Before building a component:
 
 ---
 
-## Canonical Primitives (Phase 1 — build first)
+## Canonical Primitives (Phase 1 — built in Slice 1.3)
 
-Shared, token-driven primitives every feature reuses. Built in Slice 1.3. All are RTL-aware (logical properties) and cover all visual states.
+Shared, token-driven primitives every feature reuses. All are RTL-aware (logical properties) and cover all visual states.
 
 | Primitive | Target File | Role | Key Tokens / Classes |
 | --------- | ----------- | ---- | -------------------- |

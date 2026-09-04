@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 1 — Foundation & Design System  
-**Last completed:** Slice 1.2 — Providers & Backend Scaffolding  
-**Next:** Slice 1.3 — Shared UI Primitives & Domain Error Standard  
+**Last completed:** Slice 1.3 — Shared UI Primitives & Domain Error Standard  
+**Next:** Slice 1.4 — Layout Shells & API Gateway Routing  
 
 ---
 
@@ -73,10 +73,10 @@ Every slice is implemented through explicit Clean Architecture layers:
 - [x] **1.2 Providers & Backend Scaffolding**
   - [x] **FE Subslice**: Root composition: `ErrorBoundary` → `ThemeProvider` → `QueryClientProvider` → `I18nProvider` → `BrowserRouter`. ErrorBoundary with `getDerivedStateFromError` + fallback UI. 5 tests.
   - [x] **BE Subslice**: Helmet CSP (Google Fonts, OpenStreetMap, Turnstile-ready), CORS whitelist, Winston request logging, express-rate-limit (100/min general, 5/15min strict). `/health` liveness + `/ready` DB ping with graceful degradation. 14 tests.
-- [ ] **1.3 Shared UI Primitives & Domain Error Standard**
-  - [ ] **FE Subslice**: Primitives: `Card`, `Button`, `Skeleton`, `EmptyState`, `ErrorState`, `StatItem` with logical CSS properties and verified status dot (never green badge).
-  - [ ] **BE Subslice**: Clean Architecture `core/errors` hierarchy (`DomainError`, `NotFoundError`, `ExternalApiError`, `ValidationError`). Global error middleware.
-  - [ ] **Tests**: Unit tests for primitives covering all 4 states; error handler unit tests.
+- [x] **1.3 Shared UI Primitives & Domain Error Standard**
+  - [x] **FE Subslice**: Primitives: `Card`, `Button`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`, `StatItem` with logical CSS properties and verified status dot (never green badge). All 7 built in `shared/ui/` with `@typedef` JSDoc types, Tailwind token classes, RTL-safe layout, and `forwardRef` on Card/Button.
+  - [x] **BE Subslice**: Clean Architecture `core/errors` hierarchy (`DomainError`, `NotFoundError`, `ExternalApiError`, `ValidationError`) — already existed from scaffold. Global error middleware `errorHandler.ts` formats domain errors into `{ code, message }` inside envelope. `successResponse()` helper wraps controller returns.
+  - [x] **Tests**: 49 new FE primitive tests (Card 7, Button 8, Skeleton 7, EmptyState 6, ErrorState 7, VerifiedDot 7, StatItem 9). Total: 59 FE + 32 BE = 91 tests passing.
 - [ ] **1.4 Layout Shells & API Gateway Routing**
   - [ ] **FE Subslice**: `RootLayout` (Navbar + Footer) + `AppLayout` (dashboard shell with collapsible sidebar using `var(--sidebar-width)` and logical `inset-inline-start`).
   - [ ] **BE Subslice**: Central router mounting under `/api/v1`. Static serving setup for `frontend/dist/` with single-origin SPA fallback.
