@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 1 — Foundation & Design System  
-**Last completed:** Slice 1.1 — Design Tokens & Backend Environment  
-**Next:** Slice 1.2 — Providers & Backend Scaffolding  
+**Last completed:** Slice 1.2 — Providers & Backend Scaffolding  
+**Next:** Slice 1.3 — Shared UI Primitives & Domain Error Standard  
 
 ---
 
@@ -70,9 +70,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 - [x] **1.1 Design Tokens & Backend Environment**
   - [x] **FE Subslice**: Token set authored into `App.css` `:root` (obsidian surfaces, cool-crimson `--accent-500`, verified green `--verified`, `--text-on-accent`, `--overlay-bg`). Tailwind 4 CSS-first `@theme` mapping (no `tailwind.config.js`). Fonts (Archivo, IBM Plex Mono, Manrope).
   - [x] **BE Subslice**: Zod env schema validation (`PORT`, `CORS_ORIGIN`, `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `JWT_EXPIRY`, `JWT_REFRESH_EXPIRY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_SITE_KEY`, `SENTRY_DSN`). Lazy parsing with `validateEnv()` startup hook. 10 config tests.
-- [ ] **1.2 Providers & Backend Scaffolding**
-  - [ ] **FE Subslice**: Root composition: `ErrorBoundary` → `ThemeProvider` → `QueryClientProvider` → `I18nProvider` → `BrowserRouter`.
-  - [ ] **BE Subslice**: Express server initialization with middleware pipeline: Helmet (with strict CSP), CORS whitelist, Winston logger, and rate-limiting. Liveness probe `/health` and readiness probe `/ready` (DB ping).
+- [x] **1.2 Providers & Backend Scaffolding**
+  - [x] **FE Subslice**: Root composition: `ErrorBoundary` → `ThemeProvider` → `QueryClientProvider` → `I18nProvider` → `BrowserRouter`. ErrorBoundary with `getDerivedStateFromError` + fallback UI. 5 tests.
+  - [x] **BE Subslice**: Helmet CSP (Google Fonts, OpenStreetMap, Turnstile-ready), CORS whitelist, Winston request logging, express-rate-limit (100/min general, 5/15min strict). `/health` liveness + `/ready` DB ping with graceful degradation. 14 tests.
 - [ ] **1.3 Shared UI Primitives & Domain Error Standard**
   - [ ] **FE Subslice**: Primitives: `Card`, `Button`, `Skeleton`, `EmptyState`, `ErrorState`, `StatItem` with logical CSS properties and verified status dot (never green badge).
   - [ ] **BE Subslice**: Clean Architecture `core/errors` hierarchy (`DomainError`, `NotFoundError`, `ExternalApiError`, `ValidationError`). Global error middleware.

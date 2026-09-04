@@ -8,11 +8,20 @@ healthRouter.get("/health", (_req, res) => {
 });
 
 healthRouter.get("/ready", async (_req, res) => {
-  // DB ping check will be added when Prisma is wired
-  res.json(
-    successResponse({
-      status: "ok",
-      db: { latencyMs: 0, syncedAt: null },
-    }),
-  );
+  const result: { status: string; db: { latencyMs: number | null; syncedAt: string | null } } = {
+    status: "ok",
+    db: { latencyMs: null, syncedAt: null },
+  };
+
+  try {
+    const { prisma } = await import("../infrastructure/database/prismaClient.js");
+    const start = Date.now();
+    await prisma.$queryRaw`SELECT 1`;
+    result.db.latencyMs = Date.now() - start;
+  } catch {
+    result.status = "degraded";
+    result.db.latencyMs = null;
+  }
+
+  res.json(successResponse(result));
 });

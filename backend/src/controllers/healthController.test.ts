@@ -18,6 +18,8 @@ describe("health endpoints", () => {
     const res = await request(app).get("/ready");
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.data).toHaveProperty("status", "ok");
+    expect(res.body.data).toHaveProperty("status");
+    expect(["ok", "degraded"]).toContain(res.body.data.status);
+    expect(res.body.data.db).toHaveProperty("latencyMs");
   });
 });
