@@ -46,9 +46,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ## Current Status
 
-**Phase:** Phase 0 — Monorepo Scaffolding & Setup  
-**Last completed:** Slice 0.1 — Monorepo Scaffolding & Project Initialization  
-**Next:** Slice 1.1 — Design Tokens & Backend Environment  
+**Phase:** Phase 1 — Foundation & Design System  
+**Last completed:** Slice 1.1 — Design Tokens & Backend Environment  
+**Next:** Slice 1.2 — Providers & Backend Scaffolding  
 
 ---
 
@@ -67,9 +67,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ### Phase 1 — Foundation & Design System
 
-- [ ] **1.1 Design Tokens & Backend Environment**
-  - [ ] **FE Subslice**: Token set authored into `App.css` `:root` (obsidian surfaces, cool-crimson `--accent-500`, verified green `--verified`, `--text-on-accent`, `--overlay-bg`). Map into `tailwind.config.js`. Load fonts (Archivo, IBM Plex Mono, Manrope).
-  - [ ] **BE Subslice**: Environment variable schema validation (`PORT`, `CORS_ORIGIN`, `DATABASE_URL`, `REDIS_URL`) using Zod.
+- [x] **1.1 Design Tokens & Backend Environment**
+  - [x] **FE Subslice**: Token set authored into `App.css` `:root` (obsidian surfaces, cool-crimson `--accent-500`, verified green `--verified`, `--text-on-accent`, `--overlay-bg`). Tailwind 4 CSS-first `@theme` mapping (no `tailwind.config.js`). Fonts (Archivo, IBM Plex Mono, Manrope).
+  - [x] **BE Subslice**: Zod env schema validation (`PORT`, `CORS_ORIGIN`, `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `JWT_EXPIRY`, `JWT_REFRESH_EXPIRY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_SITE_KEY`, `SENTRY_DSN`). Lazy parsing with `validateEnv()` startup hook. 10 config tests.
 - [ ] **1.2 Providers & Backend Scaffolding**
   - [ ] **FE Subslice**: Root composition: `ErrorBoundary` → `ThemeProvider` → `QueryClientProvider` → `I18nProvider` → `BrowserRouter`.
   - [ ] **BE Subslice**: Express server initialization with middleware pipeline: Helmet (with strict CSP), CORS whitelist, Winston logger, and rate-limiting. Liveness probe `/health` and readiness probe `/ready` (DB ping).

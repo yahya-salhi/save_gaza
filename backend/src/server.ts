@@ -1,7 +1,9 @@
 import "dotenv/config";
-import { config } from "./config.js";
+import { config, validateEnv } from "./config.js";
 import { createApp } from "./app.js";
 import { logger } from "./infrastructure/logger.js";
+
+validateEnv();
 
 const app = createApp();
 

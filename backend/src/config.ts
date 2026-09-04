@@ -14,13 +14,16 @@ const EnvSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
-  PORT: z.coerce.number().default(3000),
-  CORS_ORIGIN: z.string().min(1).default("http://localhost:5173"),
+  PORT: z.coerce.number().int().positive().default(3000),
+  CORS_ORIGIN: z.string().url().default("http://localhost:5173"),
   DATABASE_URL: z.string().optional(),
   REDIS_URL: z.string().optional().default(""),
   JWT_SECRET: z.string().min(1).default("dev-secret-change-me"),
   JWT_EXPIRY: z.string().min(1).default("15m"),
   JWT_REFRESH_EXPIRY: z.string().min(1).default("7d"),
+  TURNSTILE_SECRET_KEY: z.string().optional(),
+  TURNSTILE_SITE_KEY: z.string().optional(),
+  SENTRY_DSN: z.string().url().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
@@ -63,4 +66,21 @@ export const config = {
   get jwtRefreshExpiry(): string {
     return env().JWT_REFRESH_EXPIRY;
   },
+  get turnstileSecretKey(): string | undefined {
+    return env().TURNSTILE_SECRET_KEY;
+  },
+  get turnstileSiteKey(): string | undefined {
+    return env().TURNSTILE_SITE_KEY;
+  },
+  get sentryDsn(): string | undefined {
+    return env().SENTRY_DSN;
+  },
 };
+
+/**
+ * Eagerly validate the full env schema at startup.
+ * Call once in server.ts before createApp() to fail fast on bad config.
+ */
+export function validateEnv(): void {
+  EnvSchema.parse(process.env);
+}
