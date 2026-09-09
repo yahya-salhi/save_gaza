@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 2 — Landing — Instrument Hero & Summary Endpoint  
-**Last completed:** Slice 2.1 — Hero UI & Summary API Contract  
-**Next:** Slice 2.2 — Live Ticker Motion & Backend Stale-While-Revalidate Caching  
+**Last completed:** Slice 2.2 — Live Ticker Motion & Backend Stale-While-Revalidate Caching  
+**Next:** Slice 2.3 — Wire Hero & Social Sharing (SEO)  
 
 ---
 
@@ -94,9 +94,9 @@ Every slice is implemented through explicit Clean Architecture layers:
   - [x] **FE Subslice**: Build Hero UI using `features/summary/__fixtures__/summary.js`: mono tally (`--text-4xl`, crimson), heading, caption, hairline rule, CTA to `/app`. All 4 states supported (loading / empty / error / populated via prop-driven status). Correlated the Slice 1.5 fixture to the **TechForPalestine v3 `summary.json`** nested multi-region shape (contract decision). Corrected fixture + fixture test (gaza / west_bank / lebanon / known_killed_in_gaza / known_press_killed_in_gaza). Home route `/` renders `HomePage` → `Hero`. Stubbed `useSummary` hook (`features/summary/hooks/useSummary.js`) for Slice 2.3 wiring. FE tests: 110 passing (+ fixture tests, +7 Hero, +1 HomePage).
   - [x] **BE Subslice**: Domain entity `Summary` (`core/entities/Summary.ts`), Zod `SummarySchema` (`core/schemas/summary.ts`), `SummaryFeedPort` (`core/ports/SummaryFeedPort.ts`), `GetSummaryUseCase` (`application/use-cases/`), external adapter `TechForPalestineSummaryClient` (`infrastructure/external/`), and controller `GET /api/v1/summary` mounted on `apiRouter`. Added `SUMMARY_FEED_URL` env (default v3 summary URL). Envelope + Zod validation at the application boundary; upstream failures map to `ExternalApiError` (502). BE tests: 39 passing (+ use case, + endpoint 200/502).
   - [x] **QA / a11y**: Numerals rendered LTR mono tabular with bidi isolation; heading/tally/caption hierarchy; CTA is a real `<Link>`.
-- [ ] **2.2 Live Ticker Motion & Backend Stale-While-Revalidate Caching**
-  - [ ] **FE Subslice**: Live ticker pulsing dot with `@media (prefers-reduced-motion: reduce)` override. Numerals formatted with `<span dir="ltr" className="tabular-nums font-mono [unicode-bidi:isolate]">`.
-  - [ ] **BE Subslice**: Redis / in-memory caching layer with 5-minute TTL and stale-while-revalidate fallback if upstream fails.
+- [x] **2.2 Live Ticker Motion & Backend Stale-While-Revalidate Caching**
+  - [x] **FE Subslice**: `LiveTicker` (`features/summary/components/LiveTicker.jsx` + `.module.css`) — 8px `var(--accent-500)` pulsing dot, `aria-live="polite"`, LTR mono tabular timestamp with bidi isolation, `@media (prefers-reduced-motion: reduce)` disables pulse. Rendered inside `Hero` populated path. FE tests: 117 passing (+6 LiveTicker, +1 Hero ticker).
+  - [x] **BE Subslice**: `CachePort` (`core/ports/CachePort.ts`) + `InMemoryCache` + `CachedSummaryFeed` decorator (`infrastructure/cache/`) — 5-min TTL, fresh hit short-circuits upstream, stale served on upstream failure, 502 only on cold start. No Redis dep (port seam keeps 6.3 path open). BE tests: 48 passing (+4 cache, +4 decorator, +1 stale endpoint).
 - [ ] **2.3 Wire Hero & Social Sharing (SEO)**
   - [ ] **FE Subslice**: Wire `features/summary/hooks/useSummary.js` to replace mock fixture. Human-readable error banner with retry trigger.
   - [ ] **BE Subslice**: E2E integration test verifying `GET /api/v1/summary` returns HTTP 200 with valid envelope.

@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import request from "supertest";
+import { summaryCache } from "./summaryController.js";
 
 const validSummary = {
   gaza: {
@@ -53,6 +54,10 @@ function jsonResponse(body: unknown, ok = true, status = 200) {
   } as unknown as Response;
 }
 
+beforeEach(() => {
+  summaryCache.clear();
+});
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -86,5 +91,25 @@ describe("summary endpoint", () => {
     expect(res.status).toBe(502);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBe("EXTERNAL_API_ERROR");
+  });
+
+  it("serves stale cache with 200 when upstream fails after a warm response", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(validSummary)));
+
+    const { createApp } = await import("../app.js");
+    const app = createApp();
+
+    const warm = await request(app).get("/api/v1/summary");
+    expect(warm.status).toBe(200);
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse({}, false, 503)),
+    );
+
+    const stale = await request(app).get("/api/v1/summary");
+    expect(stale.status).toBe(200);
+    expect(stale.body.success).toBe(true);
+    expect(stale.body.data.gaza.killed.total).toBe(73658);
   });
 });

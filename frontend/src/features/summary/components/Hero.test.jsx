@@ -62,4 +62,11 @@ describe("Hero", () => {
     screen.getByRole("button", { name: /retry/i }).click();
     expect(onRetry).toHaveBeenCalled();
   });
+
+  it("renders the live ticker with the last update date", () => {
+    renderHero({ summary: summaryFixture });
+    const dates = screen.getAllByText(summaryFixture.gaza.last_update);
+    expect(dates.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/live/i)).toBeInTheDocument();
+  });
 });

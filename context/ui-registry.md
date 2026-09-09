@@ -129,6 +129,28 @@ Total: 101 FE + 35 BE = **136 tests passing** (+5 BE envelope, +8 FE client, +5 
 
 Total: 110 FE + 39 BE = **149 tests passing** (+9 FE, +4 BE). Typecheck green on both workspaces; production build green.
 
+## Built So Far (Slice 2.2)
+
+### Live Ticker (FE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `LiveTicker` | `frontend/src/features/summary/components/LiveTicker.jsx` | ✅ Built — 8px `var(--accent-500)` pulse dot, `aria-live="polite"`, LTR mono tabular date, `prefers-reduced-motion` disables pulse; rendered in `Hero` populated path | 6 tests |
+| `LiveTicker.module.css` | `frontend/src/features/summary/components/LiveTicker.module.css` | ✅ Built — token-only (`--accent-500`, `--space-2`, `--text-3`, `--font-mono`), logical layout, no hardcoded hex | — |
+
+### Summary SWR Cache (BE)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `CachePort` | `backend/src/core/ports/CachePort.ts` | ✅ Built (`get` fresh-only / `getStale` / `set` / `clear`) |
+| `InMemoryCache` | `backend/src/infrastructure/cache/InMemoryCache.ts` | ✅ Built (TTL map, keeps expired for stale fallback) |
+| `CachedSummaryFeed` | `backend/src/infrastructure/cache/CachedSummaryFeed.ts` | ✅ Built (decorator over `SummaryFeedPort`; 5-min TTL; stale-on-failure, 502 cold start) |
+| Summary wiring | `backend/src/controllers/summaryController.ts` | ✅ Wired (exports `summaryCache` for test isolation) |
+
+### Tests (Slice 2.2)
+
+Total: 117 FE + 48 BE = **165 tests passing** (+7 FE, +9 BE). Typecheck green on both workspaces; production build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |

@@ -2,11 +2,15 @@ import { Router } from "express";
 import { successResponse } from "../middlewares/envelope.js";
 import { GetSummaryUseCase } from "../application/use-cases/GetSummaryUseCase.js";
 import { TechForPalestineSummaryClient } from "../infrastructure/external/TechForPalestineSummaryClient.js";
+import { InMemoryCache } from "../infrastructure/cache/InMemoryCache.js";
+import { CachedSummaryFeed } from "../infrastructure/cache/CachedSummaryFeed.js";
 
 export const summaryRouter = Router();
 
+export const summaryCache = new InMemoryCache();
 const summaryClient = new TechForPalestineSummaryClient();
-const getSummaryUseCase = new GetSummaryUseCase(summaryClient);
+const cachedFeed = new CachedSummaryFeed(summaryClient, summaryCache);
+const getSummaryUseCase = new GetSummaryUseCase(cachedFeed);
 
 summaryRouter.get("/summary", async (_req, res, next) => {
   try {

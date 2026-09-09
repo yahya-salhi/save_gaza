@@ -3,6 +3,7 @@ import Button from "../../../shared/ui/Button.jsx";
 import Skeleton from "../../../shared/ui/Skeleton.jsx";
 import ErrorState from "../../../shared/ui/ErrorState.jsx";
 import EmptyState from "../../../shared/ui/EmptyState.jsx";
+import LiveTicker from "./LiveTicker.jsx";
 
 /**
  * @typedef {object} SummaryData
@@ -60,6 +61,8 @@ export default function Hero({
 
       {!isLoading && !isError && summary && (
         <div className="flex flex-col items-center gap-4">
+          <LiveTicker lastUpdate={summary.gaza.last_update} />
+
           <p className="text-xs uppercase tracking-[0.2em] text-text-3">
             Palestinians killed in Gaza
           </p>
