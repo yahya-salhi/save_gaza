@@ -100,6 +100,35 @@ Fixture standard: each feature stores mock payload at `features/[feature]/__fixt
 
 Total: 101 FE + 35 BE = **136 tests passing** (+5 BE envelope, +8 FE client, +5 FE fixture). Backend vitest config added to scope tests to `src/` (excludes compiled `dist/`). Typecheck green on both workspaces; production build green.
 
+## Built So Far (Slice 2.1)
+
+### Hero UI & Summary API Contract (FE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `Hero` | `frontend/src/features/summary/components/Hero.jsx` | ✅ Built — mono crimson tally, heading, caption, hairline rule, CTA to `/app`; all 4 states (loading/empty/error/populated) prop-driven | 7 tests |
+| `HomePage` | `frontend/src/pages/HomePage.jsx` | ✅ Built — renders Hero populated from summary fixture (Slice 2.1) | 1 test |
+| `useSummary` | `frontend/src/features/summary/hooks/useSummary.js` | ✅ Stubbed — `useQuery(["summary"], apiGet("/summary"))`; wiring into Hero on Slice 2.3 | — |
+| Summary fixture (corrected to v3 shape) | `frontend/src/features/summary/__fixtures__/summary.js` | ✅ Corrected to TechForPalestine **v3** `summary.json` nested multi-region shape (gaza / west_bank / lebanon / known_killed_in_gaza / known_press_killed_in_gaza) | 9 fixture tests |
+
+> **Contract decision (Slice 2.1):** `GET /api/v1/summary` and the FE fixture standardize on the TechForPalestine **v3** `summary.json` nested multi-region shape, replacing the earlier flat Snapshot 1.5 fixture. Dev-only `client.js` fallback for `/summary` points at `api/v3/summary.json`.
+
+### Summary API Contract (BE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `Summary` entity | `backend/src/core/entities/Summary.ts` | ✅ Built | — |
+| `SummarySchema` (Zod) | `backend/src/core/schemas/summary.ts` | ✅ Built | — |
+| `SummaryFeedPort` | `backend/src/core/ports/SummaryFeedPort.ts` | ✅ Built | — |
+| `GetSummaryUseCase` | `backend/src/application/use-cases/GetSummaryUseCase.ts` | ✅ Built | 2 tests |
+| `TechForPalestineSummaryClient` | `backend/src/infrastructure/external/TechForPalestineSummaryClient.ts` | ✅ Built (implements SummaryFeedPort, async `fetch`, ExternalApiError on failure) | — |
+| Summary controller | `backend/src/controllers/summaryController.ts` | ✅ Built + mounted on `apiRouter` | 2 endpoint tests |
+| `SUMMARY_FEED_URL` env | `backend/src/config.ts` | ✅ Added (default v3 summary URL) | — |
+
+### Tests (Slice 2.1)
+
+Total: 110 FE + 39 BE = **149 tests passing** (+9 FE, +4 BE). Typecheck green on both workspaces; production build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |

@@ -46,9 +46,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ## Current Status
 
-**Phase:** Phase 1 — Foundation & Design System  
-**Last completed:** Slice 1.5 — Data Envelope & Mock Foundation  
-**Next:** Slice 2.1 — Hero UI & Summary API Contract  
+**Phase:** Phase 2 — Landing — Instrument Hero & Summary Endpoint  
+**Last completed:** Slice 2.1 — Hero UI & Summary API Contract  
+**Next:** Slice 2.2 — Live Ticker Motion & Backend Stale-While-Revalidate Caching  
 
 ---
 
@@ -90,10 +90,10 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ### Phase 2 — Landing — Instrument Hero & Summary Endpoint
 
-- [ ] **2.1 Hero UI & Summary API Contract**
-  - [ ] **FE Subslice**: Build Hero UI using `features/summary/__fixtures__/summary.js`: mono tally (`--text-4xl`, crimson), heading, caption, hairline rule, CTA to `/app`. All 4 states supported.
-  - [ ] **BE Subslice**: Domain entity `Summary`, Zod schema validation, TechForPalestine v2 summary service, and controller `GET /api/v1/summary`.
-  - [ ] **QA / a11y**: Typography scale check, WCAG AA contrast check on obsidian surface.
+- [x] **2.1 Hero UI & Summary API Contract**
+  - [x] **FE Subslice**: Build Hero UI using `features/summary/__fixtures__/summary.js`: mono tally (`--text-4xl`, crimson), heading, caption, hairline rule, CTA to `/app`. All 4 states supported (loading / empty / error / populated via prop-driven status). Correlated the Slice 1.5 fixture to the **TechForPalestine v3 `summary.json`** nested multi-region shape (contract decision). Corrected fixture + fixture test (gaza / west_bank / lebanon / known_killed_in_gaza / known_press_killed_in_gaza). Home route `/` renders `HomePage` → `Hero`. Stubbed `useSummary` hook (`features/summary/hooks/useSummary.js`) for Slice 2.3 wiring. FE tests: 110 passing (+ fixture tests, +7 Hero, +1 HomePage).
+  - [x] **BE Subslice**: Domain entity `Summary` (`core/entities/Summary.ts`), Zod `SummarySchema` (`core/schemas/summary.ts`), `SummaryFeedPort` (`core/ports/SummaryFeedPort.ts`), `GetSummaryUseCase` (`application/use-cases/`), external adapter `TechForPalestineSummaryClient` (`infrastructure/external/`), and controller `GET /api/v1/summary` mounted on `apiRouter`. Added `SUMMARY_FEED_URL` env (default v3 summary URL). Envelope + Zod validation at the application boundary; upstream failures map to `ExternalApiError` (502). BE tests: 39 passing (+ use case, + endpoint 200/502).
+  - [x] **QA / a11y**: Numerals rendered LTR mono tabular with bidi isolation; heading/tally/caption hierarchy; CTA is a real `<Link>`.
 - [ ] **2.2 Live Ticker Motion & Backend Stale-While-Revalidate Caching**
   - [ ] **FE Subslice**: Live ticker pulsing dot with `@media (prefers-reduced-motion: reduce)` override. Numerals formatted with `<span dir="ltr" className="tabular-nums font-mono [unicode-bidi:isolate]">`.
   - [ ] **BE Subslice**: Redis / in-memory caching layer with 5-minute TTL and stale-while-revalidate fallback if upstream fails.

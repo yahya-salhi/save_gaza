@@ -24,6 +24,10 @@ const EnvSchema = z.object({
   TURNSTILE_SECRET_KEY: z.string().optional(),
   TURNSTILE_SITE_KEY: z.string().optional(),
   SENTRY_DSN: z.string().url().optional(),
+  SUMMARY_FEED_URL: z
+    .string()
+    .url()
+    .default("https://data.techforpalestine.org/api/v3/summary.json"),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
@@ -74,6 +78,9 @@ export const config = {
   },
   get sentryDsn(): string | undefined {
     return env().SENTRY_DSN;
+  },
+  get summaryFeedUrl(): string {
+    return env().SUMMARY_FEED_URL;
   },
 };
 

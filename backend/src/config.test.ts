@@ -15,7 +15,8 @@ describe("env config", () => {
         key.startsWith("SAVEGAZA_") ||
         ["NODE_ENV", "PORT", "CORS_ORIGIN", "DATABASE_URL", "REDIS_URL",
          "JWT_SECRET", "JWT_EXPIRY", "JWT_REFRESH_EXPIRY",
-         "TURNSTILE_SECRET_KEY", "TURNSTILE_SITE_KEY", "SENTRY_DSN"].includes(key)
+         "TURNSTILE_SECRET_KEY", "TURNSTILE_SITE_KEY", "SENTRY_DSN",
+         "SUMMARY_FEED_URL"].includes(key)
       ) {
         delete process.env[key];
       }
@@ -31,6 +32,9 @@ describe("env config", () => {
     expect(config.jwtExpiry).toBe("15m");
     expect(config.jwtRefreshExpiry).toBe("7d");
     expect(config.redisUrl).toBe("");
+    expect(config.summaryFeedUrl).toBe(
+      "https://data.techforpalestine.org/api/v3/summary.json",
+    );
   });
 
   it("reads custom values from env", async () => {

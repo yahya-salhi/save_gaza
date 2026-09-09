@@ -71,7 +71,7 @@ export async function apiGet(endpoint) {
     } else if (endpoint === "/statistics/west-bank") {
       url = "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json";
     } else if (endpoint === "/summary") {
-      url = "https://data.techforpalestine.org/api/v2/summary.json";
+      url = "https://data.techforpalestine.org/api/v3/summary.json";
     }
   }
 

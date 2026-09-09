@@ -138,7 +138,7 @@ export async function apiGet(endpoint) {
     } else if (endpoint === "/statistics/west-bank") {
       url = "https://data.techforpalestine.org/api/v2/west_bank_daily.min.json";
     } else if (endpoint === "/summary") {
-      url = "https://data.techforpalestine.org/api/v2/summary.json";
+      url = "https://data.techforpalestine.org/api/v3/summary.json";
     }
   }
 
@@ -293,36 +293,76 @@ export function MobileNav() {
 Zod ≥ 3.23. Validates client form inputs and server API payloads.
 
 ### Summary DTO Schema (`/api/v1/summary`)
+The summary contract standardizes on the TechForPalestine **v3** `summary.json`
+nested multi-region shape (gaza / west_bank / lebanon / known_killed_in_gaza /
+known_press_killed_in_gaza). The backend entity, Zod schema, and the frontend
+fixture all mirror this exact shape.
+
 ```javascript
 import { z } from "zod";
 
+const CasualtyBreakdownSchema = z.object({
+  total: z.number().int().nonnegative(),
+  children: z.number().int().nonnegative().optional(),
+  women: z.number().int().nonnegative().optional(),
+  civil_defence: z.number().int().nonnegative().optional(),
+  press: z.number().int().nonnegative().optional(),
+  medical: z.number().int().nonnegative().optional(),
+});
+
 export const SummarySchema = z.object({
-  reportDate: z.string(),
   gaza: z.object({
+    reports: z.number().int().nonnegative(),
+    last_update: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    massacres: z.number().int().nonnegative(),
+    killed: CasualtyBreakdownSchema,
+    famine: z.record(z.string(), z.unknown()).default({}),
+    aid_seeker: z.record(z.string(), z.unknown()).default({}),
+    injured: z.object({ total: z.number().int().nonnegative() }),
+  }),
+  west_bank: z.object({
+    reports: z.number().int().nonnegative(),
+    last_update: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    settler_attacks: z.number().int().nonnegative(),
     killed: z.object({
       total: z.number().int().nonnegative(),
       children: z.number().int().nonnegative(),
-      women: z.number().int().nonnegative(),
-      press: z.number().int().nonnegative().optional(),
-      medical: z.number().int().nonnegative().optional(),
-      civilDefence: z.number().int().nonnegative().optional(),
     }),
     injured: z.object({
-      total: z.number().int().nonnegative(),
-    }),
-  }),
-  westBank: z.object({
-    killed: z.object({
       total: z.number().int().nonnegative(),
       children: z.number().int().nonnegative(),
     }),
-    injured: z.object({
-      total: z.number().int().nonnegative(),
-    }),
   }),
-  lastUpdated: z.string(),
+  lebanon: z.object({
+    reports: z.number().int().nonnegative(),
+    first_report: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    last_update: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    killed: z.object({ total: z.number().int().nonnegative() }),
+    injured: z.object({ total: z.number().int().nonnegative() }),
+  }),
+  known_killed_in_gaza: z.object({
+    records: z.number().int().nonnegative(),
+    pages: z.number().int().nonnegative(),
+    page_size: z.number().int().nonnegative(),
+    male: z.object({
+      adult: z.number().int().nonnegative(),
+      senior: z.number().int().nonnegative(),
+      child: z.number().int().nonnegative(),
+    }),
+    female: z.object({
+      adult: z.number().int().nonnegative(),
+      senior: z.number().int().nonnegative(),
+      child: z.number().int().nonnegative(),
+    }),
+    last_update: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    includes_until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  }),
+  known_press_killed_in_gaza: z.object({
+    records: z.number().int().nonnegative(),
+  }),
 });
 ```
+
 
 ### Incident Submission Schema (`/api/v1/incidents`)
 ```javascript

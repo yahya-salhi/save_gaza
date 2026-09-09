@@ -5,6 +5,7 @@ import { ThemeProvider } from "./shared/providers/ThemeProvider.jsx";
 import { I18nProvider } from "./shared/providers/I18nProvider.jsx";
 import RootLayout from "./layouts/RootLayout.jsx";
 import AppLayout from "./layouts/AppLayout.jsx";
+import HomePage from "./pages/HomePage.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,7 @@ export default function App() {
               <Routes>
                 {/* Public pages — RootLayout shell */}
                 <Route element={<RootLayout />}>
-                  <Route path="/" element={<PlaceholderPage title="Home — Coming Soon" />} />
+                  <Route path="/" element={<HomePage />} />
                   <Route path="/submit" element={<PlaceholderPage title="Submit Incident — Coming Soon" />} />
                   <Route path="/login" element={<PlaceholderPage title="Admin Login — Coming Soon" />} />
                   <Route path="/admin/moderation" element={<PlaceholderPage title="Moderation — Coming Soon" />} />
