@@ -23,3 +23,18 @@ describe("health endpoints", () => {
     expect(res.body.data.db).toHaveProperty("latencyMs");
   });
 });
+
+describe("API v1 gateway", () => {
+  it("GET /api/v1/nonexistent returns 404 envelope", async () => {
+    const res = await request(app).get("/api/v1/nonexistent");
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBe(false);
+  });
+
+  it("health endpoints remain at root level", async () => {
+    const health = await request(app).get("/health");
+    const ready = await request(app).get("/ready");
+    expect(health.status).toBe(200);
+    expect(ready.status).toBe(200);
+  });
+});

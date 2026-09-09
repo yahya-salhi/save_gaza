@@ -1,8 +1,10 @@
 import express from "express";
+import path from "path";
 import helmet from "helmet";
 import cors from "cors";
 import { config } from "./config.js";
 import { healthRouter } from "./controllers/healthController.js";
+import { apiRouter } from "./controllers/apiRouter.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { requestLogger } from "./middlewares/requestLogger.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
@@ -39,8 +41,35 @@ export function createApp() {
   app.use(requestLogger);
   app.use(apiLimiter);
 
-  // --- Routes ---
+  // --- Health routes (root level) ---
   app.use(healthRouter);
+
+  // --- API v1 routes ---
+  app.use("/api/v1", apiRouter);
+
+  // --- Static SPA serving (production) ---
+  const spaDist = path.resolve(import.meta.dirname ?? path.dirname(new URL(import.meta.url).pathname), "../../frontend/dist");
+  app.use(express.static(spaDist));
+
+  // SPA catch-all — any non-API, non-static GET route serves index.html
+  app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api/") || req.path.startsWith("/health") || req.path.startsWith("/ready")) {
+      return next();
+    }
+    res.sendFile(path.join(spaDist, "index.html"), (err) => {
+      if (err) next();
+    });
+  });
+
+  // API 404 — unmatched /api/* routes return envelope error
+  app.use("/api", (_req, res) => {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { code: "NOT_FOUND", message: "Endpoint not found" },
+      timestamp: new Date().toISOString(),
+    });
+  });
 
   // Global error handler (must be last middleware)
   app.use(errorHandler);

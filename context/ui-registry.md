@@ -51,6 +51,29 @@ Before building a component:
 | Global error middleware | `backend/src/middlewares/errorHandler.ts` | ✅ Built (envelope format) |
 | `successResponse()` helper | `backend/src/middlewares/errorHandler.ts` | ✅ Built |
 
+## Built So Far (Slice 1.4)
+
+### Layout Shells (FE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `Navbar` | `frontend/src/shared/ui/Navbar.jsx` | ✅ Built (logo, Dashboard/Report links, hamburger toggle, backdrop blur) | 8 tests |
+| `Footer` | `frontend/src/shared/ui/Footer.jsx` | ✅ Built (hairline border, TechForPalestine link, copyright) | 5 tests |
+| `RootLayout` | `frontend/src/layouts/RootLayout.jsx` | ✅ Built (Navbar + Outlet + Footer) | 6 tests |
+| `AppLayout` | `frontend/src/layouts/AppLayout.jsx` | ✅ Built (collapsible sidebar, desktop persistent + mobile drawer, `--overlay-bg` backdrop) | 10 tests |
+| `useUiStore` | `frontend/src/shared/stores/uiStore.js` | ✅ Built (Zustand sidebarOpen/toggle/open/close) | — |
+
+### API Gateway Routing (BE)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| Central API router (`/api/v1`) | `backend/src/controllers/apiRouter.ts` | ✅ Built (mounting point for future controllers) |
+| Static SPA serving + catch-all | `backend/src/app.ts` | ✅ Built (`express.static` + SPA fallback, API 404 envelope) |
+
+### Tests (Slice 1.4)
+
+Total: 88 FE + 34 BE = **122 tests passing**. Typecheck green on both workspaces.
+
 > Canonical primitives (`Card`, `Button`, `StatItem`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`) are **built in Slice 1.3** — see below.
 
 ## Global Tokens & Utilities (`frontend/src/App.css`)
@@ -101,8 +124,8 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | --------- | --------------- | -------- | ----------------------------- |
 | `RootLayout` | `layouts/RootLayout.jsx` | Layout Shell | `bg-bg`, `text-text-2`, Navbar + Outlet + Footer |
 | `AppLayout` | `layouts/AppLayout.jsx` | Layout Shell | `bg-bg`, collapsible sidebar (`--sidebar-width`), logical properties |
-| `Navbar` | `layouts/Navbar.jsx` | Navigation | `bg-bg/95`, backdrop blur, Radix Dialog mobile drawer |
-| `Footer` | `layouts/Footer.jsx` | Navigation | `bg-bg`, hairline border, copyright |
+| `Navbar` | `shared/ui/Navbar.jsx` | Navigation | `bg-bg/95`, backdrop blur, hamburger toggle, Radix Dialog mobile drawer |
+| `Footer` | `shared/ui/Footer.jsx` | Navigation | `bg-bg`, hairline border, copyright |
 | `Hero` | `features/summary/components/Hero.jsx` | Landing | `--text-4xl`, crimson mono tally, live ticker pulse |
 | `LiveTicker` | `features/summary/components/LiveTicker.jsx` | Landing | Pulsing dot, `aria-live="polite"`, reduced-motion override |
 | `GazaSummary` | `features/statistics/components/GazaSummary.jsx` | Statistics | Stat grid, 4 states, `StatItem` components |

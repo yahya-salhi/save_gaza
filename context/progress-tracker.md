@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 1 — Foundation & Design System  
-**Last completed:** Slice 1.3 — Shared UI Primitives & Domain Error Standard  
-**Next:** Slice 1.4 — Layout Shells & API Gateway Routing  
+**Last completed:** Slice 1.4 — Layout Shells & API Gateway Routing  
+**Next:** Slice 1.5 — Data Envelope & Mock Foundation  
 
 ---
 
@@ -77,10 +77,10 @@ Every slice is implemented through explicit Clean Architecture layers:
   - [x] **FE Subslice**: Primitives: `Card`, `Button`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`, `StatItem` with logical CSS properties and verified status dot (never green badge). All 7 built in `shared/ui/` with `@typedef` JSDoc types, Tailwind token classes, RTL-safe layout, and `forwardRef` on Card/Button.
   - [x] **BE Subslice**: Clean Architecture `core/errors` hierarchy (`DomainError`, `NotFoundError`, `ExternalApiError`, `ValidationError`) — already existed from scaffold. Global error middleware `errorHandler.ts` formats domain errors into `{ code, message }` inside envelope. `successResponse()` helper wraps controller returns.
   - [x] **Tests**: 49 new FE primitive tests (Card 7, Button 8, Skeleton 7, EmptyState 6, ErrorState 7, VerifiedDot 7, StatItem 9). Total: 59 FE + 32 BE = 91 tests passing.
-- [ ] **1.4 Layout Shells & API Gateway Routing**
-  - [ ] **FE Subslice**: `RootLayout` (Navbar + Footer) + `AppLayout` (dashboard shell with collapsible sidebar using `var(--sidebar-width)` and logical `inset-inline-start`).
-  - [ ] **BE Subslice**: Central router mounting under `/api/v1`. Static serving setup for `frontend/dist/` with single-origin SPA fallback.
-  - [ ] **Tests**: Shell layout mounting and drawer toggle tests.
+- [x] **1.4 Layout Shells & API Gateway Routing**
+  - [x] **FE Subslice**: `RootLayout` (Navbar + Footer) + `AppLayout` (dashboard shell with collapsible sidebar using `var(--sidebar-width)` and logical `inset-inline-start`).
+  - [x] **BE Subslice**: Central router mounting under `/api/v1`. Static serving setup for `frontend/dist/` with single-origin SPA fallback.
+  - [x] **Tests**: Shell layout mounting and drawer toggle tests.
 - [ ] **1.5 Data Envelope & Mock Foundation**
   - [ ] **FE Subslice**: `shared/api/client.js` rewritten with `apiGet(endpoint)`, unwrapping `{ success, data, error, timestamp }`. Direct upstream calls blocked in production. `__fixtures__/` standard established.
   - [ ] **BE Subslice**: Standardized response envelope middleware wrapping all successful controller returns.
