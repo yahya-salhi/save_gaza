@@ -106,7 +106,8 @@ Total: 101 FE + 35 BE = **136 tests passing** (+5 BE envelope, +8 FE client, +5 
 
 | Item | Final Path | Status | Tests |
 | ---- | ---------- | ------ | ----- |
-| `Hero` | `frontend/src/features/summary/components/Hero.jsx` | ✅ Built — mono crimson tally, heading, caption, hairline rule, CTA to `/app`; all 4 states (loading/empty/error/populated) prop-driven | 7 tests |
+| `Hero` | `frontend/src/features/summary/components/Hero.jsx` | ✅ Field-ledger plate — entry strip (№ reports / TFP v3 / Gaza), whisper H1, bone-white mono tally (`--text-4xl`) with crimson rule, lede + breakdown + WB/Lebanon scope, dual CTA + submit link, `VerifiedDot` trust row; 4 states prop-driven, ticker owns date | 9 tests + 3 HomePage |
+| `Hero.module.css` | `frontend/src/features/summary/components/Hero.module.css` | ✅ Ledger plate signature — corner ticks, entry strip, ledger-rule field, `--elevation-3` plate, crimson-topped breakdown grid; token-only, logical props, single rise-in + reduced-motion guard | — |
 | `HomePage` | `frontend/src/pages/HomePage.jsx` | ✅ Built — renders Hero populated from summary fixture (Slice 2.1) | 1 test |
 | `useSummary` | `frontend/src/features/summary/hooks/useSummary.js` | ✅ Stubbed — `useQuery(["summary"], apiGet("/summary"))`; wiring into Hero on Slice 2.3 | — |
 | Summary fixture (corrected to v3 shape) | `frontend/src/features/summary/__fixtures__/summary.js` | ✅ Corrected to TechForPalestine **v3** `summary.json` nested multi-region shape (gaza / west_bank / lebanon / known_killed_in_gaza / known_press_killed_in_gaza) | 9 fixture tests |

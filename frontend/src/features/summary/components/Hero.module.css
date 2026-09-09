@@ -1,0 +1,304 @@
+/* Hero Module — Refined Observational Monument
+   Built with obsidian surfaces, cool-crimson data accent, logical properties,
+   and clean typographic scale without clipping or awkward margins. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-4);
+  padding-block: var(--space-8);
+  min-block-size: calc(100vh - 14rem);
+}
+
+/* Subtle observatory backdrop glow */
+.glowAura {
+  position: absolute;
+  inset-block-start: 18%;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: min(68rem, 90vw);
+  block-size: 26rem;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 60% 45% at 50% 50%,
+    color-mix(in srgb, var(--accent-800) 25%, transparent),
+    color-mix(in srgb, var(--accent-900) 10%, transparent) 60%,
+    transparent 100%
+  );
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+/* Main monument container */
+.monument {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  inline-size: 100%;
+  max-inline-size: 64rem;
+  margin-inline: auto;
+  text-align: center;
+  gap: var(--space-6);
+  animation: monument-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 1. Status strip */
+.statusStrip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  background-color: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.statusDivider {
+  color: var(--hairline-strong);
+  user-select: none;
+}
+
+.statusContext {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* 2. Primary readout */
+.readout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  inline-size: 100%;
+  gap: var(--space-2);
+}
+
+.readoutHeading {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.tallyWrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  inline-size: 100%;
+}
+
+.tally {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  font-size: clamp(5.6rem, 11vw, 9.6rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-1);
+}
+
+.accentRule {
+  inline-size: 3.6rem;
+  block-size: 2px;
+  background-color: var(--accent-500);
+  border-radius: var(--radius-full);
+  margin-block-start: var(--space-1);
+}
+
+.timeframe {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* 3. Demographic breakdown grid */
+.breakdownGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  inline-size: 100%;
+  max-inline-size: 52rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breakdownCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-3);
+  background-color: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--elevation-1);
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.breakdownCard:hover {
+  background-color: var(--surface-2);
+  border-color: var(--hairline-strong);
+  transform: translateY(var(--motion-lift));
+}
+
+.breakdownLabel {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.breakdownValue {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+
+/* 4. Secondary scope context */
+.scopeFootnote {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  max-inline-size: 44rem;
+  line-height: var(--leading-snug);
+}
+
+.scopeFigure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  color: var(--text-2);
+}
+
+/* 5. Actions */
+.actionCluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  margin-block-start: var(--space-2);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.reportLink {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--hairline-strong);
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.reportLink:hover {
+  color: var(--text-1);
+  text-decoration-color: var(--text-2);
+}
+
+.reportLink:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* 6. Trust Indicator */
+.trustIndicator {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--space-1);
+}
+
+/* State containers */
+.stateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  max-inline-size: 32rem;
+  padding-block: var(--space-8);
+}
+
+/* Animations & Responsive */
+@keyframes monument-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-block: var(--space-6);
+  }
+
+  .statusStrip {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: var(--radius-md);
+  }
+
+  .breakdownGrid {
+    grid-template-columns: 1fr;
+    max-inline-size: 28rem;
+  }
+
+  .buttonRow {
+    flex-direction: column;
+    inline-size: 100%;
+    max-inline-size: 24rem;
+  }
+
+  .buttonRow > * {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monument {
+    animation: none;
+  }
+
+  .breakdownCard,
+  .breakdownCard:hover {
+    transform: none;
+    transition: none;
+  }
+}

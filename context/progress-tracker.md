@@ -105,6 +105,18 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ---
 
+### Hero Full-Picture Upgrade (unreleased, post-2.3)
+
+Instrument Hero upgrade without new tokens or dependencies — gives the whole picture in one screen:
+
+- Kicker `Verified tally — documented daily` + `Save Gaza` H1 preserved for tests.
+- Giant mono crimson tally (`--text-4xl`) + one-sentence lede (children / women / injured / reports from fixture).
+- Breakdown strip (Children / Women / Injured) + West Bank + Lebanon scope line.
+- Dual CTA (`View the data` → `/app`, ghost `Explore the map` → `/app/gazaMap`) + `/submit` microcopy.
+- Trust row via `VerifiedDot` (8px green dot only) + `LiveTicker` still owns the timestamp.
+- `Hero.module.css`: token-only glow + hairline grid, logical properties, rise-in with reduced-motion guard.
+- Tests: 141 FE passing (kicker reworded to avoid colliding with `/live/i` ticker query). Build green.
+
 ### Phase 3 — Dashboard Shell & Statistics Engine
 
 - [x] **3.1 Dashboard Shell & Readiness Detail**
