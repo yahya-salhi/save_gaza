@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { successResponse } from "../middlewares/errorHandler.js";
+import { successResponse } from "../middlewares/envelope.js";
 
 export const healthRouter = Router();
 

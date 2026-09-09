@@ -18,6 +18,7 @@ npm-debug.log*
 # Testing & coverage
 coverage/
 *.lcov
+.vitest/
 
 # Prisma
 backend/prisma/*.db

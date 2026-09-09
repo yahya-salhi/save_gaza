@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 1 — Foundation & Design System  
-**Last completed:** Slice 1.4 — Layout Shells & API Gateway Routing  
-**Next:** Slice 1.5 — Data Envelope & Mock Foundation  
+**Last completed:** Slice 1.5 — Data Envelope & Mock Foundation  
+**Next:** Slice 2.1 — Hero UI & Summary API Contract  
 
 ---
 
@@ -81,10 +81,10 @@ Every slice is implemented through explicit Clean Architecture layers:
   - [x] **FE Subslice**: `RootLayout` (Navbar + Footer) + `AppLayout` (dashboard shell with collapsible sidebar using `var(--sidebar-width)` and logical `inset-inline-start`).
   - [x] **BE Subslice**: Central router mounting under `/api/v1`. Static serving setup for `frontend/dist/` with single-origin SPA fallback.
   - [x] **Tests**: Shell layout mounting and drawer toggle tests.
-- [ ] **1.5 Data Envelope & Mock Foundation**
-  - [ ] **FE Subslice**: `shared/api/client.js` rewritten with `apiGet(endpoint)`, unwrapping `{ success, data, error, timestamp }`. Direct upstream calls blocked in production. `__fixtures__/` standard established.
-  - [ ] **BE Subslice**: Standardized response envelope middleware wrapping all successful controller returns.
-  - [ ] **Tests**: Client envelope unwrapping tests and error normalization tests.
+- [x] **1.5 Data Envelope & Mock Foundation**
+  - [x] **FE Subslice**: Envelope-aware `shared/api/client.js` (`apiGet`/`apiPost`/`apiPatch` + `ApiError`) unwraps `{ success, data, error, timestamp }`. Direct upstream calls blocked in production (same-origin `/api/v1`); dev-only fallback when `VITE_API_BASE` empty. `__fixtures__/` standard established — unwrapped payload in `features/[feature]/__fixtures__/[endpoint].js` + colocated `.fixture.test.js`.
+  - [x] **BE Subslice**: Envelope helpers extracted to `middlewares/envelope.ts` (`successResponse`, `errorResponse`); `errorHandler.ts` and `app.ts` API-404 consume them. Controller returns wrapped via `successResponse`.
+  - [x] **Tests**: Envelope helper + API shape tests; client unwrapping, error normalization, apiPost/apiPatch, non-JSON error handling. Total: 101 FE + 35 BE = 136 tests passing.
 
 ---
 

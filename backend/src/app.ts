@@ -8,6 +8,7 @@ import { apiRouter } from "./controllers/apiRouter.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { requestLogger } from "./middlewares/requestLogger.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
+import { errorResponse } from "./middlewares/envelope.js";
 
 /**
  * Express app — separated from server startup so tests can import it directly.
@@ -63,12 +64,7 @@ export function createApp() {
 
   // API 404 — unmatched /api/* routes return envelope error
   app.use("/api", (_req, res) => {
-    res.status(404).json({
-      success: false,
-      data: null,
-      error: { code: "NOT_FOUND", message: "Endpoint not found" },
-      timestamp: new Date().toISOString(),
-    });
+    res.status(404).json(errorResponse("NOT_FOUND", "Endpoint not found"));
   });
 
   // Global error handler (must be last middleware)

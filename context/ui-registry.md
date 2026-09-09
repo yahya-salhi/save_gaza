@@ -76,6 +76,30 @@ Total: 88 FE + 34 BE = **122 tests passing**. Typecheck green on both workspaces
 
 > Canonical primitives (`Card`, `Button`, `StatItem`, `Skeleton`, `EmptyState`, `ErrorState`, `VerifiedDot`) are **built in Slice 1.3** — see below.
 
+## Built So Far (Slice 1.5)
+
+### Data Envelope & Mock Foundation (FE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| Envelope client (`apiGet`/`apiPost`/`apiPatch` + `ApiError`) | `frontend/src/shared/api/client.js` | ✅ Verified + expanded tests — unwraps `{ success, data, error, timestamp }`, prod blocks upstream | 11 tests |
+| `__fixtures__/` standard | `frontend/src/features/summary/__fixtures__/summary.js` | ✅ Established — unwrapped payload colocated per feature | 5 fixture tests |
+
+Fixture standard: each feature stores mock payload at `features/[feature]/__fixtures__/[endpoint].js` exporting the **unwrapped** `data` shape (what `apiGet` returns after stripping the envelope), plus a colocated `[endpoint].fixture.test.js` asserting it models the unwrapped contract (no `success`/`error`/`timestamp` keys).
+
+### Response Envelope (BE)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `successResponse()` / `errorResponse()` helpers | `backend/src/middlewares/envelope.ts` | ✅ Built (dedicated middleware file) |
+| Global error middleware | `backend/src/middlewares/errorHandler.ts` | ✅ Refactored to consume `errorResponse`; re-exports `successResponse` |
+| API 404 envelope handler | `backend/src/app.ts` | ✅ Uses `errorResponse("NOT_FOUND", ...)` |
+| Health controller | `backend/src/controllers/healthController.ts` | ✅ Import updated to `middlewares/envelope.js` |
+
+### Tests (Slice 1.5)
+
+Total: 101 FE + 35 BE = **136 tests passing** (+5 BE envelope, +8 FE client, +5 FE fixture). Backend vitest config added to scope tests to `src/` (excludes compiled `dist/`). Typecheck green on both workspaces; production build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
