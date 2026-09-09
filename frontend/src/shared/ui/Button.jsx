@@ -16,7 +16,7 @@ const Button = forwardRef(function Button(
   const Comp = asChild ? Slot : "button";
 
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md font-sans font-bold uppercase tracking-wide transition-[background-color,transform,box-shadow] duration-150 focus-visible:outline-none focus-visible:shadow-focus";
+    "inline-flex items-center justify-center gap-2 rounded-md px-[var(--space-5)] py-[var(--space-3)] font-sans font-bold uppercase tracking-wide transition-[background-color,transform,box-shadow] duration-150 focus-visible:outline-none focus-visible:shadow-focus";
 
   /** @type {Record<string, string>} */
   const variants = {

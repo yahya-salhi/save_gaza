@@ -45,4 +45,13 @@ describe("Footer", () => {
     const footer = screen.getByRole("contentinfo");
     expect(footer.className).toContain("custom-footer");
   });
+
+  it("renders section navigation", () => {
+    renderFooter();
+    const nav = screen.getByRole("navigation", { name: /footer/i });
+    expect(nav).toBeInTheDocument();
+    expect(
+      nav.querySelector('a[href="/app"]')?.textContent,
+    ).toMatch(/dashboard/i);
+  });
 });

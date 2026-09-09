@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 /**
  * @typedef {object} NavbarProps
@@ -6,9 +6,15 @@ import { Link } from "react-router-dom";
  * @property {string} [className] - Additional CSS classes
  */
 
+const NAV_LINKS = [
+  { to: "/app", label: "Dashboard" },
+  { to: "/submit", label: "Report" },
+];
+
 /**
- * Top navigation bar — logo, nav links, hamburger toggle for mobile sidebar.
- * Uses backdrop blur on scroll, logical CSS properties for RTL.
+ * Top navigation bar — logo, nav links with active indicator, hamburger
+ * toggle for mobile sidebar. Uses backdrop blur on scroll, logical CSS
+ * properties for RTL. Active section is marked with the data accent.
  *
  * @param {NavbarProps} props
  */
@@ -25,24 +31,28 @@ export default function Navbar({ onMenuToggle = null, className = "" }) {
     >
       <Link
         to="/"
-        className="font-display text-lg font-bold tracking-wide text-text-1 no-underline"
+        className="font-display text-lg font-black tracking-wide text-text-1 no-underline transition-colors hover:text-accent-400"
       >
         Save Gaza
       </Link>
 
-      <nav className="flex items-center gap-4">
-        <Link
-          to="/app"
-          className="text-sm text-text-2 no-underline transition-colors hover:text-text-1"
-        >
-          Dashboard
-        </Link>
-        <Link
-          to="/submit"
-          className="text-sm text-text-2 no-underline transition-colors hover:text-text-1"
-        >
-          Report
-        </Link>
+      <nav aria-label="Primary" className="flex items-center gap-5">
+        {NAV_LINKS.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              [
+                "text-sm no-underline transition-colors",
+                isActive
+                  ? "font-semibold text-accent-500"
+                  : "text-text-2 hover:text-text-1",
+              ].join(" ")
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
 
         {onMenuToggle && (
           <button

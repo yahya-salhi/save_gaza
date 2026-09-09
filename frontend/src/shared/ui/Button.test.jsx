@@ -62,6 +62,13 @@ describe("Button", () => {
     expect(link.className).toContain("bg-accent-500");
   });
 
+  it("applies token padding from the button spec", () => {
+    render(<Button>Padded</Button>);
+    const btn = screen.getByRole("button", { name: /padded/i });
+    expect(btn.className).toContain("px-[var(--space-5)]");
+    expect(btn.className).toContain("py-[var(--space-3)]");
+  });
+
   it("applies focus-visible ring", () => {
     render(<Button>Focus</Button>);
     const btn = screen.getByRole("button", { name: /focus/i });

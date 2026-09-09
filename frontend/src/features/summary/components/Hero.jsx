@@ -42,7 +42,7 @@ export default function Hero({
   onRetry = null,
 }) {
   return (
-    <section className="flex flex-col items-center gap-6 px-6 py-20 text-center">
+    <section className="flex flex-1 flex-col items-center justify-center gap-5 px-6 py-16 text-center">
       <h1 className="text-3xl font-black uppercase tracking-tight text-text-1">
         Save Gaza
       </h1>
@@ -71,17 +71,13 @@ export default function Hero({
             dir="ltr"
             className="font-mono text-4xl font-black tabular-nums leading-none text-accent-500 [unicode-bidi:isolate]"
           >
-            {summary.gaza.killed.total.toLocaleString()}
+            {summary.gaza.killed.total.toLocaleString("en-US")}
           </p>
 
           <div className="h-px w-24 bg-hairline" aria-hidden="true" />
 
           <p className="max-w-md text-sm text-text-2">
-            Verified casualties as of{" "}
-            <span dir="ltr" className="font-mono [unicode-bidi:isolate]">
-              {summary.gaza.last_update}
-            </span>
-            .
+            Verified tally from the TechForPalestine casualty feed.
           </p>
 
           <Button asChild>

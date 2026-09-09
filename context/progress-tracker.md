@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 2 — Landing — Instrument Hero & Summary Endpoint  
-**Last completed:** Slice 2.2 — Live Ticker Motion & Backend Stale-While-Revalidate Caching  
-**Next:** Slice 2.3 — Wire Hero & Social Sharing (SEO)  
+**Last completed:** Slice 2.3 — Wire Hero & Social Sharing (SEO)  
+**Next:** Slice 3.1 — Dashboard Shell & Readiness Detail  
 
 ---
 
@@ -97,11 +97,11 @@ Every slice is implemented through explicit Clean Architecture layers:
 - [x] **2.2 Live Ticker Motion & Backend Stale-While-Revalidate Caching**
   - [x] **FE Subslice**: `LiveTicker` (`features/summary/components/LiveTicker.jsx` + `.module.css`) — 8px `var(--accent-500)` pulsing dot, `aria-live="polite"`, LTR mono tabular timestamp with bidi isolation, `@media (prefers-reduced-motion: reduce)` disables pulse. Rendered inside `Hero` populated path. FE tests: 117 passing (+6 LiveTicker, +1 Hero ticker).
   - [x] **BE Subslice**: `CachePort` (`core/ports/CachePort.ts`) + `InMemoryCache` + `CachedSummaryFeed` decorator (`infrastructure/cache/`) — 5-min TTL, fresh hit short-circuits upstream, stale served on upstream failure, 502 only on cold start. No Redis dep (port seam keeps 6.3 path open). BE tests: 48 passing (+4 cache, +4 decorator, +1 stale endpoint).
-- [ ] **2.3 Wire Hero & Social Sharing (SEO)**
-  - [ ] **FE Subslice**: Wire `features/summary/hooks/useSummary.js` to replace mock fixture. Human-readable error banner with retry trigger.
-  - [ ] **BE Subslice**: E2E integration test verifying `GET /api/v1/summary` returns HTTP 200 with valid envelope.
-  - [ ] **SEO**: OpenGraph and Twitter card static metadata in `index.html`.
-  - [ ] **Tests**: Hook unit tests and Supertest API tests.
+- [x] **2.3 Wire Hero & Social Sharing (SEO)**
+  - [x] **FE Subslice**: Wired `useSummary` into `HomePage` → `Hero` (live query replaces fixture; loading skeleton / human-readable error + retry / populated tally). Typed hook return as `UseQueryResult<SummaryData, Error>`.
+  - [x] **BE Subslice**: Envelope-shape integration test (`success`/`data`/`error:null`/`timestamp` ISO) for `GET /api/v1/summary` 200.
+  - [x] **SEO**: Static OpenGraph (`og:type/site_name/title/description`) + Twitter (`summary_large_image/title/description`) metadata in `index.html`; verified present in `dist/index.html`; prod bundle contains no `api/v2|api/v3` URLs.
+  - [x] **Tests**: `useSummary` hook tests (fetch + error) + `HomePage` wiring tests (tally/loading/error+retry). Total: 122 FE + 49 BE = **171 tests passing**. Typecheck green both workspaces; production build green.
 
 ---
 

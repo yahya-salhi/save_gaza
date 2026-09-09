@@ -72,4 +72,19 @@ describe("Navbar", () => {
     const header = screen.getByRole("banner");
     expect(header.className).toContain("custom-class");
   });
+
+  it("marks the active section with aria-current", () => {
+    renderNavbar({}, "/app");
+    expect(screen.getByRole("link", { name: /dashboard/i })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("renders the logo with primary text color (not the data accent)", () => {
+    renderNavbar();
+    expect(
+      screen.getByRole("link", { name: /save gaza/i }).className,
+    ).toContain("text-text-1");
+  });
 });

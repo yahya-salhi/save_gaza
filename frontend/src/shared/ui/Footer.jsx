@@ -1,11 +1,13 @@
+import { Link } from "react-router-dom";
+
 /**
  * @typedef {object} FooterProps
  * @property {string} [className] - Additional CSS classes
  */
 
 /**
- * Footer — copyright, hairline border-top, muted text.
- * Logical CSS properties for RTL readiness.
+ * Footer — section nav, source attribution, copyright. Hairline
+ * border-top, muted text. Logical CSS properties for RTL readiness.
  *
  * @param {FooterProps} props
  */
@@ -19,6 +21,29 @@ export default function Footer({ className = "" }) {
         .filter(Boolean)
         .join(" ")}
     >
+      <nav
+        aria-label="Footer"
+        className="mb-3 flex items-center justify-center gap-5"
+      >
+        <Link
+          to="/app"
+          className="text-text-2 no-underline transition-colors hover:text-text-1"
+        >
+          Dashboard
+        </Link>
+        <Link
+          to="/submit"
+          className="text-text-2 no-underline transition-colors hover:text-text-1"
+        >
+          Report
+        </Link>
+        <Link
+          to="/login"
+          className="text-text-2 no-underline transition-colors hover:text-text-1"
+        >
+          Admin
+        </Link>
+      </nav>
       <p>
         Data sourced from{" "}
         <a

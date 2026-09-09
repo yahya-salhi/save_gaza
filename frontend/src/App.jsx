@@ -6,6 +6,7 @@ import { I18nProvider } from "./shared/providers/I18nProvider.jsx";
 import RootLayout from "./layouts/RootLayout.jsx";
 import AppLayout from "./layouts/AppLayout.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import EmptyState from "./shared/ui/EmptyState.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,18 +59,8 @@ export default function App() {
  */
 function PlaceholderPage({ title }) {
   return (
-    <div
-      style={{
-        minHeight: "50vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "var(--text-3)",
-        fontFamily: "var(--font-sans)",
-        fontSize: "var(--text-xl)",
-      }}
-    >
-      {title}
+    <div className="mx-auto flex w-full max-w-[var(--content-max)] flex-1 flex-col items-center justify-center p-6">
+      <EmptyState message={title} />
     </div>
   );
 }

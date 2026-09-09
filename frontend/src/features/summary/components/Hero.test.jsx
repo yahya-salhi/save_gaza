@@ -69,4 +69,18 @@ describe("Hero", () => {
     expect(dates.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/live/i)).toBeInTheDocument();
   });
+
+  it("shows the timestamp exactly once (ticker owns the date)", () => {
+    renderHero({ summary: summaryFixture });
+    expect(
+      screen.getAllByText(summaryFixture.gaza.last_update),
+    ).toHaveLength(1);
+  });
+
+  it("renders the CTA with readable contrast text", () => {
+    renderHero({ summary: summaryFixture });
+    const link = screen.getByRole("link", { name: /view the data/i });
+    expect(link.textContent.trim()).not.toBe("");
+    expect(link.className).toContain("text-text-on-accent");
+  });
 });

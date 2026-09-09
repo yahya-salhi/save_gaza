@@ -151,6 +151,37 @@ Total: 110 FE + 39 BE = **149 tests passing** (+9 FE, +4 BE). Typecheck green on
 
 Total: 117 FE + 48 BE = **165 tests passing** (+7 FE, +9 BE). Typecheck green on both workspaces; production build green.
 
+## Built So Far (Slice 2.3)
+
+### Wire Hero & Social Sharing (FE)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `HomePage` (live wiring) | `frontend/src/pages/HomePage.jsx` | ✅ Wired — `useSummary` → `Hero` (`summary ?? null`, `isLoading`, `isError`, `onRetry=refetch`) | 3 wiring tests |
+| `useSummary` (typed) | `frontend/src/features/summary/hooks/useSummary.js` | ✅ Typed `UseQueryResult<SummaryData, Error>`; `queryKey ["summary"]`, `apiGet("/summary")`, 5-min stale | 2 hook tests |
+| SEO metadata | `frontend/index.html` | ✅ Static OG (`og:type/site_name/title/description`) + Twitter (`summary_large_image/title/description`) | verified in `dist/` |
+
+### Tests (Slice 2.3)
+
+Total: 122 FE + 49 BE = **171 tests passing** (+5 FE, +1 BE). Typecheck green on both workspaces; production build green; no `api/v2|api/v3` URLs in prod bundle.
+
+## UI Cleanup Pass (unreleased, post-2.3)
+
+Root causes of the "messy" landing, all fixed without new tokens or dependencies:
+
+| Fix | File | Detail |
+| --- | ---- | ------ |
+| Global anchor override removed | `frontend/src/App.css` | Unlayered `a { color: accent }` beat Tailwind utilities → red nav + invisible CTA text. Anchors now inherit; components own color via utilities. |
+| Active section indicator | `shared/ui/Navbar.jsx` | `NavLink` with `aria-current`; active link `text-accent-500 semibold`, logo `text-text-1 font-black`. |
+| Footer nav row | `shared/ui/Footer.jsx` | Dashboard / Report / Admin links above attribution. |
+| Single timestamp + provenance | `features/summary/components/Hero.jsx` | Ticker owns the date; caption is now provenance copy. Tally pinned to `en-US` grouping (`73,658`). |
+| Vertical centering | `layouts/RootLayout.jsx` + `Hero.jsx` | `main` is `flex-col`; hero `flex-1 justify-center` fills viewport instead of leaving a void. |
+| Placeholder pages | `frontend/src/App.jsx` | `PlaceholderPage` uses `EmptyState` primitive instead of inline styles. |
+| Favicon + theme-color | `frontend/index.html` | Inline SVG (crimson dot on obsidian) kills the 404; `theme-color #0b0d0f`. |
+| Button token padding | `shared/ui/Button.jsx` | Base had no padding (cramped CTA); now `px-[var(--space-5)] py-[var(--space-3)]` per spec. Verified in `dist` CSS. |
+
+Tests: 128 FE passing (+6 cleanup regression tests: CTA contrast, single timestamp, nav active/logo color, footer nav, button padding). Typecheck + prod build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -170,7 +201,7 @@ Shared, token-driven primitives every feature reuses. All are RTL-aware (logical
 | Primitive | Target File | Role | Key Tokens / Classes |
 | --------- | ----------- | ---- | -------------------- |
 | `Card` | `shared/ui/Card.jsx` | Surface container | `--surface-1`, `--hairline`, `--radius-md`, `--elevation-1` / `--elevation-2` hover |
-| `Button` | `shared/ui/Button.jsx` | Primary / ghost action (Radix Slot) | `--accent-500/600`, `--focus-ring`, `--radius-md`, `--text-on-accent`, `--surface-3` ghost hover |
+| `Button` | `shared/ui/Button.jsx` | Primary / ghost action (Radix Slot) | `--accent-500/600`, `--focus-ring`, `--radius-md`, `--text-on-accent`, `--surface-3` ghost hover, token padding `px-[var(--space-5)] py-[var(--space-3)]` (added in UI cleanup — base had zero padding) |
 | `StatItem` | `shared/ui/StatItem.jsx` | Icon + mono figure + label | `--surface-2`, `--accent-400`, `--font-mono` tabular-nums, `--surface-3` hover |
 | `Skeleton` | `shared/ui/Skeleton.jsx` | Loading placeholder | `--surface-2`, `animate-pulse` |
 | `EmptyState` | `shared/ui/EmptyState.jsx` | Neutral empty message | `--text-3` |
