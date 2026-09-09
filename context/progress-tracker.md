@@ -46,9 +46,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ## Current Status
 
-**Phase:** Phase 2 — Landing — Instrument Hero & Summary Endpoint  
-**Last completed:** Slice 2.3 — Wire Hero & Social Sharing (SEO)  
-**Next:** Slice 3.1 — Dashboard Shell & Readiness Detail  
+**Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
+**Last completed:** Slice 3.1 — Dashboard Shell & Readiness Detail  
+**Next:** Slice 3.2 — Gaza Daily Statistics & PostgreSQL Ingestion  
 
 ---
 
@@ -107,9 +107,10 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ### Phase 3 — Dashboard Shell & Statistics Engine
 
-- [ ] **3.1 Dashboard Shell & Readiness Detail**
-  - [ ] **FE Subslice**: Dashboard shell (`/app`): header "WAR IN GAZA", breadcrumbs, sidebar navigation with active indicator, HeaderMap banner.
-  - [ ] **BE Subslice**: Enhance `/ready` endpoint with database latency and sync timestamp metrics.
+- [x] **3.1 Dashboard Shell & Readiness Detail**
+  - [x] **FE Subslice**: Dashboard shell (`/app`): `DashboardPage` composing `DashboardHeader` ("WAR IN GAZA"), route-aware `Breadcrumbs`, static `HeaderMapBanner` (no Leaflet), `EmptyState` placeholder; mounted on `/app` in `App.jsx`. Sidebar active indicator verified as-is in `AppLayout`.
+  - [x] **BE Subslice**: `/ready` keeps `{ status, db: { latencyMs, syncedAt } }` shape; `syncedAt` wired to last successful summary-cache write via `syncTracker` (recorded in `CachedSummaryFeed`, `null` before first sync); `degraded` = DB ping failed.
+  - [x] **Tests**: 13 FE (Breadcrumbs 5, DashboardHeader 2, HeaderMapBanner 2, DashboardPage 4) + 3 BE (ready syncedAt/latency shape + post-sync ISO, cache sync-timestamp). Total: 141 FE + 52 BE = **193 tests passing**. Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in prod bundle.
 - [ ] **3.2 Gaza Daily Statistics & PostgreSQL Ingestion**
   - [ ] **FE Subslice**: Stat grid + `StatItem` components covering Gaza casualties, children, women, injured, civil defense. All 4 states.
   - [ ] **BE Subslice**: Prisma schema `Statistic` table with composite indexes (`[region, reportDate]`). Ingestion use case `SyncCasualtiesUseCase` auto-refreshing daily records. Controller `GET /api/v1/statistics/gaza`.

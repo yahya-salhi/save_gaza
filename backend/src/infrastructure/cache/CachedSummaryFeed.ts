@@ -1,6 +1,7 @@
 import type { SummaryFeedPort } from "../../core/ports/SummaryFeedPort.js";
 import type { CachePort } from "../../core/ports/CachePort.js";
 import type { Summary } from "../../core/entities/Summary.js";
+import { recordSummarySync } from "./syncTracker.js";
 
 /** Cache key for the validated summary payload. */
 export const SUMMARY_CACHE_KEY = "summary:v1";
@@ -35,6 +36,7 @@ export class CachedSummaryFeed implements SummaryFeedPort {
     try {
       const summary = await this.inner.getSummary();
       this.cache.set(SUMMARY_CACHE_KEY, summary, SUMMARY_CACHE_TTL_MS);
+      recordSummarySync();
       return summary;
     } catch (err) {
       const stale = this.cache.getStale<Summary>(SUMMARY_CACHE_KEY);

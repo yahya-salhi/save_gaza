@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CachedSummaryFeed, SUMMARY_CACHE_KEY } from "./CachedSummaryFeed.js";
 import { InMemoryCache } from "./InMemoryCache.js";
+import {
+  getLastSummarySyncAt,
+  resetLastSummarySyncAt,
+} from "./syncTracker.js";
 import { ExternalApiError } from "../../core/errors/DomainError.js";
 import type { SummaryFeedPort } from "../../core/ports/SummaryFeedPort.js";
 import type { Summary } from "../../core/entities/Summary.js";
@@ -19,6 +23,18 @@ function feedFailing(): SummaryFeedPort {
 }
 
 describe("CachedSummaryFeed", () => {
+  beforeEach(() => {
+    resetLastSummarySyncAt();
+  });
+
+  it("records the sync timestamp on upstream success", async () => {
+    const feed = new CachedSummaryFeed(feedReturning(summaryA), new InMemoryCache());
+    expect(getLastSummarySyncAt()).toBeNull();
+    await feed.getSummary();
+    expect(typeof getLastSummarySyncAt()).toBe("string");
+    expect(Number.isNaN(Date.parse(getLastSummarySyncAt() as string))).toBe(false);
+  });
+
   it("caches upstream success and serves fresh without a second call", async () => {
     const inner = feedReturning(summaryA);
     const feed = new CachedSummaryFeed(inner, new InMemoryCache());

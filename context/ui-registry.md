@@ -182,6 +182,29 @@ Root causes of the "messy" landing, all fixed without new tokens or dependencies
 
 Tests: 128 FE passing (+6 cleanup regression tests: CTA contrast, single timestamp, nav active/logo color, footer nav, button padding). Typecheck + prod build green.
 
+## Built So Far (Slice 3.1)
+
+### Dashboard Shell (FE — shell-chrome-only, no stat grid until 3.2)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `Breadcrumbs` | `frontend/src/features/dashboard/components/Breadcrumbs.jsx` | ✅ Built — route-aware via `useLocation` (Home / Dashboard [/ Gaza \| West Bank \| Map]), links + `aria-current="page"`, `aria-label="Breadcrumb"` | 5 tests |
+| `DashboardHeader` | `frontend/src/features/dashboard/components/DashboardHeader.jsx` | ✅ Built — static "WAR IN GAZA" display heading (`font-display text-2xl font-black uppercase`), accent eyebrow, subcopy | 2 tests |
+| `HeaderMapBanner` | `frontend/src/features/dashboard/components/HeaderMapBanner.jsx` | ✅ Built — static strip (`role="img"` placeholder, crimson dot motif, token-only; no Leaflet, no fetching) | 2 tests |
+| `DashboardPage` | `frontend/src/pages/DashboardPage.jsx` | ✅ Built — composes Breadcrumbs + Header + Banner + `EmptyState` placeholder; mounted on `/app` in `App.jsx` | 4 tests |
+
+### Readiness Detail (BE)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `syncTracker` (`recordSummarySync` / `getLastSummarySyncAt` / `resetLastSummarySyncAt`) | `backend/src/infrastructure/cache/syncTracker.ts` | ✅ Built (in-memory last-sync timestamp; Redis seam open for 6.3) |
+| `CachedSummaryFeed` sync recording | `backend/src/infrastructure/cache/CachedSummaryFeed.ts` | ✅ Wired (records on successful upstream cache write) |
+| `/ready` syncedAt | `backend/src/controllers/healthController.ts` | ✅ Wired (same `{ status, db: { latencyMs, syncedAt } }` shape; `degraded` = DB ping failed) |
+
+### Tests (Slice 3.1)
+
+Total: 141 FE + 52 BE = **193 tests passing** (+13 FE, +3 BE). Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in prod bundle.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
