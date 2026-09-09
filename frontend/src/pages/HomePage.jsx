@@ -1,13 +1,22 @@
 import Hero from "../features/summary/components/Hero.jsx";
-import { summaryFixture } from "../features/summary/__fixtures__/summary.js";
+import { useSummary } from "../features/summary/hooks/useSummary.js";
 
 /**
  * HomePage — public landing page.
  *
- * Slice 2.1: the Hero renders its populated state from the summary fixture.
- * Slice 2.3 replaces this with the useSummary query hook (loading / error /
- * retry wired through the same Hero props).
+ * Slice 2.3: the Hero renders from the live `useSummary` query hook.
+ * Loading / error / retry are wired through the same Hero props;
+ * the populated tally flows from the envelope-unwrapped payload.
  */
 export default function HomePage() {
-  return <Hero summary={summaryFixture} />;
+  const { data: summary, isLoading, isError, refetch } = useSummary();
+
+  return (
+    <Hero
+      summary={summary ?? null}
+      isLoading={isLoading}
+      isError={isError}
+      onRetry={() => refetch()}
+    />
+  );
 }

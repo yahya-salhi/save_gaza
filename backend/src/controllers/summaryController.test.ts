@@ -93,6 +93,21 @@ describe("summary endpoint", () => {
     expect(res.body.error.code).toBe("EXTERNAL_API_ERROR");
   });
 
+  it("returns a valid 200 envelope with timestamp (Slice 2.3)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(validSummary)));
+
+    const { createApp } = await import("../app.js");
+    const app = createApp();
+
+    const res = await request(app).get("/api/v1/summary");
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.error).toBeNull();
+    expect(res.body.data).toBeDefined();
+    expect(typeof res.body.timestamp).toBe("string");
+    expect(Number.isNaN(Date.parse(res.body.timestamp))).toBe(false);
+  });
+
   it("serves stale cache with 200 when upstream fails after a warm response", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(validSummary)));
 
