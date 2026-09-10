@@ -16,17 +16,19 @@
   font-family: var(--font-sans);
 }
 
-/* Governorate polygons — each filled from its own step of the crimson ramp. */
+/* Governorate boundaries — outlines only, no filled shapes. Each region
+   keeps its own step of the crimson ramp as its stroke color. Fill stays
+   transparent (still clickable inside) with a whisper of fill on hover
+   and selection so the stroke remains the whole visual. */
 .governorate {
-  stroke: var(--accent-300);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-opacity: 0.95;
-  fill-opacity: 0.38;
+  fill-opacity: 0;
   transition: fill-opacity 0.2s ease;
 }
 
 .governorate:hover {
-  fill-opacity: 0.6;
+  fill-opacity: 0.12;
 }
 
 .governorate:focus-visible {
@@ -35,16 +37,16 @@
   stroke-width: 3;
 }
 
-.region-north-gaza { fill: var(--accent-300); }
-.region-gaza { fill: var(--accent-400); }
-.region-deir-al-balah { fill: var(--accent-500); }
-.region-khan-younis { fill: var(--accent-600); }
-.region-rafah { fill: var(--accent-700); }
+.region-north-gaza { stroke: var(--accent-300); fill: var(--accent-300); }
+.region-gaza { stroke: var(--accent-400); fill: var(--accent-400); }
+.region-deir-al-balah { stroke: var(--accent-500); fill: var(--accent-500); }
+.region-khan-younis { stroke: var(--accent-600); fill: var(--accent-600); }
+.region-rafah { stroke: var(--accent-700); fill: var(--accent-700); }
 
 .selected {
   stroke: var(--accent-100);
-  stroke-width: 3;
-  fill-opacity: 0.65;
+  stroke-width: 3.5;
+  fill-opacity: 0.15;
   filter: drop-shadow(0 0 8px var(--accent-500));
 }
 
@@ -62,6 +64,7 @@
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   text-shadow: 0 1px 4px var(--bg), 0 0 12px var(--bg);
+  pointer-events: none;
 }
 
 .leaflet .governorateLabel::before {

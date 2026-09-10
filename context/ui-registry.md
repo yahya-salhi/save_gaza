@@ -337,7 +337,7 @@ Total: 193 FE + 77 BE = **270 tests passing** (+10 FE, +6 BE). Typecheck green b
 | Item | Final Path | Status | Tests |
 | ---- | ---------- | ------ | ----- |
 | `GazaMapPage` | `frontend/src/pages/GazaMapPage.jsx` | ✅ Built — Breadcrumbs + heading + lazy canvas + swatch region buttons + status line; mounted on `/app/gazaMap` (placeholder removed); 4 states, selection shared map/legend/buttons | 6 page tests |
-| `GazaMapCanvas` | `frontend/src/features/map/components/MapContainer.jsx` | ✅ Built — default export for `React.lazy()`; fit-to-Strip envelope (`bounds` + `maxBounds`), dark-filtered OSM tiles, GADM polygons on accent ramp, permanent mono labels, glass header/readout/legend, click-select glow; no casualty numbers (4.2) | covered via page tests |
+| `GazaMapCanvas` | `frontend/src/features/map/components/MapContainer.jsx` | ✅ Built — default export for `React.lazy()`; fit-to-Strip envelope (`bounds` + `maxBounds`), dark-filtered OSM tiles, GADM boundary outlines stroked on accent ramp (transparent fill), permanent mono labels, glass header/readout/legend, click-select glow; no casualty numbers (4.2) | covered via page tests |
 | `MapContainer.module.css` | `frontend/src/features/map/components/MapContainer.module.css` | ✅ Built — token-only canvas/region/label/overlay styles, per-governorate ramp fills + swatches, `:global()` Leaflet chrome, logical properties, reduced-motion guard | — |
 | `useBoundaries` | `frontend/src/features/map/hooks/useBoundaries.js` | ✅ Built — `queryKey ["spatial","boundaries"]`, `apiGet("/api/v1/spatial/boundaries")`, 24h staleTime, no refetch | 3 hook tests |
 | Boundaries fixture | `frontend/src/features/map/__fixtures__/boundaries.js` | ✅ Built — `boundariesFixture` (enveloped, same convention as `gaza.js`; GADM-derived smoothed shapes) | 2 fixture tests |
@@ -346,7 +346,7 @@ Total: 193 FE + 77 BE = **270 tests passing** (+10 FE, +6 BE). Typecheck green b
 
 | Item | Final Path | Status |
 | ---- | ---------- | ------ |
-| `GAZA_BOUNDARIES` | `backend/src/infrastructure/spatial/gazaBoundaries.ts` | ✅ Built (GADM v4.1-derived, Chaikin-smoothed, 4dp; envelope lng 34.23–34.55, lat 31.24–31.59) |
+| `GAZA_BOUNDARIES` | `backend/src/infrastructure/spatial/gazaBoundaries.ts` | ✅ Built (OSM admin relations, stitched + simplified 4dp, © OSM ODbL; envelope lng 34.22–34.57, lat 31.22–31.60) |
 | `GET /spatial/boundaries` | `backend/src/controllers/spatialController.ts` | ✅ Built (envelope, 24h `InMemoryCache`, `Cache-Control: public, max-age=86400`, manual gzip; exports `boundariesCache`) |
 
 ### Tests (Slice 4.1)
@@ -419,7 +419,7 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `DemographicPie` | `features/statistics/DemographicPie.jsx` | Charts | ✅ Built (Slice 3.4) — lazy default export, children/women/others donut on crimson ramp, token legend |
 | `DateRangeSlider`| `features/statistics/DateRangeSlider.jsx`| Controls | ✅ Built (Slice 3.4) — date inputs + 30d/90d/All presets, URL-sync via parent, auto-correct |
 | `GazaHistory` | `features/statistics/GazaHistory.jsx` | Statistics | ✅ Built (Slice 3.4) — trends section on `/app/gaza` below `GazaDetail`; owns `?startDate=&endDate=` |
-| `MapContainer` | `features/map/components/MapContainer.jsx` | Maps | ✅ Built (Slice 4.1) — lazy `GazaMapCanvas`, GADM Gaza polygons on accent ramp, dark tiles, labels + legend |
+| `MapContainer` | `features/map/components/MapContainer.jsx` | Maps | ✅ Built (Slice 4.1) — lazy `GazaMapCanvas`, GADM Gaza boundary outlines on accent ramp, dark tiles, labels + legend |
 | `RegionInfo` | `features/map/components/RegionInfo.jsx` | Maps | Regional casualty details card, empty state prompt |
 | `IncidentForm` | `features/submissions/components/IncidentForm.jsx` | Forms | 4 form states, Turnstile widget, Zod client validation |
 | `AdminLogin` | `features/auth/components/AdminLogin.jsx` | Auth | Admin login form, JWT HttpOnly auth trigger |
