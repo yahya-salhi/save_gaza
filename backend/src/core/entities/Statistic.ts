@@ -87,3 +87,46 @@ export const VERIFIED_GAZA_METRICS: ReadonlyArray<{
   { key: "med_killed_cum", label: "Medical personnel killed" },
   { key: "press_killed_cum", label: "Journalists killed" },
 ];
+
+/**
+ * WestBankDaily — latest-date West Bank payload served by
+ * `GET /api/v1/statistics/west-bank`.
+ *
+ * Flat shape: every verified `*_cum` field from `west_bank_daily.json` plus
+ * the `flash_source` provenance string. No arrests data exists in the v2
+ * feed, so arrests are out of scope by contract.
+ */
+export interface WestBankDaily {
+  report_date: string;
+  flash_source?: string;
+  killed_cum?: number;
+  killed_children_cum?: number;
+  injured_cum?: number;
+  injured_children_cum?: number;
+  settler_attacks_cum?: number;
+  displaced_households_cum?: number;
+  displaced_persons_cum?: number;
+  displaced_children_cum?: number;
+}
+
+/** EAV region key for West Bank daily rows. */
+export const WEST_BANK_REGION = "west_bank";
+
+/**
+ * Verified West Bank metric keys persisted to the EAV table, with labels.
+ * `flash_source` is a string carried on the response from the latest row —
+ * it is never persisted (EAV values are integers).
+ */
+export const VERIFIED_WEST_BANK_METRICS: ReadonlyArray<{
+  key: keyof Omit<WestBankDaily, "report_date" | "flash_source">;
+  label: string;
+}> = [
+  { key: "killed_cum", label: "Total killed" },
+  { key: "killed_children_cum", label: "Children killed" },
+  { key: "injured_cum", label: "Total injured" },
+  { key: "injured_children_cum", label: "Children injured" },
+  { key: "settler_attacks_cum", label: "Settler attacks" },
+  { key: "displaced_households_cum", label: "Displaced households" },
+  { key: "displaced_persons_cum", label: "Displaced persons" },
+  { key: "displaced_children_cum", label: "Displaced children" },
+];

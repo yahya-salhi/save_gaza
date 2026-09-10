@@ -236,6 +236,34 @@ Total: 141 FE + 52 BE = **193 tests passing** (+13 FE, +3 BE). Typecheck green b
 
 Total: 145 FE + 57 BE = **202 tests passing** (+4 FE incl. hook/Dashboard coverage, +5 BE controller). Verified 2026-09-10: `vitest run` green both workspaces (23 FE files / 11 BE files).
 
+## Built So Far (Slice 3.3)
+
+### West Bank Statistics (FE — same tally language, no new CSS)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `WestBankSummary` | `frontend/src/features/statistics/WestBankSummary.jsx` | ✅ Built — killed/injured mono tabular tally, breakdown (Children killed/injured, Settler attacks, Displaced households/persons/children), meta footer; 4 states; shares `GazaSummary.module.css` (no delta strip — v2 feed is cumulative-only; no arrests upstream) | covered via WestBankPage tests |
+| `useWestBankDaily` | `frontend/src/features/statistics/hooks/useWestBankDaily.js` | ✅ Built — `queryKey ["statistics","west-bank"]`, `apiGet("/api/v1/statistics/west-bank")`, 5-min staleTime + 30s refetch | 3 hook tests |
+| West Bank fixture | `frontend/src/features/statistics/__fixtures__/westBank.js` | ✅ Built — `westBankLatestFixture` (enveloped, same convention as `gaza.js`) | — |
+| `WestBankPage` | `frontend/src/pages/WestBankPage.jsx` | ✅ Built — Breadcrumbs + display heading + tally; mounted on `/app/westBank` in `App.jsx` (placeholder removed) | 5 page tests |
+
+### West Bank Ingestion (BE — own schema, shared EAV table)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `WestBankDailySchema` (Zod) | `backend/src/core/schemas/westBankDaily.ts` | ✅ Built (row array or `{ data }` envelope, legacy `verified` passthrough) |
+| `WestBankDaily` + `WEST_BANK_REGION` + 8 metrics | `backend/src/core/entities/Statistic.ts` | ✅ Built (`flash_source` carried on response, never persisted) |
+| `WestBankFeedPort` | `backend/src/core/ports/WestBankFeedPort.ts` | ✅ Built |
+| `TechForPalestineWestBankClient` | `backend/src/infrastructure/external/TechForPalestineWestBankClient.ts` | ✅ Built |
+| `SyncWestBankUseCase` | `backend/src/application/use-cases/SyncWestBankUseCase.ts` | ✅ Built (fetch → validate → upsert → latest snapshot) |
+| `CachedWestBankStatistics` (15-min TTL) | `backend/src/infrastructure/cache/CachedWestBankStatistics.ts` | ✅ Built |
+| `GET /statistics/west-bank` | `backend/src/controllers/statisticsController.ts` | ✅ Built (same router; exports `cachedWestBankStats`) |
+| `WEST_BANK_FEED_URL` env | `backend/src/config.ts` | ✅ Added (default v2 `west_bank_daily.json`) |
+
+### Tests (Slice 3.3)
+
+Total: 153 FE + 65 BE = **218 tests passing** (+8 FE, +5 BE). Verified live: 8,543 `west_bank` rows in Postgres. Typecheck + prod build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -289,6 +317,8 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `Hero` | `features/summary/components/Hero.jsx` | Landing | `--text-4xl`, crimson mono tally, live ticker pulse |
 | `LiveTicker` | `features/summary/components/LiveTicker.jsx` | Landing | Pulsing dot, `aria-live="polite"`, reduced-motion override |
 | `GazaSummary` | `features/statistics/GazaSummary.jsx` | Statistics | ✅ Built (Slice 3.2) — custom field-tally card (no StatItem, no icons): mono tabular tally + delta + context grid + meta footer, 4 states |
+| `WestBankSummary` | `features/statistics/WestBankSummary.jsx` | Statistics | ✅ Built (Slice 3.3) — reuses Gaza tally-card CSS Module: killed/injured tally + children/settler/displacement breakdown, 4 states (no delta — feed is cumulative-only) |
+| `WestBankPage` | `frontend/src/pages/WestBankPage.jsx` | Page | ✅ Built (Slice 3.3) — Breadcrumbs + heading + WestBankSummary on `/app/westBank` |
 | `WestBankSummary`| `features/statistics/components/WestBankSummary.jsx` | Statistics | Stat grid, 4 states, detainee/casualty cards |
 | `TimeSeriesChart`| `features/statistics/components/TimeSeriesChart.jsx` | Charts | Recharts `ResponsiveContainer`, line chart, tooltip overrides |
 | `DemographicPie` | `features/statistics/components/DemographicPie.jsx` | Charts | Recharts pie chart, demographics breakdown |

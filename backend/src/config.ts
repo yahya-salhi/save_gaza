@@ -34,6 +34,12 @@ const EnvSchema = z.object({
     .default(
       "https://data.techforpalestine.org/api/v2/casualties_daily.json",
     ),
+  WEST_BANK_FEED_URL: z
+    .string()
+    .url()
+    .default(
+      "https://data.techforpalestine.org/api/v2/west_bank_daily.json",
+    ),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
@@ -90,6 +96,9 @@ export const config = {
   },
   get casualtiesFeedUrl(): string {
     return env().CASUALTIES_FEED_URL;
+  },
+  get westBankFeedUrl(): string {
+    return env().WEST_BANK_FEED_URL;
   },
 };
 
