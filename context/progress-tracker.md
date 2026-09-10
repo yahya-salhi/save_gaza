@@ -47,7 +47,7 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
-**Last completed:** Slice 3.3 — West Bank Statistics & Aggregation  
+**Last completed:** Slice 3.3.1 — Gaza Full-Picture Page  
 **Next:** Slice 3.4 — Time-Series Analytics & Query Filtering  
 
 ---
@@ -135,6 +135,9 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
   - [x] **FE Subslice**: `WestBankSummary` (`features/statistics/WestBankSummary.jsx`) reusing the Gaza tally-card CSS Module (killed/injured tally, children + settler-attacks + displacement breakdown, meta footer; no per-report delta — feed is cumulative-only). `useWestBankDaily` hook (`queryKey ["statistics","west-bank"]`, 5-min staleTime + 30s refetch). Fixture `__fixtures__/westBank.js` (enveloped). `WestBankPage` (`pages/WestBankPage.jsx`: Breadcrumbs + heading + tally) mounted on `/app/westBank`, replacing the placeholder. Sidebar/breadcrumbs needed no changes.
   - [x] **BE Subslice**: Own Zod schema (`westBankDaily.ts` — flat cum counters + `flash_source`, legacy `verified` passthrough), `WestBankDaily` entity + `WEST_BANK_REGION` + 8 verified metrics, `WestBankFeedPort`, `TechForPalestineWestBankClient`, `SyncWestBankUseCase` (string meta carried on response, never persisted), `CachedWestBankStatistics` (15-min TTL), `GET /statistics/west-bank` on the same router, `WEST_BANK_FEED_URL` in config. Verified live: 8,543 rows persisted (2023-10-07 → 2026-09-09). No arrests data in the v2 feed — out of scope by contract.
   - [x] **Tests**: 5 BE controller tests + 3 FE hook tests + 5 FE page tests. Total: 153 FE + 65 BE = **218 tests passing**. Typecheck + prod build green.
+- [x] **3.3.1 Gaza Full-Picture Page** (built 2026-09-10; closes the placeholder gap — `/app` stays the headline overview, `/app/gaza` is now the whole data picture)
+  - [x] **FE Subslice**: `GazaDetail` (`features/statistics/GazaDetail.jsx`) rendering every remaining verified field in three groups (Truce & committee / Starvation / Aid seekers) on the shared `useGazaDaily` cache — no second fetch. `GazaPage` (`pages/GazaPage.jsx`: Breadcrumbs + heading + `GazaSummary` + `GazaDetail`) mounted on `/app/gaza`, placeholder removed. State ownership: `GazaSummary` owns page loading/error/empty; detail shows its own skeleton while loading and nothing on error (single alert). No backend changes — endpoint already returns the full row.
+  - [x] **Tests**: 6 FE page tests (heading, breadcrumbs, tally, full-record groups, dual skeletons, single alert). Total: 159 FE + 65 BE = **224 tests passing**. Prod build green.
 - [ ] **3.4 Time-Series Analytics & Query Filtering**
   - [ ] **FE Subslice**: Recharts line chart + demographic pie chart + date range slider with URL sync.
   - [ ] **BE Subslice**: Controller query params: `GET /api/v1/statistics/history?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&page=1&limit=100` with Zod date validation, pagination, and DB index optimization.

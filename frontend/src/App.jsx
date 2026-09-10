@@ -7,6 +7,7 @@ import RootLayout from "./layouts/RootLayout.jsx";
 import AppLayout from "./layouts/AppLayout.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
+import GazaPage from "./pages/GazaPage.jsx";
 import WestBankPage from "./pages/WestBankPage.jsx";
 import EmptyState from "./shared/ui/EmptyState.jsx";
 
@@ -42,7 +43,7 @@ export default function App() {
                 {/* Dashboard pages — AppLayout shell with sidebar */}
                 <Route element={<AppLayout />}>
                   <Route path="/app" element={<DashboardPage />} />
-                  <Route path="/app/gaza" element={<PlaceholderPage title="Gaza Statistics — Coming Soon" />} />
+                  <Route path="/app/gaza" element={<GazaPage />} />
                   <Route path="/app/westBank" element={<WestBankPage />} />
                   <Route path="/app/gazaMap" element={<PlaceholderPage title="Interactive Map — Coming Soon" />} />
                 </Route>

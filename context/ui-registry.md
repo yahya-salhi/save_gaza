@@ -264,6 +264,19 @@ Total: 145 FE + 57 BE = **202 tests passing** (+4 FE incl. hook/Dashboard covera
 
 Total: 153 FE + 65 BE = **218 tests passing** (+8 FE, +5 BE). Verified live: 8,543 `west_bank` rows in Postgres. Typecheck + prod build green.
 
+## Built So Far (Slice 3.3.1)
+
+### Gaza Full-Picture Page (FE-only — no backend changes, no new CSS)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `GazaDetail` | `frontend/src/features/statistics/GazaDetail.jsx` | ✅ Built — Truce & committee / Starvation / Aid seekers groups from shared `useGazaDaily` cache; own skeleton, null on error/empty (GazaSummary owns page states) | covered via GazaPage tests |
+| `GazaPage` | `frontend/src/pages/GazaPage.jsx` | ✅ Built — Breadcrumbs + heading + GazaSummary + GazaDetail; mounted on `/app/gaza` in `App.jsx` (placeholder removed) | 6 page tests |
+
+### Tests (Slice 3.3.1)
+
+Total: 159 FE + 65 BE = **224 tests passing** (+6 FE). Prod build green.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -319,6 +332,8 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `GazaSummary` | `features/statistics/GazaSummary.jsx` | Statistics | ✅ Built (Slice 3.2) — custom field-tally card (no StatItem, no icons): mono tabular tally + delta + context grid + meta footer, 4 states |
 | `WestBankSummary` | `features/statistics/WestBankSummary.jsx` | Statistics | ✅ Built (Slice 3.3) — reuses Gaza tally-card CSS Module: killed/injured tally + children/settler/displacement breakdown, 4 states (no delta — feed is cumulative-only) |
 | `WestBankPage` | `frontend/src/pages/WestBankPage.jsx` | Page | ✅ Built (Slice 3.3) — Breadcrumbs + heading + WestBankSummary on `/app/westBank` |
+| `GazaDetail` | `frontend/src/features/statistics/GazaDetail.jsx` | Statistics | ✅ Built (Slice 3.3.1) — full-record groups (Truce & committee / Starvation / Aid seekers) on shared `useGazaDaily` cache, own skeleton, null on error |
+| `GazaPage` | `frontend/src/pages/GazaPage.jsx` | Page | ✅ Built (Slice 3.3.1) — Breadcrumbs + heading + GazaSummary + GazaDetail on `/app/gaza` (placeholder removed) |
 | `WestBankSummary`| `features/statistics/components/WestBankSummary.jsx` | Statistics | Stat grid, 4 states, detainee/casualty cards |
 | `TimeSeriesChart`| `features/statistics/components/TimeSeriesChart.jsx` | Charts | Recharts `ResponsiveContainer`, line chart, tooltip overrides |
 | `DemographicPie` | `features/statistics/components/DemographicPie.jsx` | Charts | Recharts pie chart, demographics breakdown |
