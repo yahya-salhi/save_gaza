@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -126,6 +127,17 @@
   --font-mono: var(--font-mono);
   --font-sans: var(--font-sans);
 
+  /* Type scale — maps Tailwind text-* utilities onto token sizes.
+     Required because html is 62.5% (1rem = 10px); Tailwind defaults
+     assume a 16px root and would render ~40% small. */
+  --text-xs: 1.2rem;
+  --text-sm: 1.4rem;
+  --text-base: 1.6rem;
+  --text-lg: 2rem;
+  --text-xl: 2.4rem;
+  --text-2xl: 3.2rem;
+  --text-3xl: 4rem;
+
   --shadow-e1: var(--elevation-1);
   --shadow-e2: var(--elevation-2);
   --shadow-e3: var(--elevation-3);
@@ -137,87 +149,90 @@
   --radius-full: var(--radius-full);
 }
 
-/* Global resets */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Global resets — layered under Tailwind so utilities always win.
+   (Unlayered author CSS beats @layer utilities and would silently
+   override classes like text-2xl on headings.) */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-html {
-  font-size: 62.5%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    font-size: 62.5%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  color: var(--text-2);
-  background-color: var(--bg);
-}
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-2);
+    background-color: var(--bg);
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  color: var(--text-1);
-  line-height: var(--leading-tight);
-}
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--text-1);
+    line-height: var(--leading-tight);
+  }
 
-h1 { font-size: var(--text-3xl); font-weight: 900; }
-h2 { font-size: var(--text-2xl); font-weight: 700; }
-h3 { font-size: var(--text-xl); font-weight: 700; }
+  h1 { font-size: var(--text-3xl); font-weight: 900; }
+  h2 { font-size: var(--text-2xl); font-weight: 700; }
+  h3 { font-size: var(--text-xl); font-weight: 700; }
 
-/* NOTE: links carry no global color — every anchor sets its own token
-   utility (e.g. text-text-2, text-accent-500). A global color here would sit
-   outside Tailwind layers and override component utilities. */
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
+  /* NOTE: links carry no global color — every anchor sets its own token
+     utility (e.g. text-text-2, text-accent-500). */
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
 
-input, textarea, select {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: var(--surface-2);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  outline: none;
-}
+  input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background-color: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    outline: none;
+  }
 
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  box-shadow: var(--focus-ring);
-  border-color: var(--accent-500);
-}
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    box-shadow: var(--focus-ring);
+    border-color: var(--accent-500);
+  }
 
-::selection {
-  background-color: var(--accent-600);
-  color: var(--text-on-accent);
-}
+  ::selection {
+    background-color: var(--accent-600);
+    color: var(--text-on-accent);
+  }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
-::-webkit-scrollbar-track {
-  background: var(--surface-1);
-}
+  ::-webkit-scrollbar-track {
+    background: var(--surface-1);
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--surface-3);
-  border-radius: var(--radius-full);
-}
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-3);
+    border-radius: var(--radius-full);
+  }
 
-/* Focus visible global */
-:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  /* Focus visible global */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
 }

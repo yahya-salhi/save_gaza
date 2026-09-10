@@ -32,7 +32,7 @@ function Sidebar({ isOpen, onClose }) {
       {/* Mobile backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-overlay-bg backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-overlay backdrop-blur-sm md:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -41,9 +41,11 @@ function Sidebar({ isOpen, onClose }) {
       {/* Sidebar panel */}
       <aside
         className={[
-          "fixed inset-inline-start-0 top-0 z-50 flex h-full flex-col border-e border-hairline bg-surface-1",
+          "fixed start-0 top-0 z-50 flex h-full flex-col border-e border-hairline bg-surface-1",
           "transition-transform duration-200 ease-in-out",
-          "w-[var(--sidebar-width)] pt-[57px]",
+          // Top padding matches the navbar height token so links align
+          // with the content column; both derive from --space-10.
+          "w-[var(--sidebar-width)] pt-[var(--space-10)]",
           // Desktop: always visible
           "hidden md:flex",
         ].join(" ")}
@@ -72,9 +74,11 @@ function Sidebar({ isOpen, onClose }) {
       {/* Mobile drawer */}
       <aside
         className={[
-          "fixed inset-inline-start-0 top-0 z-50 flex h-full flex-col border-e border-hairline bg-surface-1",
+          "fixed start-0 top-0 z-50 flex h-full flex-col border-e border-hairline bg-surface-1",
           "transition-transform duration-200 ease-in-out",
-          "w-[var(--sidebar-width)] pt-[57px]",
+          // Capped so the drawer never exceeds the viewport on small
+          // phones (sidebar token is wider than a 360px screen).
+          "w-[var(--sidebar-width)] max-w-[calc(100vw-var(--space-10))] pt-[var(--space-10)]",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:hidden",
         ].join(" ")}
@@ -115,7 +119,10 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg text-text-2 font-sans">
-      <Navbar onMenuToggle={toggleSidebar} />
+      <Navbar
+        onMenuToggle={toggleSidebar}
+        className="md:ms-[var(--sidebar-width)]"
+      />
       <div className="flex flex-1">
         <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 

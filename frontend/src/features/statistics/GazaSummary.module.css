@@ -1,0 +1,265 @@
+/* GazaSummary.module.css — field tally layout */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  overflow: hidden;
+}
+
+/* Severity bar — thin crimson rule at top, the one structural accent */
+.severityBar {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: var(--accent-500);
+}
+
+/* ── Tally ──────────────────────────────────────────── */
+
+.tally {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.tallyCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.tallyNumber {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(3.6rem, 8vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  color: var(--text-1);
+}
+
+.tallyKilled {
+  color: var(--accent-500);
+}
+
+.tallyInjured {
+  color: var(--accent-300);
+}
+
+.tallyLabel {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--text-3);
+}
+
+.tallyDivider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--hairline-strong);
+  flex-shrink: 0;
+}
+
+/* ── Delta (this report) ─────────────────────────────── */
+
+.delta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  border-block-start: 1px solid var(--hairline);
+}
+
+.deltaLabel {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.deltaNumbers {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.deltaItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.deltaValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  color: var(--text-1);
+}
+
+.deltaWord {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+/* ── Context grid ────────────────────────────────────── */
+
+.contextGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2) var(--space-6);
+}
+
+.contextRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--hairline);
+}
+
+.contextLabel {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contextValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+/* ── Meta ────────────────────────────────────────────── */
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  padding-block-start: var(--space-2);
+  border-block-start: 1px solid var(--hairline);
+  flex-wrap: wrap;
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+
+/* ── States ──────────────────────────────────────────── */
+
+.skeletonTally {
+  height: 7.2rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeletonDelta {
+  height: 2rem;
+  width: 60%;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.15s;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonTally,
+  .skeletonDelta {
+    animation: none;
+  }
+}
+
+.error {
+  color: var(--danger);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+.empty {
+  color: var(--text-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .tally {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .tallyDivider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .tallyNumber {
+    font-size: clamp(3.2rem, 10vw, 4.8rem);
+  }
+
+  .contextGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .delta {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}

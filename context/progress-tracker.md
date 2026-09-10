@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
-**Last completed:** Slice 3.1 — Dashboard Shell & Readiness Detail  
-**Next:** Slice 3.2 — Gaza Daily Statistics & PostgreSQL Ingestion  
+**Last completed:** Slice 3.2 — Gaza Daily Statistics & PostgreSQL Ingestion  
+**Next:** Slice 3.3 — West Bank Statistics & Aggregation  
 
 ---
 
@@ -123,10 +123,10 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
   - [x] **FE Subslice**: Dashboard shell (`/app`): `DashboardPage` composing `DashboardHeader` ("WAR IN GAZA"), route-aware `Breadcrumbs`, static `HeaderMapBanner` (no Leaflet), `EmptyState` placeholder; mounted on `/app` in `App.jsx`. Sidebar active indicator verified as-is in `AppLayout`.
   - [x] **BE Subslice**: `/ready` keeps `{ status, db: { latencyMs, syncedAt } }` shape; `syncedAt` wired to last successful summary-cache write via `syncTracker` (recorded in `CachedSummaryFeed`, `null` before first sync); `degraded` = DB ping failed.
   - [x] **Tests**: 13 FE (Breadcrumbs 5, DashboardHeader 2, HeaderMapBanner 2, DashboardPage 4) + 3 BE (ready syncedAt/latency shape + post-sync ISO, cache sync-timestamp). Total: 141 FE + 52 BE = **193 tests passing**. Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in prod bundle.
-- [ ] **3.2 Gaza Daily Statistics & PostgreSQL Ingestion**
-  - [ ] **FE Subslice**: Stat grid + `StatItem` components covering Gaza casualties, children, women, injured, civil defense. All 4 states.
-  - [ ] **BE Subslice**: Prisma schema `Statistic` table with composite indexes (`[region, reportDate]`). Ingestion use case `SyncCasualtiesUseCase` auto-refreshing daily records. Controller `GET /api/v1/statistics/gaza`.
-  - [ ] **Tests**: Component tests and controller integration tests.
+- [x] **3.2 Gaza Daily Statistics & PostgreSQL Ingestion**
+  - [x] **FE Subslice**: `GazaSummary` component (`features/statistics/GazaSummary.jsx` + `.module.css`) — custom field-tally card (no `StatItem`, no icons): massive LTR mono tabular killed/injured tally (`en-US` grouping, crimson severity bar), per-report delta strip, context breakdown (Children / Women / Press / Medical / CivDef / Massacres), meta footer (source / date / reporting window). Token-only CSS Module with logical properties. All 4 states (loading skeleton / error `role="alert"` / empty / populated). Wired into `DashboardPage` replacing the `EmptyState` placeholder. `useGazaDaily` hook (`features/statistics/hooks/useGazaDaily.js`) consuming `GET /api/v1/statistics/gaza` with 5-min staleTime and 30s refetch. Fixture at `features/statistics/__fixtures__/gaza.js` (`gazaLatestFixture`, enveloped shape used by fetch-mock hook/Dashboard tests).
+  - [x] **BE Subslice**: Full-stack DB-backed ingestion pipeline — reused existing EAV `Statistic` model (no migration needed). Domain entities (`Statistic.ts`), Zod schema (`casualtiesDaily.ts`), ports (`CasualtiesFeedPort`, `StatisticRepositoryPort`), external adapter (`TechForPalestineCasualtiesClient`), repository (`PrismaStatisticRepository`), use case (`SyncCasualtiesUseCase`), cache decorator (`CachedGazaStatistics` with 15-min TTL stale-on-failure), controller (`GET /api/v1/statistics/gaza`) mounted on `apiRouter`. `CASUALTIES_FEED_URL` added to config schema. Verified fields only (`ext_*` extrapolated fields excluded).
+  - [x] **Tests**: 5 BE controller tests (200 envelope, latest-date selection, 502 upstream failure, stale cache serve, ISO timestamp shape) + 3 FE hook tests (success, error, loading) + 5 FE DashboardPage tests (header, breadcrumbs, map banner, Gaza section render, loading skeleton). Total: 145 FE + 57 BE = **202 tests passing**. Typecheck green both workspaces; prod build green.
 - [ ] **3.3 West Bank Statistics & Aggregation**
   - [ ] **FE Subslice**: West Bank view (`/app/westBank`): casualties, arrests, settler attacks, displacement cards.
   - [ ] **BE Subslice**: Use case and repository query for West Bank daily data. Controller `GET /api/v1/statistics/west-bank`.

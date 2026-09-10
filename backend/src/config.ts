@@ -28,6 +28,12 @@ const EnvSchema = z.object({
     .string()
     .url()
     .default("https://data.techforpalestine.org/api/v3/summary.json"),
+  CASUALTIES_FEED_URL: z
+    .string()
+    .url()
+    .default(
+      "https://data.techforpalestine.org/api/v2/casualties_daily.json",
+    ),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
@@ -81,6 +87,9 @@ export const config = {
   },
   get summaryFeedUrl(): string {
     return env().SUMMARY_FEED_URL;
+  },
+  get casualtiesFeedUrl(): string {
+    return env().CASUALTIES_FEED_URL;
   },
 };
 

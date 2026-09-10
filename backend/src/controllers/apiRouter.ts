@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { healthRouter } from "./healthController.js";
 import { summaryRouter } from "./summaryController.js";
+import { statisticsRouter } from "./statisticsController.js";
 
 /**
  * Central API router — mounts all /api/v1/* routes.
@@ -12,5 +13,5 @@ export const apiRouter = Router();
 // Slice 2.1 — summary endpoint
 apiRouter.use(summaryRouter);
 
-// Future controllers will be mounted here, e.g.:
-// apiRouter.use(statisticsRouter);
+// Slice 3.2 — Gaza statistics endpoint
+apiRouter.use("/statistics", statisticsRouter);

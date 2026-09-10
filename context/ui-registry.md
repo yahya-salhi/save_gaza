@@ -206,6 +206,36 @@ Tests: 128 FE passing (+6 cleanup regression tests: CTA contrast, single timesta
 
 Total: 141 FE + 52 BE = **193 tests passing** (+13 FE, +3 BE). Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in prod bundle.
 
+## Built So Far (Slice 3.2)
+
+### Gaza Daily Statistics (FE — custom tally card, no StatItem/icons)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `GazaSummary` | `frontend/src/features/statistics/GazaSummary.jsx` | ✅ Built — field-tally card: killed/injured mono tabular tally (`en-US` grouping, bidi-isolated), per-report delta, context breakdown (Children/Women/Press/Medical/CivDef/Massacres), meta footer; 4 states (skeleton / `role="alert"` error / empty / populated) | covered via DashboardPage tests |
+| `GazaSummary.module.css` | `frontend/src/features/statistics/GazaSummary.module.css` | ✅ Built — token-only (`--surface-1`, `--accent-500/300`, `--space-*`, `--radius-lg`, `--font-mono`), logical properties, severity bar + tally + delta + context grid + meta | — |
+| `useGazaDaily` | `frontend/src/features/statistics/hooks/useGazaDaily.js` | ✅ Built — `queryKey ["statistics","gaza"]`, `apiGet("/api/v1/statistics/gaza")`, 5-min staleTime + 30s refetch | 3 hook tests |
+| Gaza fixture | `frontend/src/features/statistics/__fixtures__/gaza.js` | ✅ Built — `gazaLatestFixture` (enveloped shape for fetch-mock hook/Dashboard tests; deviates from the Slice 1.5 unwrapped-fixture standard) | — |
+| `DashboardPage` wiring | `frontend/src/pages/DashboardPage.jsx` | ✅ Wired — `GazaSummary` replaces the `EmptyState` placeholder below Breadcrumbs/Header/Banner | 5 DashboardPage tests |
+
+### Gaza Ingestion Pipeline (BE — EAV Statistic reuse, no migration)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `Statistic` entity + `GazaDaily` + `VERIFIED_GAZA_METRICS` | `backend/src/core/entities/Statistic.ts` | ✅ Built (`ext_*` excluded by contract) |
+| `CasualtiesDailySchema` (Zod) | `backend/src/core/schemas/casualtiesDaily.ts` | ✅ Built (row array or `{ data }` envelope, passthrough) |
+| `CasualtiesFeedPort` / `StatisticRepositoryPort` | `backend/src/core/ports/` | ✅ Built |
+| `TechForPalestineCasualtiesClient` | `backend/src/infrastructure/external/TechForPalestineCasualtiesClient.ts` | ✅ Built |
+| `PrismaStatisticRepository` | `backend/src/infrastructure/repositories/PrismaStatisticRepository.ts` | ✅ Built (EAV upsert on `@@unique([region, reportDate, type])`) |
+| `SyncCasualtiesUseCase` | `backend/src/application/use-cases/SyncCasualtiesUseCase.ts` | ✅ Built (fetch → validate → upsert verified fields → latest-date snapshot) |
+| `CachedGazaStatistics` (15-min TTL, stale-on-failure) | `backend/src/infrastructure/cache/CachedGazaStatistics.ts` | ✅ Built |
+| Statistics controller (`GET /statistics/gaza`) | `backend/src/controllers/statisticsController.ts` | ✅ Built + mounted on `apiRouter` under `/statistics` |
+| `CASUALTIES_FEED_URL` env | `backend/src/config.ts` | ✅ Added (default v2 `casualties_daily.json`) |
+
+### Tests (Slice 3.2)
+
+Total: 145 FE + 57 BE = **202 tests passing** (+4 FE incl. hook/Dashboard coverage, +5 BE controller). Verified 2026-09-10: `vitest run` green both workspaces (23 FE files / 11 BE files).
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -258,7 +288,7 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `Footer` | `shared/ui/Footer.jsx` | Navigation | `bg-bg`, hairline border, copyright |
 | `Hero` | `features/summary/components/Hero.jsx` | Landing | `--text-4xl`, crimson mono tally, live ticker pulse |
 | `LiveTicker` | `features/summary/components/LiveTicker.jsx` | Landing | Pulsing dot, `aria-live="polite"`, reduced-motion override |
-| `GazaSummary` | `features/statistics/components/GazaSummary.jsx` | Statistics | Stat grid, 4 states, `StatItem` components |
+| `GazaSummary` | `features/statistics/GazaSummary.jsx` | Statistics | ✅ Built (Slice 3.2) — custom field-tally card (no StatItem, no icons): mono tabular tally + delta + context grid + meta footer, 4 states |
 | `WestBankSummary`| `features/statistics/components/WestBankSummary.jsx` | Statistics | Stat grid, 4 states, detainee/casualty cards |
 | `TimeSeriesChart`| `features/statistics/components/TimeSeriesChart.jsx` | Charts | Recharts `ResponsiveContainer`, line chart, tooltip overrides |
 | `DemographicPie` | `features/statistics/components/DemographicPie.jsx` | Charts | Recharts pie chart, demographics breakdown |

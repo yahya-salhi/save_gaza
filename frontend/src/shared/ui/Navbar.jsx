@@ -22,7 +22,7 @@ export default function Navbar({ onMenuToggle = null, className = "" }) {
   return (
     <header
       className={[
-        "sticky top-0 z-40 flex items-center justify-between border-b border-hairline px-5 py-3",
+        "sticky top-0 z-40 flex h-[var(--space-10)] items-center justify-between border-b border-hairline px-[var(--space-5)]",
         "bg-bg/95 backdrop-blur",
         className,
       ]
@@ -31,28 +31,30 @@ export default function Navbar({ onMenuToggle = null, className = "" }) {
     >
       <Link
         to="/"
-        className="font-display text-lg font-black tracking-wide text-text-1 no-underline transition-colors hover:text-accent-400"
+        className="shrink-0 whitespace-nowrap font-display text-lg font-black tracking-wide text-text-1 no-underline transition-colors hover:text-accent-400"
       >
         Save Gaza
       </Link>
 
       <nav aria-label="Primary" className="flex items-center gap-5">
-        {NAV_LINKS.map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              [
-                "text-sm no-underline transition-colors",
-                isActive
-                  ? "font-semibold text-accent-500"
-                  : "text-text-2 hover:text-text-1",
-              ].join(" ")
-            }
-          >
-            {label}
-          </NavLink>
-        ))}
+        <div className="hidden items-center gap-5 md:flex">
+          {NAV_LINKS.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                [
+                  "text-sm no-underline transition-colors",
+                  isActive
+                    ? "font-semibold text-accent-500"
+                    : "text-text-2 hover:text-text-1",
+                ].join(" ")
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+        </div>
 
         {onMenuToggle && (
           <button
