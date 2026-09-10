@@ -19,6 +19,12 @@ npm-debug.log*
 coverage/
 *.lcov
 .vitest/
+*.tsbuildinfo
+
+# Playwright artifacts (local screenshots/traces)
+.playwright-mcp/
+test-results/
+playwright-report/
 
 # Prisma
 backend/prisma/*.db
@@ -33,3 +39,4 @@ Thumbs.db
 
 # OpenCode / agent scratch
 /scratch/
+memory.md
