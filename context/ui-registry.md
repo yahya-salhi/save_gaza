@@ -357,6 +357,33 @@ Total: 204 FE + 81 BE = **285 tests passing** (+11 FE incl. fixture/hook/page, +
 
 `leaflet` + `react-leaflet@5` added to `frontend` (user-approved; lazy-loaded), `@types/leaflet` + `@types/geojson` as devDeps (checkJs typing for v5 props).
 
+## Built So Far (Slice 4.2)
+
+### RegionInfo Details Panel (FE — identity + pre-war overview + Gaza-wide tally, no per-region casualties)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `RegionInfo` | `frontend/src/features/map/components/RegionInfo.jsx` | ✅ Built — blurb, admin centre, area, 2017 population, centroid, locality chips, source note + Gaza-wide killed/injured tally from shared `useGazaDaily` cache with “not published per-governorate” disclaimer; prompt-only when unselected (zero fetches via split `RegionDetails`), own skeleton, null-on-tally-error; close button + `aria-label` | 6 panel tests |
+| `RegionInfo.module.css` | `frontend/src/features/map/components/RegionInfo.module.css` | ✅ Built — token-only (25 existing tokens, zero new), logical properties, `:focus-visible` ring, reduced-motion guard | — |
+| `useRegion` | `frontend/src/features/map/hooks/useRegion.js` | ✅ Built — `queryKey ["spatial","region",id]`, `enabled` on selection, `apiGet("/api/v1/spatial/regions/:id")`, 24h staleTime, no refetch | 3 hook tests |
+| Region fixture | `frontend/src/features/map/__fixtures__/region.js` | ✅ Built — `regionFixture` (enveloped, identity + PCBS overview, never killed/damage keys) | 3 fixture tests |
+| `GazaMapPage` rework | `frontend/src/pages/GazaMapPage.jsx` | ✅ Wired — two-column (side panel desktop / stacked mobile), toggle-off + Escape + close-button deselect, updated status/popup copy to the disclaimer | 9 page tests |
+
+### Regional Spatial Aggregation (BE — static curated metadata, no migration)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `REGION_METAS` / `getRegionMeta` | `backend/src/infrastructure/spatial/gazaRegions.ts` | ✅ Built (centroid/bbox derived from our rings; overview: GeoMOLG area + PCBS 2017 census + capitals/localities/blurbs, sources in comments) |
+| `GET /spatial/regions/:id` | `backend/src/controllers/spatialController.ts` | ✅ Built (envelope, own 24h `InMemoryCache`, same cache headers + manual gzip via shared sender; `NotFoundError` → 404 on unknown id; Express 5 `string\|string[]` param guard) |
+
+### Tests (Slice 4.2)
+
+Total: 219 FE + 87 BE = **306 tests passing** (+15 FE incl. fixture/hook/panel/page, +6 BE endpoint). Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in the bundle. Real-browser verified (populated panel, zero console errors).
+
+### Dependency Note (Slice 4.2)
+
+None — no new dependencies (25 existing tokens covered the panel; no new packages).
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -419,8 +446,8 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `DemographicPie` | `features/statistics/DemographicPie.jsx` | Charts | ✅ Built (Slice 3.4) — lazy default export, children/women/others donut on crimson ramp, token legend |
 | `DateRangeSlider`| `features/statistics/DateRangeSlider.jsx`| Controls | ✅ Built (Slice 3.4) — date inputs + 30d/90d/All presets, URL-sync via parent, auto-correct |
 | `GazaHistory` | `features/statistics/GazaHistory.jsx` | Statistics | ✅ Built (Slice 3.4) — trends section on `/app/gaza` below `GazaDetail`; owns `?startDate=&endDate=` |
-| `MapContainer` | `features/map/components/MapContainer.jsx` | Maps | ✅ Built (Slice 4.1) — lazy `GazaMapCanvas`, GADM Gaza boundary outlines on accent ramp, dark tiles, labels + legend |
-| `RegionInfo` | `features/map/components/RegionInfo.jsx` | Maps | Regional casualty details card, empty state prompt |
+| `MapContainer` | `features/map/components/MapContainer.jsx` | ✅ Built (Slice 4.1) — lazy `GazaMapCanvas`, GADM Gaza boundary outlines on accent ramp, dark tiles, labels + legend |
+| `RegionInfo` | `features/map/components/RegionInfo.jsx` | ✅ Built (Slice 4.2) — side details panel: blurb, admin centre, area, 2017 population, centroid, locality chips + Gaza-wide tally with source disclaimer; prompt-only when unselected |
 | `IncidentForm` | `features/submissions/components/IncidentForm.jsx` | Forms | 4 form states, Turnstile widget, Zod client validation |
 | `AdminLogin` | `features/auth/components/AdminLogin.jsx` | Auth | Admin login form, JWT HttpOnly auth trigger |
 | `ModerationQueue`| `features/moderation/components/ModerationQueue.jsx`| Admin | Queue table, preview modal, approve/reject actions |

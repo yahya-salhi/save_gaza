@@ -12,11 +12,13 @@ const GAZA_BOUNDS = [
  * GazaMapCanvas — lazy-loaded Leaflet canvas (default export for React.lazy).
  *
  * Observatory-styled Gaza instrument: dark-filtered tiles locked inside the
- * Gaza envelope, five governorate polygons filled down the accent ramp with
- * permanent mono labels, click-to-select with a glow state. Selection is
- * owned by the parent page (`selectedId` / `onSelect`) so the map, legend,
- * and region list stay in sync. Per-governorate casualty data is NOT shown
- * here — it wires in Slice 4.2 via `GET /spatial/regions/:id`.
+  * Gaza envelope, five governorate polygons filled down the accent ramp with
+  * permanent mono labels, click-to-select with a glow state. Selection is
+  * owned by the parent page (`selectedId` / `onSelect`) so the map, legend,
+  * buttons, and `RegionInfo` panel stay in sync. Per-governorate casualty
+  * figures are NOT shown here — no upstream dataset publishes them — the
+  * panel pairs static identity (`GET /spatial/regions/:id`) with the
+  * Gaza-wide tally instead.
  *
  * @param {object} props
  * @param {import("../hooks/useBoundaries.js").BoundariesData} props.data
@@ -52,7 +54,7 @@ export default function GazaMapCanvas({ data, selectedId, onSelect }) {
       className: styles.governorateLabel,
     });
     layer.bindPopup(
-      `<strong>${name}</strong><br />Per-governorate casualty data arrives in Slice 4.2.`,
+      `<strong>${name}</strong><br />Per-governorate breakdowns are not published by the source.`,
     );
     layer.on("click", () => {
       if (feature.id) onSelect(feature.id);
