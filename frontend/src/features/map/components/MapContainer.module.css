@@ -1,0 +1,232 @@
+/* MapContainer — Refined Observatory Gaza canvas. Token-only, logical props. */
+
+.canvas {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-3);
+  overflow: hidden;
+}
+
+.leaflet {
+  height: var(--map-height);
+  width: 100%;
+  background: var(--bg);
+  font-family: var(--font-sans);
+}
+
+/* Governorate polygons — each filled from its own step of the crimson ramp. */
+.governorate {
+  stroke: var(--accent-300);
+  stroke-width: 2;
+  stroke-opacity: 0.95;
+  fill-opacity: 0.38;
+  transition: fill-opacity 0.2s ease;
+}
+
+.governorate:hover {
+  fill-opacity: 0.6;
+}
+
+.governorate:focus-visible {
+  outline: none;
+  stroke: var(--accent-100);
+  stroke-width: 3;
+}
+
+.region-north-gaza { fill: var(--accent-300); }
+.region-gaza { fill: var(--accent-400); }
+.region-deir-al-balah { fill: var(--accent-500); }
+.region-khan-younis { fill: var(--accent-600); }
+.region-rafah { fill: var(--accent-700); }
+
+.selected {
+  stroke: var(--accent-100);
+  stroke-width: 3;
+  fill-opacity: 0.65;
+  filter: drop-shadow(0 0 8px var(--accent-500));
+}
+
+/* Permanent on-map governorate labels — transparent chip, mono caps.
+   Doubled specificity (.leaflet ancestor) so they always win over the
+   Leaflet default tooltip chrome regardless of bundle CSS order. */
+.leaflet .governorateLabel {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px var(--bg), 0 0 12px var(--bg);
+}
+
+.leaflet .governorateLabel::before {
+  display: none;
+}
+
+/* Glass overlay chips — pointer-transparent, purely presentational. */
+.mapHeader {
+  position: absolute;
+  inset-block-start: var(--space-4);
+  inset-inline-start: var(--space-4);
+  z-index: 500;
+  pointer-events: none;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+}
+
+.mapEyebrow {
+  margin: 0;
+  color: var(--accent-400);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+}
+
+.mapTitle {
+  margin: 0;
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.readout {
+  position: absolute;
+  inset-block-start: var(--space-4);
+  inset-inline-end: var(--space-4);
+  z-index: 500;
+  pointer-events: none;
+  margin: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hairline);
+  border-block-start: 2px solid var(--accent-500);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.legend {
+  position: absolute;
+  inset-block-end: var(--space-8);
+  inset-inline-end: var(--space-4);
+  z-index: 500;
+  pointer-events: none;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.legendActive {
+  color: var(--text-1);
+}
+
+.swatch {
+  inline-size: var(--space-3);
+  block-size: var(--space-3);
+  border-radius: var(--radius-full);
+  background-color: var(--accent-500);
+  box-shadow: 0 0 6px var(--hairline-strong);
+}
+
+.swatch.region-north-gaza { background-color: var(--accent-300); }
+.swatch.region-gaza { background-color: var(--accent-400); }
+.swatch.region-deir-al-balah { background-color: var(--accent-500); }
+.swatch.region-khan-younis { background-color: var(--accent-600); }
+.swatch.region-rafah { background-color: var(--accent-700); }
+
+/* Leaflet injects its own DOM — style it with :global() token overrides. */
+:global(.leaflet-container) {
+  background: var(--bg);
+}
+
+/* Dark observatory basemap — CSS-filtered tiles, no provider/CSP change. */
+:global(.leaflet-tile-pane) {
+  filter: grayscale(1) invert(0.92) brightness(0.88) contrast(1.05);
+}
+
+:global(.leaflet-control-zoom) {
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--elevation-2);
+}
+
+:global(.leaflet-bar a) {
+  background-color: var(--surface-2);
+  color: var(--text-1);
+  border-block-end: 1px solid var(--hairline);
+}
+
+:global(.leaflet-bar a:hover) {
+  background-color: var(--surface-3);
+  color: var(--text-1);
+}
+
+:global(.leaflet-control-attribution) {
+  background: var(--overlay-bg);
+  color: var(--text-3);
+  font-size: 1rem;
+  padding-inline: var(--space-2);
+}
+
+:global(.leaflet-control-attribution a) {
+  color: var(--text-3);
+}
+
+:global(.leaflet-popup .leaflet-popup-content-wrapper) {
+  background-color: var(--surface-2);
+  color: var(--text-2);
+  border-inline-start: 4px solid var(--accent-500);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--elevation-2);
+}
+
+:global(.leaflet-popup-tip) {
+  background-color: var(--surface-2);
+}
+
+:global(.leaflet-tooltip) {
+  background-color: var(--surface-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  box-shadow: var(--elevation-2);
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .governorate,
+  .selected {
+    transition: none;
+  }
+}

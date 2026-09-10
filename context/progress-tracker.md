@@ -47,9 +47,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ## Current Status
 
-**Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
-**Last completed:** Slice 3.4 — Time-Series Analytics & Query Filtering  
-**Next:** Slice 3.5 — Wire Statistics & Data Export Streaming  
+**Phase:** Phase 4 — Interactive Map & Spatial Telemetry  
+**Last completed:** Slice 4.1 — Map Canvas & GeoJSON Spatial Boundary Service  
+**Next:** Slice 4.2 — RegionInfo Details Panel & Regional Spatial Aggregation  
 
 ---
 
@@ -155,10 +155,12 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
 
 ### Phase 4 — Interactive Map & Spatial Telemetry
 
-- [ ] **4.1 Map Canvas & GeoJSON Spatial Boundary Service**
-  - [ ] **FE Subslice**: Leaflet map container (`/app/gazaMap`) with token-driven GeoJSON boundary polygons.
-  - [ ] **BE Subslice**: GeoJSON spatial boundary controller `GET /api/v1/spatial/boundaries` with compression and 24h cache.
-  - [ ] **Perf**: Lazy load Leaflet and react-leaflet components.
+- [x] **4.1 Map Canvas & GeoJSON Spatial Boundary Service** (built 2026-09-10; Gaza-only 5 governorates, selection-only — per-governorate casualty aggregates explicitly deferred to 4.2)
+  - [x] **FE Subslice**: `GazaMapPage` (`pages/GazaMapPage.jsx`: Breadcrumbs + heading + lazy canvas + swatch region buttons + status line) mounted on `/app/gazaMap`, replacing the placeholder. `GazaMapCanvas` (`features/map/components/MapContainer.jsx`, default export for `React.lazy()`): Leaflet canvas fit to the Gaza envelope (`bounds` + `maxBounds`, zoom control bottom-left), dark-filtered OSM tiles (CSS `grayscale+invert`, no provider/CSP change), five GADM-derived polygons filled down the accent ramp with permanent mono labels, glass header/readout/legend overlays, click-to-select with glow. Token-only `MapContainer.module.css` (logical properties, `:global()` Leaflet chrome, reduced-motion guard). `useBoundaries` hook (`queryKey ["spatial","boundaries"]`, 24h staleTime, no refetch). Fixture `__fixtures__/boundaries.js` (enveloped, same convention as `gaza.js`). 4 states (skeleton / error+retry / empty / populated); selection shared between map, legend, and buttons.
+  - [x] **BE Subslice**: `GET /api/v1/spatial/boundaries` (`controllers/spatialController.ts`, mounted on `apiRouter` under `/spatial`): static GADM v4.1-derived Gaza polygons (`infrastructure/spatial/gazaBoundaries.ts`, Chaikin-smoothed, 4dp) inside the standard envelope; `InMemoryCache` 24h TTL + `Cache-Control: public, max-age=86400` + manual gzip negotiation (no new dependency).
+  - [x] **Tests**: 4 BE endpoint tests (envelope + 5 ids, cache headers, cache-hit equality, gzip) + 2 FE fixture tests + 3 FE hook tests + 6 FE page tests (heading/loading/error+retry/empty/populated+select). Total: 204 FE + 81 BE = **285 tests passing**. Typecheck green both workspaces; prod build green with Leaflet code-split (`MapContainer` chunk); no `api/v2|api/v3` URLs in the bundle (sole `techforpalestine` hit is the Footer attribution link).
+  - [x] **Deps**: `leaflet` + `react-leaflet@5` added to `frontend` (user-approved; lazy-loaded), `@types/leaflet` + `@types/geojson` as devDeps (checkJs typing for the v5 props).
+  - [x] **Fix (pre-commit)**: hand-drawn boxes were far wider than the Strip and spilled outside Gaza — replaced with real GADM v4.1 governorate shapes (envelope lng 34.23–34.55, lat 31.24–31.59), corner-smoothed. Fixed white label pills (specificity bump `.leaflet .governorateLabel`), zoom/header overlap (zoom moved bottom-left), Rafah cut off (fitBounds). Verified with real-browser screenshots.
 - [ ] **4.2 RegionInfo Details Panel & Regional Spatial Aggregation**
   - [ ] **FE Subslice**: Sidebar details panel showing selected region metrics with empty selection prompt.
   - [ ] **BE Subslice**: Spatial aggregation controller `GET /api/v1/spatial/regions/:id` with in-memory polygon mapping.

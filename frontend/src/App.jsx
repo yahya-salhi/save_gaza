@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import GazaPage from "./pages/GazaPage.jsx";
 import WestBankPage from "./pages/WestBankPage.jsx";
+import GazaMapPage from "./pages/GazaMapPage.jsx";
 import EmptyState from "./shared/ui/EmptyState.jsx";
 
 const queryClient = new QueryClient({
@@ -45,7 +46,7 @@ export default function App() {
                   <Route path="/app" element={<DashboardPage />} />
                   <Route path="/app/gaza" element={<GazaPage />} />
                   <Route path="/app/westBank" element={<WestBankPage />} />
-                  <Route path="/app/gazaMap" element={<PlaceholderPage title="Interactive Map — Coming Soon" />} />
+                  <Route path="/app/gazaMap" element={<GazaMapPage />} />
                 </Route>
               </Routes>
             </BrowserRouter>
