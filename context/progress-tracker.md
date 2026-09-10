@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
-**Last completed:** Slice 3.3.1 — Gaza Full-Picture Page  
-**Next:** Slice 3.4 — Time-Series Analytics & Query Filtering  
+**Last completed:** Slice 3.4 — Time-Series Analytics & Query Filtering  
+**Next:** Slice 3.5 — Wire Statistics & Data Export Streaming  
 
 ---
 
@@ -138,10 +138,13 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
 - [x] **3.3.1 Gaza Full-Picture Page** (built 2026-09-10; closes the placeholder gap — `/app` stays the headline overview, `/app/gaza` is now the whole data picture)
   - [x] **FE Subslice**: `GazaDetail` (`features/statistics/GazaDetail.jsx`) rendering every remaining verified field in three groups (Truce & committee / Starvation / Aid seekers) on the shared `useGazaDaily` cache — no second fetch. `GazaPage` (`pages/GazaPage.jsx`: Breadcrumbs + heading + `GazaSummary` + `GazaDetail`) mounted on `/app/gaza`, placeholder removed. State ownership: `GazaSummary` owns page loading/error/empty; detail shows its own skeleton while loading and nothing on error (single alert). No backend changes — endpoint already returns the full row.
   - [x] **Tests**: 6 FE page tests (heading, breadcrumbs, tally, full-record groups, dual skeletons, single alert). Total: 159 FE + 65 BE = **224 tests passing**. Prod build green.
-- [ ] **3.4 Time-Series Analytics & Query Filtering**
-  - [ ] **FE Subslice**: Recharts line chart + demographic pie chart + date range slider with URL sync.
-  - [ ] **BE Subslice**: Controller query params: `GET /api/v1/statistics/history?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&page=1&limit=100` with Zod date validation, pagination, and DB index optimization.
-  - [ ] **Perf**: Code-split Recharts via `React.lazy()`.
+- [x] **3.4 Time-Series Analytics & Query Filtering** (built 2026-09-10; Gaza-only, live EAV pivot, no migration — existing `@@index([region, reportDate])` covers the query)
+  - [x] **FE Subslice**: `GazaHistory` analytics section at the bottom of `/app/gaza` (below `GazaDetail`): `DateRangeSlider` (two date inputs + 30d/90d/All presets, `useSearchParams` URL sync, trailing-90d default) + `React.lazy()` `TimeSeriesChart` (killed_cum/injured_cum lines on the crimson ramp) + `DemographicPie` (children/women/others of latest in view). Token-only `TimeSeriesChart.module.css` (logical properties); LTR bidi-isolated numerals; sr-only data tables double as test assertions. State ownership mirrors `GazaDetail`: own skeleton while loading, null on error/empty — `GazaSummary` keeps the page single-alert invariant. `useHistory` hook (`queryKey ["statistics","history",...]`, whole-window `limit: 1000` default, 5-min staleTime + 30s refetch). Fixture `__fixtures__/history.js` (enveloped, same convention as `gaza.js`).
+  - [x] **BE Subslice**: `GET /api/v1/statistics/history?startDate&endDate&page=1&limit=100` (limit capped at 1000) with `HistoryQuerySchema` Zod validation (inverted range → 400 `VALIDATION_ERROR`); envelope `data: { items, page, limit, total }`; full daily snapshots ascending (internal `_`-prefixed keys stripped); direct DB indexed query, no cache decorator. Port extended with `getHistory` (distinct-date pagination + EAV pivot) + `countHistoryDates`.
+  - [x] **Tests**: 6 BE endpoint tests (envelope, 90d default, pagination, 400s, empty window) + 6 FE hook/endpoint-builder tests + 6 FE section tests (populated/charts/slider/loading/null-on-error/null-on-empty/URL-sync both directions) + 1 FE page test (trends below full record). Shared `setup.js` gains a `ResizeObserver` stub (jsdom lacks it; Recharts `ResponsiveContainer` requires it). Fixed 3 pre-existing `checkJs` indexing errors in `GazaDetail.jsx` (untouched since 3.3.1). Total: 172 FE + 71 BE = **243 tests passing**. Typecheck green both workspaces; prod build green with Recharts code-split (`TimeSeriesChart`/`DemographicPie` chunks); no `api/v2|api/v3` URLs in prod bundle (sole `techforpalestine` hit is the Footer attribution link).
+  - [x] **Deps**: `recharts@^2` added to `frontend` (user-approved per ask-before-adding rule; v2 line for React 19 stability — v3 migration explicitly deferred).
+  - [x] **Fix (pre-commit, 2026-09-10)**: pie showed an empty white circle with 0s live — upstream stopped publishing verified demographics after **2025-10-07** (only `ext_*` estimates since, excluded by contract), so no recent window has children/women data. `DemographicPie` now takes the last verified breakdown instead: in-window when present, else a no-refetch fallback query over the full pre-window history, always dated via a "Last verified breakdown · {date}" caption; neutral note (no circle) when the DB holds none at all. Verified live: fallback resolves to 2025-10-07 (20,179 children / 12,500 women).
+  - [x] **Fix (pre-commit, 2026-09-10)**: chart hover tooltip rendered outside the theme (unreadable dark details). Replaced Recharts default tooltip chrome with custom token-owned content (`HistoryTooltip`, `BreakdownTooltip` + `.tooltip*` classes in the chart module). Verified with real-browser hover screenshots against live data (pie + line tooltips readable, on-palette). Total: 183 FE + 71 BE = **254 tests passing**.
 - [ ] **3.5 Wire Statistics & Data Export Streaming**
   - [ ] **FE Subslice**: Connect statistics pages and charts to query hooks; wire CSV and JSON download triggers.
   - [ ] **BE Subslice**: Streamed export endpoint `GET /api/v1/statistics/export?format=csv|json` returning raw attachment (documented envelope exception).

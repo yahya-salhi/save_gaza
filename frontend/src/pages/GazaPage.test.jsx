@@ -4,6 +4,12 @@ import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import GazaPage from "./GazaPage.jsx";
 import { gazaLatestFixture } from "../features/statistics/__fixtures__/gaza.js";
+import { historyFixture } from "../features/statistics/__fixtures__/history.js";
+
+// Warm up the lazily-loaded chart modules (and the heavy recharts
+// transform) before any test starts so timers never starve mid-test.
+await import("../features/statistics/TimeSeriesChart.jsx");
+await import("../features/statistics/DemographicPie.jsx");
 
 function jsonResponse(body, ok = true, status = 200) {
   return {
@@ -91,5 +97,27 @@ describe("GazaPage", () => {
     renderGaza();
     const alerts = await screen.findAllByRole("alert");
     expect(alerts).toHaveLength(1);
+  });
+
+  it("renders the trends section below the full record when history loads", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url) =>
+        Promise.resolve(
+          jsonResponse(
+            String(url).includes("/history") ? historyFixture : gazaLatestFixture,
+          ),
+        ),
+      ),
+    );
+    renderGaza();
+    const trends = await screen.findByLabelText("Gaza casualty trends");
+    expect(trends).toBeInTheDocument();
+    expect(
+      await screen.findByText("Casualties over time", {}, { timeout: 10000 }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText("Who was killed", {}, { timeout: 10000 }),
+    ).toBeInTheDocument();
   });
 });

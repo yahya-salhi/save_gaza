@@ -98,4 +98,71 @@ export class PrismaStatisticRepository implements StatisticRepositoryPort {
       metrics,
     };
   }
+
+  async getHistory(
+    region: string,
+    startDate: string,
+    endDate: string,
+    offset: number,
+    limit: number,
+  ): Promise<StatisticSnapshot[]> {
+    const db = await this.prisma();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const dateRows = await db.statistic.findMany({
+      where: { region, reportDate: { gte: start, lte: end } },
+      select: { reportDate: true },
+      distinct: ["reportDate"],
+      orderBy: { reportDate: "asc" },
+      skip: offset,
+      take: limit,
+    });
+
+    if (dateRows.length === 0) return [];
+
+    const rows = await db.statistic.findMany({
+      where: {
+        region,
+        reportDate: { in: dateRows.map((d) => d.reportDate) },
+      },
+      select: { reportDate: true, type: true, value: true },
+      orderBy: { reportDate: "asc" },
+    });
+
+    const byDate = new Map<string, StatisticSnapshot>();
+    for (const row of rows) {
+      const key = row.reportDate.toISOString().slice(0, 10);
+      let snap = byDate.get(key);
+      if (!snap) {
+        snap = { reportDate: key, metrics: {} };
+        byDate.set(key, snap);
+      }
+      snap.metrics[row.type] = row.value;
+    }
+
+    for (const snap of byDate.values()) {
+      if (typeof snap.metrics["_report_period"] === "number") {
+        snap.reportPeriod = snap.metrics["_report_period"];
+      }
+    }
+
+    return [...byDate.values()];
+  }
+
+  async countHistoryDates(
+    region: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<number> {
+    const db = await this.prisma();
+    const groups = await db.statistic.groupBy({
+      by: ["reportDate"],
+      where: {
+        region,
+        reportDate: { gte: new Date(startDate), lte: new Date(endDate) },
+      },
+    });
+    return groups.length;
+  }
 }

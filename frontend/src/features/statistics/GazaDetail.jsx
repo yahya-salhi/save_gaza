@@ -67,12 +67,15 @@ export function GazaDetail() {
     return null;
   }
 
+  // Dynamic metric lookup — every GROUPS key is a numeric field by construction.
+  const metrics = /** @type {Object.<string, *>} */ (data);
+
   const groups = GROUPS.map((group) => ({
     title: group.title,
-    rows: group.rows.filter(
-      (row) =>
-        data[row.key] !== undefined && data[row.key] !== null,
-    ),
+    rows: group.rows.filter((row) => {
+      const value = metrics[row.key];
+      return value !== undefined && value !== null;
+    }),
   })).filter((group) => group.rows.length > 0);
 
   if (groups.length === 0) {
@@ -89,7 +92,7 @@ export function GazaDetail() {
               <div key={row.label} className={styles.contextRow}>
                 <span className={styles.contextLabel}>{row.label}</span>
                 <span dir="ltr" className={styles.contextValue}>
-                  {formatFigure(data[row.key] ?? 0)}
+                  {formatFigure(metrics[row.key] ?? 0)}
                 </span>
               </div>
             ))}

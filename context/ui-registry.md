@@ -277,6 +277,37 @@ Total: 153 FE + 65 BE = **218 tests passing** (+8 FE, +5 BE). Verified live: 8,5
 
 Total: 159 FE + 65 BE = **224 tests passing** (+6 FE). Prod build green.
 
+## Built So Far (Slice 3.4)
+
+### History Analytics (FE — lazy Recharts, token-only module)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `GazaHistory` | `frontend/src/features/statistics/GazaHistory.jsx` | ✅ Built — trends section (slider + lazy charts + meta); URL-synced window, trailing-90d default; own skeleton, null on error/empty (single-alert invariant); last-verified-demographics fallback for the pie (upstream publishes verified demographics only up to 2025-10-07) | 11 section tests |
+| `DateRangeSlider` | `frontend/src/features/statistics/DateRangeSlider.jsx` | ✅ Built — date inputs + 30d/90d/All presets, inverted-range auto-correct, `aria-pressed` preset state | covered via section tests |
+| `TimeSeriesChart` | `frontend/src/features/statistics/TimeSeriesChart.jsx` | ✅ Built — default export for `React.lazy()`; killed/injured monotone lines (`--accent-500`/`--accent-300`), token tooltip, sr data table | covered via section tests |
+| `DemographicPie` | `frontend/src/features/statistics/DemographicPie.jsx` | ✅ Built — default export for `React.lazy()`; children/women/others donut on crimson ramp, token legend with LTR numerals, sr data table | covered via section tests |
+| `TimeSeriesChart.module.css` | `frontend/src/features/statistics/TimeSeriesChart.module.css` | ✅ Built — token-only section/slider/chart-grid/skeleton/sr-only styles, logical properties, reduced-motion guard | — |
+| `useHistory` | `frontend/src/features/statistics/hooks/useHistory.js` | ✅ Built — `queryKey ["statistics","history",...]`, whole-window `limit: 1000` default, 5-min staleTime + 30s refetch; exports `buildHistoryEndpoint` | 6 hook tests |
+| History fixture | `frontend/src/features/statistics/__fixtures__/history.js` | ✅ Built — `historyFixture` (enveloped `{ items, page, limit, total }`, same convention as `gaza.js`) | — |
+| `ResizeObserver` stub | `frontend/src/shared/test/setup.js` | ✅ Built — no-op stub; jsdom lacks it and Recharts `ResponsiveContainer` requires it | — |
+
+### History Endpoint (BE — Gaza-only, no migration)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `HistoryQuerySchema` (Zod) | `backend/src/core/schemas/historyQuery.ts` | ✅ Built (optional dates, page/limit with 1000 cap, inverted-range refinement) |
+| `getHistory` / `countHistoryDates` | `backend/src/core/ports/StatisticRepositoryPort.ts` + `PrismaStatisticRepository.ts` | ✅ Built (distinct-date pagination + EAV pivot on existing index) |
+| `GET /statistics/history` | `backend/src/controllers/statisticsController.ts` | ✅ Built (90d default, `_`-key stripping, `{ items, page, limit, total }` envelope) |
+
+### Tests (Slice 3.4)
+
+Total: 172 FE + 71 BE = **243 tests passing** (+13 FE, +6 BE). Typecheck green both workspaces; prod build green with Recharts code-split into `TimeSeriesChart`/`DemographicPie` chunks.
+
+### Dependency Note (Slice 3.4)
+
+`recharts@^2` added to `frontend/package.json` (user-approved; v2 line for React 19 stability, v3 migration deferred).
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
@@ -335,9 +366,10 @@ Target file: `frontend/src/App.jsx` / `frontend/src/main.jsx`. Providers wrap fr
 | `GazaDetail` | `frontend/src/features/statistics/GazaDetail.jsx` | Statistics | ✅ Built (Slice 3.3.1) — full-record groups (Truce & committee / Starvation / Aid seekers) on shared `useGazaDaily` cache, own skeleton, null on error |
 | `GazaPage` | `frontend/src/pages/GazaPage.jsx` | Page | ✅ Built (Slice 3.3.1) — Breadcrumbs + heading + GazaSummary + GazaDetail on `/app/gaza` (placeholder removed) |
 | `WestBankSummary`| `features/statistics/components/WestBankSummary.jsx` | Statistics | Stat grid, 4 states, detainee/casualty cards |
-| `TimeSeriesChart`| `features/statistics/components/TimeSeriesChart.jsx` | Charts | Recharts `ResponsiveContainer`, line chart, tooltip overrides |
-| `DemographicPie` | `features/statistics/components/DemographicPie.jsx` | Charts | Recharts pie chart, demographics breakdown |
-| `DateRangeSlider`| `features/statistics/components/DateRangeSlider.jsx`| Controls | Range selection, URL query parameter synchronization |
+| `TimeSeriesChart`| `features/statistics/TimeSeriesChart.jsx` | Charts | ✅ Built (Slice 3.4) — lazy default export, killed/injured lines, token tooltip, sr data table |
+| `DemographicPie` | `features/statistics/DemographicPie.jsx` | Charts | ✅ Built (Slice 3.4) — lazy default export, children/women/others donut on crimson ramp, token legend |
+| `DateRangeSlider`| `features/statistics/DateRangeSlider.jsx`| Controls | ✅ Built (Slice 3.4) — date inputs + 30d/90d/All presets, URL-sync via parent, auto-correct |
+| `GazaHistory` | `features/statistics/GazaHistory.jsx` | Statistics | ✅ Built (Slice 3.4) — trends section on `/app/gaza` below `GazaDetail`; owns `?startDate=&endDate=` |
 | `MapContainer` | `features/map/components/MapContainer.jsx` | Maps | Leaflet, GeoJSON boundary layers, custom tiles |
 | `RegionInfo` | `features/map/components/RegionInfo.jsx` | Maps | Regional casualty details card, empty state prompt |
 | `IncidentForm` | `features/submissions/components/IncidentForm.jsx` | Forms | 4 form states, Turnstile widget, Zod client validation |

@@ -1,13 +1,15 @@
 import Breadcrumbs from "../features/dashboard/components/Breadcrumbs.jsx";
 import { GazaSummary } from "../features/statistics/GazaSummary.jsx";
 import { GazaDetail } from "../features/statistics/GazaDetail.jsx";
+import { GazaHistory } from "../features/statistics/GazaHistory.jsx";
 
 /**
  * GazaPage — `/app/gaza` full-picture view.
  *
  * The overview (`/app`) keeps the headline tally with words; this page is
  * the whole data picture: the same tally on top, then the full record
- * (truce & committee, starvation, aid seekers) below.
+ * (truce & committee, starvation, aid seekers) below, then the time-series
+ * trends section (range slider + line + pie) at the bottom.
  */
 export default function GazaPage() {
   return (
@@ -27,6 +29,7 @@ export default function GazaPage() {
       </div>
       <GazaSummary />
       <GazaDetail />
+      <GazaHistory />
     </div>
   );
 }
