@@ -47,8 +47,8 @@ Every slice is implemented through explicit Clean Architecture layers:
 ## Current Status
 
 **Phase:** Phase 3 — Dashboard Shell & Statistics Engine  
-**Last completed:** Slice 3.2 — Gaza Daily Statistics & PostgreSQL Ingestion  
-**Next:** Slice 3.3 — West Bank Statistics & Aggregation  
+**Last completed:** Slice 3.2.1 — PostgreSQL Provisioning & Baseline Migration  
+**Next:** Slice 3.3 — West Bank Statistics & Aggregation (first feature born on the live DB)  
 
 ---
 
@@ -127,7 +127,11 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
   - [x] **FE Subslice**: `GazaSummary` component (`features/statistics/GazaSummary.jsx` + `.module.css`) — custom field-tally card (no `StatItem`, no icons): massive LTR mono tabular killed/injured tally (`en-US` grouping, crimson severity bar), per-report delta strip, context breakdown (Children / Women / Press / Medical / CivDef / Massacres), meta footer (source / date / reporting window). Token-only CSS Module with logical properties. All 4 states (loading skeleton / error `role="alert"` / empty / populated). Wired into `DashboardPage` replacing the `EmptyState` placeholder. `useGazaDaily` hook (`features/statistics/hooks/useGazaDaily.js`) consuming `GET /api/v1/statistics/gaza` with 5-min staleTime and 30s refetch. Fixture at `features/statistics/__fixtures__/gaza.js` (`gazaLatestFixture`, enveloped shape used by fetch-mock hook/Dashboard tests).
   - [x] **BE Subslice**: Full-stack DB-backed ingestion pipeline — reused existing EAV `Statistic` model (no migration needed). Domain entities (`Statistic.ts`), Zod schema (`casualtiesDaily.ts`), ports (`CasualtiesFeedPort`, `StatisticRepositoryPort`), external adapter (`TechForPalestineCasualtiesClient`), repository (`PrismaStatisticRepository`), use case (`SyncCasualtiesUseCase`), cache decorator (`CachedGazaStatistics` with 15-min TTL stale-on-failure), controller (`GET /api/v1/statistics/gaza`) mounted on `apiRouter`. `CASUALTIES_FEED_URL` added to config schema. Verified fields only (`ext_*` extrapolated fields excluded).
   - [x] **Tests**: 5 BE controller tests (200 envelope, latest-date selection, 502 upstream failure, stale cache serve, ISO timestamp shape) + 3 FE hook tests (success, error, loading) + 5 FE DashboardPage tests (header, breadcrumbs, map banner, Gaza section render, loading skeleton). Total: 145 FE + 57 BE = **202 tests passing**. Typecheck green both workspaces; prod build green.
-- [ ] **3.3 West Bank Statistics & Aggregation**
+- [x] **3.2.1 PostgreSQL Provisioning & Baseline Migration** (built 2026-09-10; unblocks 3.3–3.5 with a live DB, upstream fallback kept)
+  - [x] **FE Subslice**: None — no frontend changes; `GazaSummary`/`useGazaDaily` work unchanged against the same envelope.
+  - [x] **BE Subslice**: Local Postgres 16 via `docker-compose.yml` (`savegaza-postgres`, named volume, healthcheck); real `DATABASE_URL` in `backend/.env` (gitignored; dummy retired); baseline Prisma migration `20260910075427_baseline` creating `statistics`/`incidents`/`users`/`audit_logs`. Verified live: `GET /api/v1/statistics/gaza` persisted 9,279 rows (2023-10-07 → 2026-09-09), `/ready` reports live DB latency (~3ms). Fallback order stays DB-first, upstream-on-failure. Note: killed a stale pre-migration dev server holding the dummy URL; restart dev servers after pulling this.
+  - [x] **Tests**: New `PrismaStatisticRepository.test.ts` live-DB integration (round-trip, idempotent upsert, empty-region null; isolated `itest-*` region, skips without DB). Total: 145 FE + 60 BE = **205 tests passing**. Typecheck green.
+- [ ] **3.3 West Bank Statistics & Aggregation** (first feature born on the live DB)
   - [ ] **FE Subslice**: West Bank view (`/app/westBank`): casualties, arrests, settler attacks, displacement cards.
   - [ ] **BE Subslice**: Use case and repository query for West Bank daily data. Controller `GET /api/v1/statistics/west-bank`.
   - [ ] **Tests**: West Bank repository tests and FE fixture tests.

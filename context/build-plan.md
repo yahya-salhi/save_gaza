@@ -71,9 +71,9 @@ Every slice follows a disciplined lifecycle:
 | 0 | Monorepo Setup & Scaffolding | 1 | Scaffold `frontend/` (Vite, React 18, Tailwind) | Scaffold `backend/` (Express, Prisma, TypeScript) |
 | 1 | Foundation & Design System | 5 | Design Tokens, Providers, UI Primitives, Shells | Client envelope standard, Docker PG, Prisma setup |
 | 2 | Landing — Instrument Hero | 3 | Ticker, Hero UI, 4 States, CTA | `/api/v1/summary`, proxy caching, stale-while-revalidate |
-| 3 | Dashboard Shell & Statistics | 5 | Gaza & West Bank grids, Recharts, Export UI | `/api/v1/statistics/*`, DB sync use-case, CSV/JSON export |
+| 3 | Dashboard Shell & Statistics | 6 | Gaza & West Bank grids, Recharts, Export UI | Postgres provisioning + baseline migration, `/api/v1/statistics/*`, DB sync use-case, CSV/JSON export |
 | 4 | Interactive Map & Telemetry | 4 | Leaflet container, GeoJSON, RegionInfo, Popups | `/api/v1/spatial/*`, `/api/v1/incidents/pins`, Redis cache |
 | 5 | Submissions, Auth & Moderation | 5 | Form UI, Zod validation, Login, Moderation | Turnstile verification, JWT HttpOnly auth, RBAC, DB CRUD |
 | 6 | Cross-Cutting Hardening | 5 | RTL/i18n, client Sentry, a11y audit, code-splitting | Server Sentry, Winston correlation, security headers, rate limit |
 | 7 | Release Readiness | 4 | Playwright E2E, production build check | Express static SPA serving, DB migrations, CI pipeline |
-| | **Total** | **32** | | |
+| | **Total** | **33** | | |
