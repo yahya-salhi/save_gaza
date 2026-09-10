@@ -1,4 +1,5 @@
-﻿# Progress Tracker
+﻿
+# Progress Tracker
 
 Update this file after every completed slice. Any agent reading this should immediately know what is done, what is in progress, and what is next.
 
@@ -145,10 +146,10 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
   - [x] **Deps**: `recharts@^2` added to `frontend` (user-approved per ask-before-adding rule; v2 line for React 19 stability — v3 migration explicitly deferred).
   - [x] **Fix (pre-commit, 2026-09-10)**: pie showed an empty white circle with 0s live — upstream stopped publishing verified demographics after **2025-10-07** (only `ext_*` estimates since, excluded by contract), so no recent window has children/women data. `DemographicPie` now takes the last verified breakdown instead: in-window when present, else a no-refetch fallback query over the full pre-window history, always dated via a "Last verified breakdown · {date}" caption; neutral note (no circle) when the DB holds none at all. Verified live: fallback resolves to 2025-10-07 (20,179 children / 12,500 women).
   - [x] **Fix (pre-commit, 2026-09-10)**: chart hover tooltip rendered outside the theme (unreadable dark details). Replaced Recharts default tooltip chrome with custom token-owned content (`HistoryTooltip`, `BreakdownTooltip` + `.tooltip*` classes in the chart module). Verified with real-browser hover screenshots against live data (pie + line tooltips readable, on-palette). Total: 183 FE + 71 BE = **254 tests passing**.
-- [ ] **3.5 Wire Statistics & Data Export Streaming**
-  - [ ] **FE Subslice**: Connect statistics pages and charts to query hooks; wire CSV and JSON download triggers.
-  - [ ] **BE Subslice**: Streamed export endpoint `GET /api/v1/statistics/export?format=csv|json` returning raw attachment (documented envelope exception).
-  - [ ] **Tests**: Export stream test and component render tests.
+-  [x] **3.5 Wire Statistics & Data Export Streaming** (built 2026-09-10; Gaza-only, whole-window single file, no migration — reuses the 3.4 indexed `getHistory` query)
+ - [x] **FE Subslice**: `Download CSV` / `Download JSON` ghost buttons in the `GazaHistory` card (below `DateRangeSlider`) exporting the in-view `?startDate=&endDate=` window via a raw-fetch `downloadHistoryExport` helper (`features/statistics/export.js` — bypasses `apiGet`, `Blob` → anchor click, disposition filename with window fallback); inline `role="status"` failure message, no `role="alert"` (single-alert invariant kept); disabled while loading/downloading; token-only `.exportRow`/`.exportError` styles with logical properties.
+ - [x] **BE Subslice**: `GET /api/v1/statistics/export?startDate&endDate&format=csv|json` (default `csv`) with `ExportQuerySchema` Zod validation (inverted range → 400 `VALIDATION_ERROR` envelope); whole window in one file via `countHistoryDates` + `getHistory` (no pagination); fixed CSV columns (`report_date`, `report_period`, then canonical `VERIFIED_GAZA_METRICS` order, blank cells for sparse values, RFC-4180 escaping); JSON returns the plain items array; raw attachment (`Content-Disposition`, `no-store`) — the sole documented envelope exception; failures stay in the envelope.
+ - [x] **Tests**: 6 BE endpoint tests (CSV attachment/headers/column-order/blank-cells, JSON plain array without envelope keys, csv default, 400 bad format, 400 inverted range, header-only empty window) + 7 FE helper tests + 3 FE section tests (buttons render, CSV click exports in-view window, inline status on failure). Total: 193 FE + 77 BE = **270 tests passing**. Typecheck green both workspaces; prod build green with no `api/v2|api/v3` URLs in the bundle.
 
 ---
 

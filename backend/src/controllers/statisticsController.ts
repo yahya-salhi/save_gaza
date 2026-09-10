@@ -12,11 +12,15 @@ import { config } from "../config.js";
 import { CasualtiesDailySchema } from "../core/schemas/casualtiesDaily.js";
 import { WestBankDailySchema } from "../core/schemas/westBankDaily.js";
 import { HistoryQuerySchema } from "../core/schemas/historyQuery.js";
+import { ExportQuerySchema } from "../core/schemas/exportQuery.js";
 import {
   ExternalApiError,
   ValidationError,
 } from "../core/errors/DomainError.js";
-import { GAZA_REGION } from "../core/entities/Statistic.js";
+import {
+  GAZA_REGION,
+  VERIFIED_GAZA_METRICS,
+} from "../core/entities/Statistic.js";
 import type { StatisticSnapshot } from "../core/ports/StatisticRepositoryPort.js";
 
 const feed = new TechForPalestineCasualtiesClient();
@@ -147,6 +151,85 @@ router.get("/history", async (req: Request, res: Response, next: NextFunction) =
         total,
       }),
     );
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Fixed CSV column order for the Gaza export: `report_date` first, then
+ * `report_period`, then every verified Gaza metric in canonical entity
+ * order. Days without a value (e.g. demographics after 2025-10-07) emit an
+ * empty cell — the column set never shifts with the window.
+ */
+export const EXPORT_CSV_COLUMNS: string[] = [
+  "report_date",
+  "report_period",
+  ...VERIFIED_GAZA_METRICS.map((m) => String(m.key)),
+];
+
+/** Escape a single CSV cell per RFC 4180 (quote when needed). */
+function escapeCsvCell(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  const text = String(value);
+  if (/[",\r\n]/.test(text)) {
+    return `"${text.replace(/"/g, '""')}"`;
+  }
+  return text;
+}
+
+/** Serialize history items to CSV with the fixed column header. */
+function toCsv(
+  items: Array<Record<string, unknown>>,
+  columns: string[],
+): string {
+  const header = columns.join(",");
+  const rows = items.map((item) =>
+    columns.map((col) => escapeCsvCell(item[col])).join(","),
+  );
+  return [header, ...rows].join("\n") + "\n";
+}
+
+/**
+ * statisticsController — GET /api/v1/statistics/export
+ *
+ * Gaza-only (Slice 3.5) researcher download. The sole documented envelope
+ * exception: success returns raw file bytes (`text/csv` or
+ * `application/json`) as an attachment with `no-store`; failures stay in
+ * the standard envelope (e.g. 400 `VALIDATION_ERROR`). The whole selected
+ * window is returned in one file — no pagination.
+ */
+router.get("/export", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const parsed = ExportQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      throw new ValidationError(
+        parsed.error.issues[0]?.message ?? "Invalid query parameters",
+      );
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const endDate = parsed.data.endDate ?? today;
+    const startDate = parsed.data.startDate ?? shiftDate(endDate, -90);
+    const { format } = parsed.data;
+
+    const total = await repo.countHistoryDates(GAZA_REGION, startDate, endDate);
+    const snapshots =
+      total > 0
+        ? await repo.getHistory(GAZA_REGION, startDate, endDate, 0, total)
+        : [];
+    const items = snapshots.map(toHistoryItem);
+
+    const filename = `gaza-history-${startDate}-to-${endDate}.${format}`;
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+    if (format === "json") {
+      res.type("application/json").send(JSON.stringify(items));
+      return;
+    }
+
+    res.type("text/csv; charset=utf-8").send(toCsv(items, EXPORT_CSV_COLUMNS));
   } catch (err) {
     next(err);
   }

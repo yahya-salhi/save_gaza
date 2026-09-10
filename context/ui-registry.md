@@ -308,6 +308,28 @@ Total: 172 FE + 71 BE = **243 tests passing** (+13 FE, +6 BE). Typecheck green b
 
 `recharts@^2` added to `frontend/package.json` (user-approved; v2 line for React 19 stability, v3 migration deferred).
 
+## Built So Far (Slice 3.5)
+
+### Data Export (FE — raw-fetch helper + Trends buttons, token-only row)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| `export.js` (`buildExportEndpoint`, `parseExportFilename`, `fallbackExportFilename`, `downloadHistoryExport`) | `frontend/src/features/statistics/export.js` | ✅ Built — whole-window `?startDate=&endDate=&format=` builder; raw `fetch` → `Blob` → anchor click (bypasses `apiGet` by contract); envelope message on `!ok`, no file saved on failure | 7 helper tests |
+| Export buttons | `frontend/src/features/statistics/GazaHistory.jsx` | ✅ Wired — ghost `Download CSV` / `Download JSON` in `.exportRow` below the slider; exports the URL-owned window; `Saving…` + disabled while downloading; inline `role="status"` error, never `role="alert"` | 3 section tests |
+| `.exportRow` / `.exportError` | `frontend/src/features/statistics/TimeSeriesChart.module.css` | ✅ Built — token-only (`--space-2`, `--text-xs`, `--danger`), logical properties | — |
+
+### Export Endpoint (BE — Gaza-only, no migration)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `ExportQuerySchema` (Zod) | `backend/src/core/schemas/exportQuery.ts` | ✅ Built (optional dates, `csv`/`json` enum default `csv`, inverted-range refinement) |
+| `EXPORT_CSV_COLUMNS` + `toCsv` | `backend/src/controllers/statisticsController.ts` | ✅ Built (fixed `report_date`, `report_period`, canonical metric order; RFC-4180 escaping; blank sparse cells) |
+| `GET /statistics/export` | `backend/src/controllers/statisticsController.ts` | ✅ Built (whole window one file, raw attachment + `no-store`, envelope on error) |
+
+### Tests (Slice 3.5)
+
+Total: 193 FE + 77 BE = **270 tests passing** (+10 FE, +6 BE). Typecheck green both workspaces; prod build green with no `api/v2|api/v3` URLs in the bundle.
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |

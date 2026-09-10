@@ -1,7 +1,9 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHistory } from "./hooks/useHistory.js";
 import { DateRangeSlider, EARLIEST_REPORT_DATE, shiftDate } from "./DateRangeSlider.jsx";
+import Button from "../../shared/ui/Button.jsx";
+import { downloadHistoryExport } from "./export.js";
 import styles from "./TimeSeriesChart.module.css";
 
 const TimeSeriesChart = lazy(() => import("./TimeSeriesChart.jsx"));
@@ -69,6 +71,27 @@ export function GazaHistory() {
 
   const { data, isLoading } = useHistory({ startDate, endDate });
   const items = Array.isArray(data?.items) ? data.items : [];
+  const [downloading, setDownloading] = useState(
+    /** @type {"csv" | "json" | null} */ (null),
+  );
+  const [exportError, setExportError] = useState(
+    /** @type {string | null} */ (null),
+  );
+
+  /**
+   * @param {"csv" | "json"} format
+   */
+  async function handleExport(format) {
+    setExportError(null);
+    setDownloading(format);
+    try {
+      await downloadHistoryExport({ startDate, endDate, format });
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Download failed");
+    } finally {
+      setDownloading(null);
+    }
+  }
 
   const inWindowLatest = findLastWithDemographics(items);
   const needFallback = data != null && inWindowLatest == null;
@@ -120,6 +143,29 @@ export function GazaHistory() {
         max={today}
         onRangeChange={handleRangeChange}
       />
+      <div className={styles.exportRow}>
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={isLoading || downloading !== null}
+          onClick={() => handleExport("csv")}
+        >
+          {downloading === "csv" ? "Saving…" : "Download CSV"}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={isLoading || downloading !== null}
+          onClick={() => handleExport("json")}
+        >
+          {downloading === "json" ? "Saving…" : "Download JSON"}
+        </Button>
+        {exportError ? (
+          <p role="status" className={styles.exportError}>
+            {exportError}
+          </p>
+        ) : null}
+      </div>
       <div className={styles.chartGrid}>
         <Suspense
           fallback={

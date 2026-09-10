@@ -115,6 +115,22 @@
   border-color: var(--accent-600);
 }
 
+/* ── Export ─────────────────────────────────────────── */
+
+.exportRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.exportError {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--danger);
+  margin: 0;
+}
+
 /* ── Charts ─────────────────────────────────────────── */
 
 .chartGrid {
