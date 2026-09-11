@@ -1,20 +1,10 @@
+import type { FeedPort } from "../../core/ports/FeedPort.js";
 import type { StatisticRepositoryPort } from "../../core/ports/StatisticRepositoryPort.js";
 import { ExternalApiError } from "../../core/errors/DomainError.js";
 
-/**
- * Minimal structural shape for the daily feed schemas
- * (`CasualtiesDailySchema`, `WestBankDailySchema`): row-array or
- * `{ data }` envelope. The concrete Zod schemas satisfy this without the
- * generic importing either of them.
- */
-export interface DailyRowsSchema<Row> {
-  safeParse(raw: unknown):
-    | { success: true; data: Row[] | { data: Row[] } }
-    | { success: false; error: { issues: Array<{ message?: string }> } };
-}
-
 export interface SyncDailyParams<Row extends { report_date: string }, Daily> {
-  feed: { getDailyRows(): Promise<Row[]> };
+  /** Validated daily rows — parsing is owned by the feed adapter. */
+  feed: FeedPort<Row>;
   repo: StatisticRepositoryPort;
   /** EAV region key (`gaza`, `west_bank`). */
   region: string;
@@ -22,7 +12,6 @@ export interface SyncDailyParams<Row extends { report_date: string }, Daily> {
   feedName: string;
   /** 502 message when persistence verification fails. */
   persistedErrorMessage: string;
-  schema: DailyRowsSchema<Row>;
   /** Verified metric keys persisted to the EAV table, with labels. */
   metrics: ReadonlyArray<{ key: string; label: string }>;
   /** Build the latest-date response payload from the latest row. */
@@ -39,16 +28,16 @@ export interface SyncDailyParams<Row extends { report_date: string }, Daily> {
 }
 
 /**
- * SyncDailyUseCase — generic fetch → validate → upsert → return-latest
- * daily sync behind a single interface.
+ * SyncDailyUseCase — generic fetch → upsert → return-latest daily sync
+ * behind a single interface.
  *
- * Single-step on-demand sync: pulls the full upstream array, validates with
- * Zod, persists verified fields as EAV rows via `StatisticRepositoryPort`
- * (plus optional per-row extras), verifies persistence with a `getLatest`
- * read, and returns the latest report-date payload. Everything that differs
- * between regions (schema, metrics, region, DTO shape, extras) travels as
- * params; the empty-guard, validation, latest-scan, and upsert loop live
- * here once.
+ * Single-step on-demand sync: pulls validated rows from the feed adapter,
+ * persists verified fields as EAV rows via `StatisticRepositoryPort` (plus
+ * optional per-row extras), verifies persistence with a `getLatest` read,
+ * and returns the latest report-date payload. Everything that differs
+ * between regions (region, metrics, DTO shape, extras) travels as params;
+ * the empty-guard, latest-scan, and upsert loop live here once. Validation
+ * is owned by the adapter — the rows arriving here are already typed.
  */
 export class SyncDailyUseCase<Row extends { report_date: string }, Daily> {
   constructor(private readonly params: SyncDailyParams<Row, Daily>) {}
@@ -60,27 +49,15 @@ export class SyncDailyUseCase<Row extends { report_date: string }, Daily> {
       region,
       feedName,
       persistedErrorMessage,
-      schema,
       metrics,
       toDaily,
       writeExtras,
     } = this.params;
 
-    const rawRows = await feed.getDailyRows();
-    if (!rawRows || rawRows.length === 0) {
+    const rows = await feed.getDailyRows();
+    if (!rows || rows.length === 0) {
       throw new ExternalApiError(`${feedName} feed returned empty data`);
     }
-
-    const parseResult = schema.safeParse(rawRows);
-    if (!parseResult.success) {
-      throw new ExternalApiError(
-        `${feedName} feed validation failed: ${parseResult.error.issues[0]?.message ?? "unknown"}`,
-      );
-    }
-
-    const rows: Row[] = Array.isArray(parseResult.data)
-      ? parseResult.data
-      : parseResult.data.data;
 
     let latest: Row = rows[0]!;
     for (const row of rows) {

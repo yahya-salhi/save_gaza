@@ -1,8 +1,7 @@
-import type { CasualtiesFeedPort } from "../../core/ports/CasualtiesFeedPort.js";
+import type { FeedPort } from "../../core/ports/FeedPort.js";
 import type { StatisticRepositoryPort } from "../../core/ports/StatisticRepositoryPort.js";
 import type { GazaDaily } from "../../core/entities/Statistic.js";
 import { GAZA_REGION, VERIFIED_GAZA_METRICS } from "../../core/entities/Statistic.js";
-import { CasualtiesDailySchema } from "../../core/schemas/casualtiesDaily.js";
 import type { CasualtiesDailyRow } from "../../core/schemas/casualtiesDaily.js";
 import { SyncDailyUseCase } from "./SyncDailyUseCase.js";
 
@@ -42,14 +41,13 @@ async function writeGazaExtras(
 export class SyncCasualtiesUseCase {
   private readonly inner: SyncDailyUseCase<CasualtiesDailyRow, GazaDaily>;
 
-  constructor(feed: CasualtiesFeedPort, repo: StatisticRepositoryPort) {
+  constructor(feed: FeedPort<CasualtiesDailyRow>, repo: StatisticRepositoryPort) {
     this.inner = new SyncDailyUseCase({
       feed,
       repo,
       region: GAZA_REGION,
       feedName: "Casualties",
       persistedErrorMessage: "Failed to read persisted Gaza statistics",
-      schema: CasualtiesDailySchema,
       metrics: VERIFIED_GAZA_METRICS,
       toDaily: (d) => ({
         report_date: d.report_date,

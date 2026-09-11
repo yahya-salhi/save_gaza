@@ -112,17 +112,6 @@ describe("SyncCasualtiesUseCase (via shared SyncDailyUseCase)", () => {
     await expect(useCase.execute()).rejects.toBeInstanceOf(ExternalApiError);
   });
 
-  it("throws 502 on invalid rows", async () => {
-    const useCase = new SyncCasualtiesUseCase(
-      {
-        getDailyRows: () =>
-          Promise.resolve([{ report_date: "not-a-date" }] as never),
-      },
-      fakeRepo(),
-    );
-    await expect(useCase.execute()).rejects.toBeInstanceOf(ExternalApiError);
-  });
-
   it("throws 502 when persistence verification fails", async () => {
     const repo = fakeRepo();
     repo.getLatest = () => Promise.resolve(null);
