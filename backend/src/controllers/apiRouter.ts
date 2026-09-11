@@ -3,6 +3,7 @@ import { healthRouter } from "./healthController.js";
 import { summaryRouter } from "./summaryController.js";
 import { statisticsRouter } from "./statisticsController.js";
 import { spatialRouter } from "./spatialController.js";
+import { incidentsRouter } from "./incidentsController.js";
 
 /**
  * Central API router — mounts all /api/v1/* routes.
@@ -19,3 +20,6 @@ apiRouter.use("/statistics", statisticsRouter);
 
 // Slice 4.1 — spatial boundaries endpoint
 apiRouter.use("/spatial", spatialRouter);
+
+// Slice 4.3 — incident pins endpoint
+apiRouter.use("/incidents", incidentsRouter);

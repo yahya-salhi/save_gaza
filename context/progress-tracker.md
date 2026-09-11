@@ -47,9 +47,9 @@ Every slice is implemented through explicit Clean Architecture layers:
 
 ## Current Status
 
-**Phase:** Phase 4 — Interactive Map & Spatial Telemetry  
-**Last completed:** Slice 4.1 — Map Canvas & GeoJSON Spatial Boundary Service  
-**Next:** Slice 4.2 — RegionInfo Details Panel & Regional Spatial Aggregation  
+**Phase:** Phase 5 — Submissions, Auth & Moderation Workflow  
+**Last completed:** Slice 4.4 — Wire Spatial Engine & Redis Bounding-Box Caching  
+**Next:** Slice 5.1 — Public Submission Form & Prisma Incident Model  
 
 ---
 
@@ -165,13 +165,15 @@ Instrument Hero upgrade without new tokens or dependencies — gives the whole p
   - [x] **FE Subslice**: `RegionInfo` (`features/map/components/RegionInfo.jsx` + token-only `.module.css`): blurb, admin centre, area, 2017 population, centroid, locality chips, source note + Gaza-wide killed/injured tally composed from the shared `useGazaDaily` cache with explicit “not published per-governorate” disclaimer; 4 states (prompt-only when unselected — zero fetches — / skeleton / error+retry / populated). `useRegion` hook (`queryKey ["spatial","region",id]`, `enabled` on selection, 24h staleTime). Fixture `__fixtures__/region.js` (enveloped). `GazaMapPage` two-column layout (side panel desktop / stacked mobile, toggle-off + Escape + close-button deselect); map popup copy updated to the disclaimer.
   - [x] **BE Subslice**: `GET /api/v1/spatial/regions/:id` (`controllers/spatialController.ts`, same `/spatial` router): static `REGION_METAS` (`infrastructure/spatial/gazaRegions.ts` — centroid/bbox derived from our rings, overview curated from PCBS 2017 census + GeoMOLG area with per-field sources in comments), envelope, Zod-free param lookup with `NotFoundError` → 404, own 24h `InMemoryCache` + `Cache-Control: public, max-age=86400` + manual gzip via a shared sender (boundaries route refactored onto it, behavior unchanged).
   - [x] **Tests**: 6 BE endpoint tests (identity envelope, per-region overview table, 404, cache headers, cache-hit) + 3 FE fixture tests + 3 FE hook tests + 6 FE panel tests + 9 FE page tests (toggle-off, Escape, close-button). Total: 219 FE + 87 BE = **306 tests passing**. Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in the bundle. Verified in a real browser (panel populated, zero console errors); one stale-HMR ErrorBoundary report diagnosed as tab state, fixed by hard refresh + `localities ?? []` hardening.
-- [ ] **4.3 Tooltip Overrides & Incident Marker Feeds**
-  - [ ] **FE Subslice**: Leaflet tooltip and popup `:global()` CSS Module overrides with logical properties and obsidian surfaces.
-  - [ ] **BE Subslice**: Incident markers telemetry endpoint `GET /api/v1/incidents/pins?bbox=minLng,minLat,maxLng,maxLat`.
-- [ ] **4.4 Wire Spatial Engine & Redis Bounding-Box Caching**
-  - [ ] **FE Subslice**: Connect map interactions to spatial query hooks with bounding box caching.
-  - [ ] **BE Subslice**: Redis spatial caching with 15-minute TTL.
-  - [ ] **Tests**: Map marker interaction tests and spatial endpoint integration tests.
+- [x] **4.3 Tooltip Overrides & Incident Marker Feeds** (built 2026-09-10; APPROVED-only pins, empty until Phase 5 moderation — no markers render on canvas yet, rendering is 4.4)
+  - [x] **FE Subslice**: Refined Leaflet tooltip + popup `:global()` CSS Module overrides (logical properties, obsidian surfaces, `:focus-visible` ring on the close button, reduced-motion inherited) + themed governorate click-popup card (eyebrow/title/disclaimer via scoped `pinPopup` classes, HTML-escaped name). `usePins(bbox?)` hook (`queryKey ["spatial","pins",key]`, `buildPinsEndpoint`, 10-min staleTime) + `__fixtures__/pins.js` (populated + empty envelopes, no moderation-detail fields). No canvas rendering change.
+  - [x] **BE Subslice**: `GET /api/v1/incidents/pins?bbox=minLng,minLat,maxLng,maxLat` (`controllers/incidentsController.ts`, mounted on `apiRouter` under `/incidents`): optional bbox, strict Zod (`min<max`, lng/lat ranges → 400 `VALIDATION_ERROR`), APPROVED-only Prisma query (500 cap, `reportDate` ascending, moderation fields never selected), `{ items, total }` envelope, per-bbox 10-min `InMemoryCache` (no stale-on-error, no public `Cache-Control`; Redis seam open for 4.4). Clean Architecture: `Incident` entity (`APPROVED_STATUS`, `PINS_LIMIT`) + `IncidentRepositoryPort` + `GetIncidentPinsUseCase` + `PrismaIncidentRepository`.
+  - [x] **Tests**: 9 BE endpoint tests (empty envelope, marker contract, bbox filter, 3×400s, 500 cap, cache-hit, no public cache header) + 3 FE fixture tests + 6 FE hook/endpoint-builder tests. Total: 228 FE + 96 BE = **324 tests passing**. Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in the bundle.
+- [x] **4.4 Wire Spatial Engine & Redis Bounding-Box Caching** (built 2026-09-10; seam-preserving — no real Redis, no new deps; live map shows no markers until Phase 5 moderation approves rows)
+  - [x] **FE Subslice**: Live viewport drives `usePins` — `ViewportTracker` reports rounded 2dp `moveend` bbox (`viewport.js`: `GAZA_BBOX`, `round2`, `boundsToBbox`; no-change guard keeps the TanStack key stable so revisits are cache hits). APPROVED pins render as accent `CircleMarker`s (`PinMarker`: flat `className` into Leaflet options, radius 6, imperative `bindPopup` HTML card with title + LTR mono date + region, HTML-escaped). Popup-only interaction (never touches `selectedId`); pins layer silent-null on loading/error so boundaries own the page states.
+  - [x] **BE Subslice**: No behavior change — per-bbox 10-min `InMemoryCache` kept behind the `CachePort` seam (`pinsCache`/`pinsCacheKey`; controller comment now points the operational Redis swap at 6.3). Plan TTL line corrected 15-min → catalog 10-min (the 15 was statistics copy-paste).
+  - [x] **Tests**: 4 viewport unit tests (envelope, rounding, projection, no key-churn) + 5 marker tests (styled render, popup content + no-select, empty, error-null, Gaza-bbox query). Total: 237 FE + 96 BE = **333 tests passing**. Typecheck green both workspaces; prod build green; no `api/v2|api/v3` URLs in the bundle.
+  - [x] **Fixes (during build)**: nested `pathOptions={{className}}` never reaches Leaflet's `_initPath` (applied via `setStyle`, which can't touch DOM class) — flat `className` prop instead; declarative `<Popup>` child never opened across the viewport-driven remount cycle while imperative `bindPopup` (the polygon pattern) is deterministic — pins use `PinMarker` + imperative binding; mount-settle `moveend` remounted markers under test-held nodes — settle-then-click + no-change bbox guard.
 
 ---
 

@@ -16,6 +16,17 @@
   font-family: var(--font-sans);
 }
 
+/* Incident pins — accent outline language matching the governorates.
+   Classed via CircleMarker `pathOptions` (stylesheet rules override the
+   Leaflet default SVG presentation attributes). Popup-only interaction. */
+.pinMarker {
+  stroke: var(--accent-500);
+  stroke-width: 2;
+  stroke-opacity: 0.95;
+  fill: var(--accent-500);
+  fill-opacity: 0.25;
+}
+
 /* Governorate boundaries — outlines only, no filled shapes. Each region
    keeps its own step of the crimson ramp as its stroke color. Fill stays
    transparent (still clickable inside) with a whisper of fill on hover
@@ -225,6 +236,85 @@
   color: var(--text-1);
   box-shadow: var(--elevation-2);
   font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+}
+
+:global(.leaflet-tooltip-top::before) {
+  border-top-color: var(--hairline-strong);
+}
+
+:global(.leaflet-tooltip-bottom::before) {
+  border-bottom-color: var(--hairline-strong);
+}
+
+:global(.leaflet-popup-content) {
+  margin-block: var(--space-3);
+  margin-inline: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+:global(.leaflet-popup-close-button) {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+}
+
+:global(.leaflet-popup-close-button:hover) {
+  color: var(--text-1);
+  background-color: var(--surface-3);
+}
+
+:global(.leaflet-popup-close-button:focus-visible) {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Governorate click-popup card — interpolated into the Leaflet HTML string
+   in MapContainer.jsx (`styles.pinPopup` etc.), same obsidian language as
+   the RegionInfo panel. Logical properties only. */
+.pinPopup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.pinEyebrow {
+  margin: 0;
+  color: var(--accent-400);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+}
+
+.pinTitle {
+  margin: 0;
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.pinNote {
+  margin: 0;
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+
+/* LTR mono tabular date inside popup notes — same numeral contract as the
+   rest of the app (bidi-isolated even under RTL layout). */
+.pinDate {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
 }
 
 @media (prefers-reduced-motion: reduce) {

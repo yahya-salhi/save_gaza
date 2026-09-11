@@ -384,6 +384,60 @@ Total: 219 FE + 87 BE = **306 tests passing** (+15 FE incl. fixture/hook/panel/p
 
 None — no new dependencies (25 existing tokens covered the panel; no new packages).
 
+## Built So Far (Slice 4.3)
+
+### Incident Pins Endpoint (BE — APPROVED-only, no migration)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| `IncidentPin` / `APPROVED_STATUS` / `PINS_LIMIT` | `backend/src/core/entities/Incident.ts` | ✅ Built (minimal marker contract, no description/URLs/status) |
+| `PinsQuerySchema` (Zod) | `backend/src/core/schemas/pinsQuery.ts` | ✅ Built (optional `bbox=minLng,minLat,maxLng,maxLat`, strict ranges + `min<max`) |
+| `IncidentRepositoryPort` | `backend/src/core/ports/IncidentRepositoryPort.ts` | ✅ Built (`getApprovedPins(bbox?)`, Redis seam open for 4.4) |
+| `GetIncidentPinsUseCase` | `backend/src/application/use-cases/GetIncidentPinsUseCase.ts` | ✅ Built (port read + cap re-assert, `{ items, total }`) |
+| `PrismaIncidentRepository` | `backend/src/infrastructure/repositories/PrismaIncidentRepository.ts` | ✅ Built (APPROVED range query, 500 cap, marker fields only) |
+| `GET /incidents/pins` | `backend/src/controllers/incidentsController.ts` | ✅ Built (envelope, per-bbox 10-min `InMemoryCache` via `pinsCacheKey`, no stale-on-error, no public cache header; exports `pinsCache`) |
+
+### Tooltip Overrides & Pins Contract (FE — no canvas rendering)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| Tooltip/popup `:global()` refinement | `frontend/src/features/map/components/MapContainer.module.css` | ✅ Built — hover-tooltip type scale + logical padding, tooltip-arrow border tokens, popup content rhythm + close-button hover/focus ring, scoped `.pinPopup`/`.pinEyebrow`/`.pinTitle`/`.pinNote` card | covered via map tests |
+| Themed click-popup card | `frontend/src/features/map/components/MapContainer.jsx` | ✅ Wired — `bindPopup` renders eyebrow + escaped name + disclaimer (replaces raw `<strong>` string) | covered via map tests |
+| `usePins` + `buildPinsEndpoint` | `frontend/src/features/map/hooks/usePins.js` | ✅ Built — `queryKey ["spatial","pins",key]`, `apiGet("/api/v1/incidents/pins")`, 10-min staleTime; contract-only, no rendering (4.4) | 6 hook tests |
+| Pins fixture | `frontend/src/features/map/__fixtures__/pins.js` | ✅ Built — `pinsFixture` + `emptyPinsFixture` (enveloped; never description/sourceUrl/evidenceUrl/status) | 3 fixture tests |
+
+### Tests (Slice 4.3)
+
+Total: 228 FE + 96 BE = **324 tests passing** (+9 FE, +9 BE). Typecheck green both workspaces; prod build green with Leaflet code-split intact; no `api/v2|api/v3` URLs in the bundle.
+
+### Dependency Note (Slice 4.3)
+
+None — no new dependencies (existing tokens covered the chrome; no new packages).
+
+## Built So Far (Slice 4.4)
+
+### Spatial Wiring (FE — live viewport → pins → markers)
+
+| Item | Final Path | Status | Tests |
+| ---- | ---------- | ------ | ----- |
+| Viewport helpers | `frontend/src/features/map/viewport.js` | ✅ Built — `GAZA_BBOX` initial window, `round2`, `boundsToBbox` (2dp stable keys, no churn on small pans) | 4 unit tests |
+| `ViewportTracker` + `PinMarker` | `frontend/src/features/map/components/MapContainer.jsx` | ✅ Built — `moveend`-only bbox feed with no-change guard into `usePins`; accent `CircleMarker` (flat `className`, radius 6) with imperative `bindPopup` card (title + LTR mono `.pinDate` + region, escaped); popup-only, silent-null on pins error/loading | 5 marker tests |
+| `.pinMarker` / `.pinDate` | `frontend/src/features/map/components/MapContainer.module.css` | ✅ Built — token-only accent outline + mono tabular bidi-isolated date, logical properties | — |
+
+### Cache Seam (BE — no behavior change)
+
+| Item | Final Path | Status |
+| ---- | ---------- | ------ |
+| Seam comment + plan TTL fix | `backend/src/controllers/incidentsController.ts`, `context/progress-tracker.md` | ✅ Done — 10-min `InMemoryCache` behind `CachePort` kept; operational Redis explicitly deferred to 6.3 |
+
+### Tests (Slice 4.4)
+
+Total: 237 FE + 96 BE = **333 tests passing** (+9 FE, +0 BE). Typecheck green both workspaces; prod build green with Leaflet code-split intact; no `api/v2|api/v3` URLs in the bundle.
+
+### Dependency Note (Slice 4.4)
+
+None — no new dependencies (no Redis client; seam-preserving per the architected decision).
+
 ## Global Tokens & Utilities (`frontend/src/App.css`)
 
 | Class / Token | Purpose |
