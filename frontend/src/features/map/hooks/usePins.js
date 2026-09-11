@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * @typedef {object} IncidentPin
@@ -37,14 +36,10 @@ export function buildPinsEndpoint(bbox) {
  * rendering + bbox-driven refetch is Slice 4.4 ("Wire Spatial Engine").
  * The backend caches per bbox for 10 minutes, so staleTime matches.
  *
- * @param {[number, number, number, number]|null|undefined} bbox optional filter window
- * @returns {import("@tanstack/react-query").UseQueryResult<PinsData, Error>}
+ * @type {(bbox?: [number, number, number, number] | null) => import("@tanstack/react-query").UseQueryResult<PinsData, Error>}
  */
-export function usePins(bbox) {
-  const key = bbox ? bbox.join(",") : "all";
-  return useQuery({
-    queryKey: ["spatial", "pins", key],
-    queryFn: () => apiGet(buildPinsEndpoint(bbox)),
-    staleTime: 10 * 60 * 1000,
-  });
-}
+export const usePins = makeQueryHook((bbox) => ({
+  queryKey: ["spatial", "pins", bbox ? bbox.join(",") : "all"],
+  endpoint: buildPinsEndpoint(bbox),
+  staleTime: 10 * 60 * 1000,
+}));

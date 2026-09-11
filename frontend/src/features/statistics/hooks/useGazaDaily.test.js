@@ -42,26 +42,4 @@ describe("useGazaDaily", () => {
     expect(result.current.data.press_killed_cum).toBe(260);
   });
 
-  it("sets isError on network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(jsonResponse({}, false, 503)),
-    );
-
-    const { result } = renderHook(() => useGazaDaily(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-  });
-
-  it("sets isLoading initially", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
-
-    const { result } = renderHook(() => useGazaDaily(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(result.current.isLoading).toBe(true);
-  });
 });

@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * @typedef {object} GazaDaily
@@ -33,13 +32,11 @@ import { apiGet } from "../../../shared/api/client.js";
  * 5-minute staleTime keeps dashboard re-renders cheap; 30-second refetch
  * interval catches upstream updates without hammering the backend.
  *
- * @returns {import("@tanstack/react-query").UseQueryResult<GazaDaily, Error>}
+ * @type {() => import("@tanstack/react-query").UseQueryResult<GazaDaily, Error>}
  */
-export function useGazaDaily() {
-  return useQuery({
-    queryKey: ["statistics", "gaza"],
-    queryFn: () => apiGet("/statistics/gaza"),
-    staleTime: 5 * 60 * 1000,
-    refetchInterval: 30_000,
-  });
-}
+export const useGazaDaily = makeQueryHook(() => ({
+  queryKey: ["statistics", "gaza"],
+  endpoint: "/statistics/gaza",
+  staleTime: 5 * 60 * 1000,
+  refetchInterval: 30_000,
+}));

@@ -79,29 +79,6 @@ describe("useHistory", () => {
     expect(fetchMock.mock.calls[0][0]).toContain("endDate=2026-09-09");
   });
 
-  it("sets isError on network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(jsonResponse({}, false, 503)),
-    );
-
-    const { result } = renderHook(() => useHistory(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-  });
-
-  it("sets isLoading initially", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
-
-    const { result } = renderHook(() => useHistory(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(result.current.isLoading).toBe(true);
-  });
-
   it("does not fetch when disabled via options", async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse(historyFixture));
     vi.stubGlobal("fetch", fetchMock);

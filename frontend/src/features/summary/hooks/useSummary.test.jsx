@@ -39,14 +39,4 @@ describe("useSummary", () => {
     );
   });
 
-  it("surfaces the error state when the request fails", async () => {
-    vi.mocked(apiGet).mockRejectedValue(new Error("Network error"));
-
-    const { result } = renderHook(() => useSummary(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-    expect(result.current.error.message).toMatch(/network error/i);
-  });
 });

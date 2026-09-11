@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * useSummary — TanStack Query hook for the current verified summary.
@@ -11,12 +10,10 @@ import { apiGet } from "../../../shared/api/client.js";
  * Slice 2.3 wires this into the Hero in place of the fixture.
  *
  * @typedef {import("../components/Hero.jsx").SummaryData} SummaryData
- * @returns {import("@tanstack/react-query").UseQueryResult<SummaryData, Error>}
+ * @type {() => import("@tanstack/react-query").UseQueryResult<SummaryData, Error>}
  */
-export function useSummary() {
-  return useQuery({
-    queryKey: ["summary"],
-    queryFn: () => apiGet("/summary"),
-    staleTime: 5 * 60 * 1000,
-  });
-}
+export const useSummary = makeQueryHook(() => ({
+  queryKey: ["summary"],
+  endpoint: "/summary",
+  staleTime: 5 * 60 * 1000,
+}));

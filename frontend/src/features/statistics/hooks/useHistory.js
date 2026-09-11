@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * @typedef {object} HistoryDay
@@ -55,18 +54,16 @@ export function buildHistoryEndpoint(params = {}) {
  * supports `enabled` (e.g. a fallback query that only runs when the main
  * window has no demographics) and `refetchInterval` overrides.
  *
- * @param {HistoryParams} [params]
- * @param {{ enabled?: boolean, refetchInterval?: number | false }} [options]
- * @returns {import("@tanstack/react-query").UseQueryResult<HistoryData, Error>}
+ * @type {(params?: HistoryParams, options?: { enabled?: boolean, refetchInterval?: number | false }) => import("@tanstack/react-query").UseQueryResult<HistoryData, Error>}
  */
-export function useHistory(params = {}, options = {}) {
+export const useHistory = makeQueryHook((params = {}, options = {}) => {
   const { startDate, endDate, page = 1, limit = 1000 } = params;
   const { enabled = true, refetchInterval = 30_000 } = options;
-  return useQuery({
+  return {
     queryKey: ["statistics", "history", startDate, endDate, page, limit],
-    queryFn: () => apiGet(buildHistoryEndpoint(params)),
+    endpoint: buildHistoryEndpoint(params),
     staleTime: 5 * 60 * 1000,
     refetchInterval,
     enabled,
-  });
-}
+  };
+});

@@ -1,4 +1,4 @@
-const API_BASE =
+export const API_BASE =
   import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "/api/v1" : "");
 
 /**
@@ -19,10 +19,12 @@ export class ApiError extends Error {
 
 /**
  * Throw a normalized ApiError from a non-ok response or failed envelope.
+ * Exported so byte-download modules (e.g. the history export, which cannot
+ * go through `apiGet`) share the single error seam.
  * @param {Response} res
  * @returns {Promise<never>}
  */
-async function throwApiError(res) {
+export async function throwApiError(res) {
   const errorBody = await res.json().catch(() => ({}));
   const message =
     errorBody?.error?.message || `Request failed with status ${res.status}`;

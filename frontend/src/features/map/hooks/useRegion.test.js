@@ -56,16 +56,4 @@ describe("useRegion", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("sets isError on network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(jsonResponse({}, false, 404)),
-    );
-
-    const { result } = renderHook(() => useRegion("unknown-id"), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-  });
 });

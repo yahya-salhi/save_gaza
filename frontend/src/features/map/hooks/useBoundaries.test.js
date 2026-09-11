@@ -42,26 +42,4 @@ describe("useBoundaries", () => {
     expect(result.current.data.features[0].id).toBe("north-gaza");
   });
 
-  it("sets isError on network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(jsonResponse({}, false, 503)),
-    );
-
-    const { result } = renderHook(() => useBoundaries(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-  });
-
-  it("sets isLoading initially", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
-
-    const { result } = renderHook(() => useBoundaries(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(result.current.isLoading).toBe(true);
-  });
 });

@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * @typedef {object} RegionData
@@ -25,14 +24,11 @@ import { apiGet } from "../../../shared/api/client.js";
  * staleTime is a full day with no refetch interval. Disabled while no
  * region is selected — the panel shows its empty-selection prompt instead.
  *
- * @param {string|null} id selected governorate id, or null when none
- * @returns {import("@tanstack/react-query").UseQueryResult<RegionData, Error>}
+ * @type {(id: string | null | undefined) => import("@tanstack/react-query").UseQueryResult<RegionData, Error>}
  */
-export function useRegion(id) {
-  return useQuery({
-    queryKey: ["spatial", "region", id],
-    queryFn: () => apiGet(`/spatial/regions/${id}`),
-    enabled: id !== null && id !== undefined && id !== "",
-    staleTime: 24 * 60 * 60 * 1000,
-  });
-}
+export const useRegion = makeQueryHook((id) => ({
+  queryKey: ["spatial", "region", id],
+  endpoint: `/spatial/regions/${id}`,
+  enabled: id !== null && id !== undefined && id !== "",
+  staleTime: 24 * 60 * 60 * 1000,
+}));

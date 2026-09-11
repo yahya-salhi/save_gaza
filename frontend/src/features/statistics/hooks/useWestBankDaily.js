@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiGet } from "../../../shared/api/client.js";
+import { makeQueryHook } from "../../../shared/api/queryHooks.js";
 
 /**
  * @typedef {object} WestBankDaily
@@ -22,13 +21,11 @@ import { apiGet } from "../../../shared/api/client.js";
  * 5-minute staleTime keeps dashboard re-renders cheap; 30-second refetch
  * interval catches upstream updates without hammering the backend.
  *
- * @returns {import("@tanstack/react-query").UseQueryResult<WestBankDaily, Error>}
+ * @type {() => import("@tanstack/react-query").UseQueryResult<WestBankDaily, Error>}
  */
-export function useWestBankDaily() {
-  return useQuery({
-    queryKey: ["statistics", "west-bank"],
-    queryFn: () => apiGet("/statistics/west-bank"),
-    staleTime: 5 * 60 * 1000,
-    refetchInterval: 30_000,
-  });
-}
+export const useWestBankDaily = makeQueryHook(() => ({
+  queryKey: ["statistics", "west-bank"],
+  endpoint: "/statistics/west-bank",
+  staleTime: 5 * 60 * 1000,
+  refetchInterval: 30_000,
+}));

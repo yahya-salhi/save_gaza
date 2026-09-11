@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
+import { ApiError } from "../../shared/api/client.js";
 import {
   buildExportEndpoint,
   parseExportFilename,
@@ -120,6 +121,11 @@ describe("downloadHistoryExport", () => {
     await expect(downloadHistoryExport({ format: "csv" })).rejects.toThrow(
       "Bad format",
     );
+    const error = await downloadHistoryExport({ format: "csv" }).catch(
+      (err) => err,
+    );
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error.code).toBe("VALIDATION_ERROR");
     expect(click).not.toHaveBeenCalled();
   });
 });

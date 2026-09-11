@@ -1,5 +1,4 @@
-const API_BASE =
-  import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "/api/v1" : "");
+import { API_BASE, throwApiError } from "../../shared/api/client.js";
 
 /**
  * @typedef {object} ExportParams
@@ -59,8 +58,8 @@ export function fallbackExportFilename(params = {}) {
  *
  * Uses a raw `fetch` (not `apiGet`) because the endpoint returns file bytes
  * outside the JSON envelope by contract. Failures stay in the envelope, so
- * a non-ok response throws a normalized `Error` with a `code` property and
- * no file is saved.
+ * a non-ok response throws the normalized `ApiError` from the shared client
+ * (with a `code` property) and no file is saved.
  *
  * @param {ExportParams} [params]
  * @returns {Promise<string>} the filename that was saved
@@ -70,14 +69,7 @@ export async function downloadHistoryExport(params = {}) {
   const res = await fetch(url);
 
   if (!res.ok) {
-    const errorBody = await res.json().catch(() => ({}));
-    const message =
-      errorBody?.error?.message || `Request failed with status ${res.status}`;
-    const code = errorBody?.error?.code || "HTTP_ERROR";
-    const error = new Error(message);
-    // @ts-expect-error normalized code for callers to branch on
-    error.code = code;
-    throw error;
+    await throwApiError(res);
   }
 
   const fallback = fallbackExportFilename(params);

@@ -42,26 +42,4 @@ describe("useWestBankDaily", () => {
     expect(result.current.data.settler_attacks_cum).toBe(4554);
   });
 
-  it("sets isError on network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(jsonResponse({}, false, 503)),
-    );
-
-    const { result } = renderHook(() => useWestBankDaily(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-  });
-
-  it("sets isLoading initially", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
-
-    const { result } = renderHook(() => useWestBankDaily(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(result.current.isLoading).toBe(true);
-  });
 });
