@@ -25,6 +25,22 @@ export function round2(n) {
 }
 
 /**
+ * Project a `[minLng, minLat, maxLng, maxLat]` bbox onto Leaflet
+ * `[[southLat, westLng], [northLat, eastLng]]` bounds.
+ *
+ * Single coordinate truth lives here: the canvas derives its Leaflet bounds
+ * from `GAZA_BBOX` through this helper, so the two orders can never drift.
+ *
+ * @param {[number, number, number, number]} bbox
+ * @returns {[[number, number], [number, number]]}
+ */
+export function bboxToBounds(bbox) {
+  return [
+    [bbox[1], bbox[0]],
+    [bbox[3], bbox[2]],
+  ];
+}
+/**
  * Project a Leaflet `LatLngBounds` onto a rounded bbox tuple.
  *
  * @param {{ getSouthWest: () => { lng: number, lat: number }, getNorthEast: () => { lng: number, lat: number } }} bounds

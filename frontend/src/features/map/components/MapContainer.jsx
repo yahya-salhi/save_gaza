@@ -4,84 +4,39 @@ import {
   TileLayer,
   GeoJSON,
   ZoomControl,
-  CircleMarker,
-  useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./MapContainer.module.css";
 import { usePins } from "../hooks/usePins.js";
-import { GAZA_BBOX, boundsToBbox } from "../viewport.js";
-
-/** Gaza Strip envelope — initial fit and pan limit: the canvas never leaves Gaza. */
-const GAZA_BOUNDS = [
-  [31.18, 34.2],
-  [31.62, 34.58],
-];
+import { GAZA_BBOX, bboxToBounds } from "../viewport.js";
+import ViewportTracker from "./ViewportTracker.jsx";
+import PinMarker from "./PinMarker.jsx";
 
 /**
- * ViewportTracker — reports the live Leaflet viewport to the parent on
- * `moveend` (pan/zoom settled), projected onto a rounded bbox tuple.
- * `moveend` — never live `move` — keeps request volume sane.
- *
- * @param {{ onViewport: (bbox: [number, number, number, number]) => void }} props
+ * Single coordinate truth: Leaflet `[lat, lng]` bounds derived from the
+ * `[lng, lat]` query bbox — the two orders can never drift apart again.
  */
-function ViewportTracker({ onViewport }) {
-  useMapEvents({
-    moveend: (event) => {
-      onViewport(boundsToBbox(event.target.getBounds()));
-    },
-  });
-  return null;
-}
+const GAZA_BOUNDS = bboxToBounds(GAZA_BBOX);
 
 /**
- * Escape a string before injecting it into Leaflet popup HTML.
- *
- * @param {unknown} value
+ * Stable polygons key: governorate layers mount once for the canvas
+ * lifetime. The selection glow refreshes in place (see the effect below),
+ * so open popups and tooltips survive selection changes.
  */
-function escapeHtml(value) {
-  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-}
+const GOVERNORATES_KEY = "governorates";
 
 /**
- * PinMarker — one APPROVED incident pin as an accent CircleMarker.
+ * Token classes for one governorate polygon, glow included.
  *
- * The popup is bound imperatively (the canvas-wide convention, shared with
- * the governorate polygons): it survives the viewport-driven remount cycle
- * deterministically, while a declarative `<Popup>` child proved
- * timing-fragile there. Popup-only interaction — never touches selection.
- *
- * @param {{ pin: import("../hooks/usePins.js").IncidentPin }} props
+ * @param {any} feature
+ * @param {string|null} selectedId
  */
-function PinMarker({ pin }) {
-  const ref = useRef(/** @type {any} */ (null));
-
-  useEffect(() => {
-    const layer = ref.current;
-    if (!layer) return undefined;
-    layer.bindPopup(
-      `<div class="${styles.pinPopup}">` +
-        `<p class="${styles.pinEyebrow}">Field report</p>` +
-        `<p class="${styles.pinTitle}">${escapeHtml(pin.title)}</p>` +
-        `<p class="${styles.pinNote}"><span dir="ltr" class="${styles.pinDate}">${escapeHtml(pin.reportDate)}</span> · ${escapeHtml(pin.region)}</p>` +
-        `</div>`,
-    );
-    return () => {
-      layer.unbindPopup();
-    };
-  }, [pin]);
-
-  return (
-    <CircleMarker
-      ref={ref}
-      center={[pin.latitude, pin.longitude]}
-      radius={6}
-      // Flat className (not nested pathOptions): react-leaflet spreads
-      // extra props into Leaflet options, and only options.className at
-      // creation time reaches the SVG element in `_initPath`.
-      className={styles.pinMarker}
-    />
-  );
+function featureClass(feature, selectedId) {
+  return [
+    styles.governorate,
+    feature?.id ? (styles[`region-${feature.id}`] ?? "") : "",
+    feature?.id === selectedId ? styles.selected : "",
+  ].join(" ");
 }
 
 /**
@@ -96,13 +51,12 @@ function PinMarker({ pin }) {
  * panel pairs static identity (`GET /spatial/regions/:id`) with the
  * Gaza-wide tally instead.
  *
- * Slice 4.4 wires the spatial engine: the live viewport drives
- * `usePins(bbox)` (rounded `moveend` bbox, TanStack-keyed so revisits are
- * cache hits) and APPROVED pins render as accent `CircleMarker`s with
- * themed popups. Markers are popup-only — they never touch selection —
- * and the pins layer is silent-null on loading/error so a pins outage can
- * never take down the boundaries map (empty until Phase 5 moderation is
- * the correct live state, not a bug).
+ * The live viewport drives `usePins(bbox)` (rounded `moveend` bbox,
+ * TanStack-keyed so revisits are cache hits) and APPROVED pins render as
+ * accent `CircleMarker`s with themed popups. Markers are popup-only — they
+ * never touch selection — and the pins layer is silent-null on
+ * loading/error so a pins outage can never take down the boundaries map
+ * (empty until Phase 5 moderation is the correct live state, not a bug).
  *
  * @param {object} props
  * @param {import("../hooks/useBoundaries.js").BoundariesData} props.data
@@ -136,16 +90,37 @@ export default function GazaMapCanvas({ data, selectedId, onSelect }) {
   const { data: pins } = usePins(bbox);
   const markers = pins?.items ?? [];
 
+  const geoJsonRef = useRef(/** @type {any} */ (null));
+
   /**
    * @param {any} feature
    */
   const styleFeature = (feature) => ({
-    className: [
-      styles.governorate,
-      feature?.id ? (styles[`region-${feature.id}`] ?? "") : "",
-      feature?.id === selectedId ? styles.selected : "",
-    ].join(" "),
+    className: featureClass(feature, selectedId),
   });
+
+  // In-place glow refresh: Leaflet applies `className` to the SVG element
+  // only at creation (`_initPath`), so `setStyle` alone can't move the glow.
+  // Sync our token classes on the live elements directly — Leaflet's own
+  // classes are preserved, and layers (with their popups/tooltips) persist.
+  useEffect(() => {
+    const group = geoJsonRef.current;
+    if (!group || typeof group.eachLayer !== "function") return;
+    group.eachLayer((/** @type {any} */ layer) => {
+      if (!layer.feature) return;
+      const next = featureClass(layer.feature, selectedId);
+      if (typeof layer.setStyle === "function") {
+        layer.setStyle({ className: next });
+      }
+      const el = typeof layer.getElement === "function" ? layer.getElement() : null;
+      if (!el || !el.classList) return;
+      const prev = layer.__mapGlowClass;
+      if (prev === next) return;
+      if (prev) el.classList.remove(...prev.split(" ").filter(Boolean));
+      el.classList.add(...next.split(" ").filter(Boolean));
+      layer.__mapGlowClass = next;
+    });
+  }, [selectedId, data]);
 
   /**
    * @param {any} feature
@@ -153,20 +128,14 @@ export default function GazaMapCanvas({ data, selectedId, onSelect }) {
    */
   const bindFeature = (feature, layer) => {
     const name = String(feature.properties?.name ?? feature.id);
-    // Names are static curated strings, but escape before HTML injection.
-    const safeName = name.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    // Seed the glow tracker so the refresh effect diffs correctly.
+    layer.__mapGlowClass = featureClass(feature, selectedId);
     layer.bindTooltip(name, {
       permanent: true,
       direction: "center",
       className: styles.governorateLabel,
     });
-    layer.bindPopup(
-      `<div class="${styles.pinPopup}">` +
-        `<p class="${styles.pinEyebrow}">Gaza Strip</p>` +
-        `<p class="${styles.pinTitle}">${safeName}</p>` +
-        `<p class="${styles.pinNote}">Per-governorate breakdowns are not published by the source.</p>` +
-        `</div>`,
-    );
+    // No click popup: selection is shown in the RegionInfo panel instead.
     layer.on("click", () => {
       if (feature.id) onSelect(feature.id);
     });
@@ -191,7 +160,8 @@ export default function GazaMapCanvas({ data, selectedId, onSelect }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <GeoJSON
-          key={selectedId ?? "none"}
+          key={GOVERNORATES_KEY}
+          ref={geoJsonRef}
           data={/** @type {any} */ (data)}
           style={styleFeature}
           onEachFeature={bindFeature}

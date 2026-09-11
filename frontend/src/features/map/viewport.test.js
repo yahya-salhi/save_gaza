@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GAZA_BBOX, round2, boundsToBbox } from "./viewport.js";
+import { GAZA_BBOX, round2, bboxToBounds, boundsToBbox } from "./viewport.js";
 
 describe("viewport helpers", () => {
   it("exposes the Gaza envelope as the initial bbox tuple", () => {
@@ -33,5 +33,23 @@ describe("viewport helpers", () => {
       getNorthEast: () => ({ lng: 34.576, lat: 31.616 }),
     };
     expect(boundsToBbox(a)).toEqual(boundsToBbox(b));
+  });
+
+  it("projects a bbox onto Leaflet lat/lng bounds (single coordinate truth)", () => {
+    expect(bboxToBounds(GAZA_BBOX)).toEqual([
+      [31.18, 34.2],
+      [31.62, 34.58],
+    ]);
+  });
+
+  it("round-trips with boundsToBbox", () => {
+    const bounds = {
+      getSouthWest: () => ({ lng: 34.2, lat: 31.18 }),
+      getNorthEast: () => ({ lng: 34.58, lat: 31.62 }),
+    };
+    expect(bboxToBounds(boundsToBbox(bounds))).toEqual([
+      [31.18, 34.2],
+      [31.62, 34.58],
+    ]);
   });
 });
