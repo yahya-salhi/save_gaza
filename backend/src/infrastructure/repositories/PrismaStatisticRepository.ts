@@ -2,11 +2,6 @@ import type {
   StatisticRepositoryPort,
   StatisticSnapshot,
 } from "../../core/ports/StatisticRepositoryPort.js";
-import { GAZA_REGION, VERIFIED_GAZA_METRICS } from "../../core/entities/Statistic.js";
-
-const METRIC_LABEL_MAP = new Map(
-  VERIFIED_GAZA_METRICS.map((m) => [m.key, m.label] as const),
-);
 
 /**
  * PrismaStatisticRepository — Prisma implementation of StatisticRepositoryPort.
@@ -89,12 +84,14 @@ export class PrismaStatisticRepository implements StatisticRepositoryPort {
 
     return {
       reportDate: latestDate,
-      reportSource: metrics["_report_source"]
-        ? String(metrics["_report_source"])
-        : undefined,
-      reportPeriod: metrics["_report_period"]
-        ? metrics["_report_period"]
-        : undefined,
+      reportSource:
+        typeof metrics["_report_source"] === "number"
+          ? String(metrics["_report_source"])
+          : undefined,
+      reportPeriod:
+        typeof metrics["_report_period"] === "number"
+          ? metrics["_report_period"]
+          : undefined,
       metrics,
     };
   }
