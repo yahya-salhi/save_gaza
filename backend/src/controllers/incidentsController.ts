@@ -7,6 +7,7 @@ import type { BboxTuple } from "../core/schemas/pinsQuery.js";
 import { GetIncidentPinsUseCase } from "../application/use-cases/GetIncidentPinsUseCase.js";
 import { PrismaIncidentRepository } from "../infrastructure/repositories/PrismaIncidentRepository.js";
 import { InMemoryCache } from "../infrastructure/cache/InMemoryCache.js";
+import { CachedQuery } from "../infrastructure/cache/CachedQuery.js";
 
 /** Cache key prefix for pins payloads (full key appends the bbox or "all"). */
 export const PINS_CACHE_KEY_PREFIX = "incidents:pins:v1:";
@@ -15,6 +16,9 @@ export const PINS_CACHE_KEY_PREFIX = "incidents:pins:v1:";
 export const PINS_CACHE_TTL_MS = 10 * 60 * 1000;
 
 export const pinsCache = new InMemoryCache();
+
+/** Shared box over `pinsCache` — TTL + stale live here, keys stay here. */
+const pinsQuery = new CachedQuery(pinsCache, "pins");
 
 const pinsUseCase = new GetIncidentPinsUseCase(new PrismaIncidentRepository());
 
@@ -35,8 +39,8 @@ export function pinsCacheKey(bbox?: BboxTuple): string {
  * `{ success, data: { items, total }, error, timestamp }` envelope.
  * Empty (`{ items: [], total: 0 }`) is valid — moderation (Phase 5) has
  * not landed yet, so no approved rows exist. Invalid bbox is a 400
- * served on a humanitarian map). Per-bbox 10-min in-memory cache behind the
- * `CachePort` seam (`pinsCache`, keyed by `pinsCacheKey`); the operational
+ * served on a humanitarian map). Per-bbox 10-min cache via the shared
+ * `CachedQuery` box over `pinsCache` (uniform stale-while-revalidate); the operational
  * Redis swap sits behind this controller untouched (Slice 6.3).
  * Deliberately no `Cache-Control: public` — pins are dynamic user data,
  * not static GeoJSON.
@@ -54,14 +58,9 @@ router.get("/pins", async (req: Request, res: Response, next: NextFunction) => {
     const bbox = parsed.data.bbox;
 
     const key = pinsCacheKey(bbox);
-    const cached = pinsCache.get<{ items: unknown[]; total: number }>(key);
-    if (cached) {
-      res.json(successResponse(cached));
-      return;
-    }
-
-    const data = await pinsUseCase.execute(bbox);
-    pinsCache.set(key, data, PINS_CACHE_TTL_MS);
+    const data = await pinsQuery.getOrLoad(key, PINS_CACHE_TTL_MS, () =>
+      pinsUseCase.execute(bbox),
+    );
     res.json(successResponse(data));
   } catch (err) {
     next(err);

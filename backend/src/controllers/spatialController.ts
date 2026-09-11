@@ -4,6 +4,7 @@ import { gzipSync } from "node:zlib";
 import { successResponse } from "../middlewares/envelope.js";
 import { NotFoundError } from "../core/errors/DomainError.js";
 import { InMemoryCache } from "../infrastructure/cache/InMemoryCache.js";
+import { CachedQuery } from "../infrastructure/cache/CachedQuery.js";
 import { GAZA_BOUNDARIES } from "../infrastructure/spatial/gazaBoundaries.js";
 import type { GazaBoundariesCollection } from "../infrastructure/spatial/gazaBoundaries.js";
 import {
@@ -27,13 +28,20 @@ export const REGIONS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 export const regionsCache = new InMemoryCache();
 
-function getRegion(id: string): RegionMeta {
-  const cached = regionsCache.get<RegionMeta>(REGIONS_CACHE_KEY_PREFIX + id);
-  if (cached) return cached;
-  const region = getRegionMeta(id);
-  if (!region) throw new NotFoundError(`Unknown governorate: ${id}`);
-  regionsCache.set(REGIONS_CACHE_KEY_PREFIX + id, region, REGIONS_CACHE_TTL_MS);
-  return region;
+/** Shared boxes — TTL + stale live here; keys and plain values stay here. */
+const boundariesQuery = new CachedQuery(boundariesCache, "spatial:boundaries");
+const regionsQuery = new CachedQuery(regionsCache, "spatial:regions");
+
+function getRegion(id: string): Promise<RegionMeta> {
+  return regionsQuery.getOrLoad(
+    REGIONS_CACHE_KEY_PREFIX + id,
+    REGIONS_CACHE_TTL_MS,
+    async () => {
+      const region = getRegionMeta(id);
+      if (!region) throw new NotFoundError(`Unknown governorate: ${id}`);
+      return region;
+    },
+  );
 }
 
 /**
@@ -61,17 +69,12 @@ function sendCachedJson(req: Request, res: Response, data: unknown): void {
   res.type("application/json").send(body);
 }
 
-function getBoundaries(): GazaBoundariesCollection {
-  const cached = boundariesCache.get<GazaBoundariesCollection>(
+function getBoundaries(): Promise<GazaBoundariesCollection> {
+  return boundariesQuery.getOrLoad(
     BOUNDARIES_CACHE_KEY,
-  );
-  if (cached) return cached;
-  boundariesCache.set(
-    BOUNDARIES_CACHE_KEY,
-    GAZA_BOUNDARIES,
     BOUNDARIES_CACHE_TTL_MS,
+    async () => GAZA_BOUNDARIES,
   );
-  return GAZA_BOUNDARIES;
 }
 
 /**
@@ -79,17 +82,18 @@ function getBoundaries(): GazaBoundariesCollection {
  * (+ GET /api/v1/spatial/regions/:id below)
  *
  * Gaza-only (Slices 4.1–4.2) static GeoJSON governorate polygons inside the
- * standard `{ success, data, error, timestamp }` envelope. Served from a
- * 24h in-memory cache with `Cache-Control: public, max-age=86400`.
+ * standard `{ success, data, error, timestamp }` envelope. Served from the
+ * shared `CachedQuery` box (24h TTL, plain values) with `Cache-Control:
+ * public, max-age=86400`.
  * Gzip-negotiated manually (no extra dependency — static payload is tiny).
  */
 const router = Router();
 
 router.get(
   "/boundaries",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      sendCachedJson(req, res, getBoundaries());
+      sendCachedJson(req, res, await getBoundaries());
     } catch (err) {
       next(err);
     }
@@ -107,13 +111,13 @@ router.get(
  */
 router.get(
   "/regions/:id",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
       if (typeof id !== "string") {
         throw new NotFoundError(`Unknown governorate: ${String(id)}`);
       }
-      sendCachedJson(req, res, getRegion(id));
+      sendCachedJson(req, res, await getRegion(id));
     } catch (err) {
       next(err);
     }
