@@ -26,7 +26,7 @@ import { apiGet } from "../../../shared/api/client.js";
 export function useBoundaries() {
   return useQuery({
     queryKey: ["spatial", "boundaries"],
-    queryFn: () => apiGet("/api/v1/spatial/boundaries"),
+    queryFn: () => apiGet("/spatial/boundaries"),
     staleTime: 24 * 60 * 60 * 1000,
   });
 }

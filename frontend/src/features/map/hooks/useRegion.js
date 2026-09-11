@@ -31,7 +31,7 @@ import { apiGet } from "../../../shared/api/client.js";
 export function useRegion(id) {
   return useQuery({
     queryKey: ["spatial", "region", id],
-    queryFn: () => apiGet(`/api/v1/spatial/regions/${id}`),
+    queryFn: () => apiGet(`/spatial/regions/${id}`),
     enabled: id !== null && id !== undefined && id !== "",
     staleTime: 24 * 60 * 60 * 1000,
   });

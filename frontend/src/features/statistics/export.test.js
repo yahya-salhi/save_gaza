@@ -20,12 +20,12 @@ describe("buildExportEndpoint", () => {
         format: "json",
       }),
     ).toBe(
-      "/api/v1/statistics/export?startDate=2026-06-01&endDate=2026-09-09&format=json",
+      "/statistics/export?startDate=2026-06-01&endDate=2026-09-09&format=json",
     );
   });
 
   it("defaults to csv and omits undefined dates", () => {
-    expect(buildExportEndpoint()).toBe("/api/v1/statistics/export?format=csv");
+    expect(buildExportEndpoint()).toBe("/statistics/export?format=csv");
   });
 });
 
@@ -92,7 +92,7 @@ describe("downloadHistoryExport", () => {
 
     expect(filename).toBe("gaza-history-2026-09-06-to-2026-09-09.csv");
     expect(String(fetchMock.mock.calls[0][0])).toContain(
-      "/api/v1/statistics/export?startDate=2026-09-06&endDate=2026-09-09&format=csv",
+      "/statistics/export?startDate=2026-09-06&endDate=2026-09-09&format=csv",
     );
     expect(anchor.download).toBe("gaza-history-2026-09-06-to-2026-09-09.csv");
     expect(click).toHaveBeenCalledTimes(1);

@@ -37,13 +37,13 @@ describe("buildHistoryEndpoint", () => {
       limit: 50,
     });
     expect(endpoint).toBe(
-      "/api/v1/statistics/history?startDate=2026-06-01&endDate=2026-09-09&page=2&limit=50",
+      "/statistics/history?startDate=2026-06-01&endDate=2026-09-09&page=2&limit=50",
     );
   });
 
   it("omits undefined dates and defaults to page 1, limit 1000", () => {
     expect(buildHistoryEndpoint()).toBe(
-      "/api/v1/statistics/history?page=1&limit=1000",
+      "/statistics/history?page=1&limit=1000",
     );
   });
 });

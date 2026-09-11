@@ -21,7 +21,7 @@ export function buildExportEndpoint(params = {}) {
   if (startDate) query.set("startDate", startDate);
   if (endDate) query.set("endDate", endDate);
   query.set("format", format);
-  return `/api/v1/statistics/export?${query.toString()}`;
+  return `/statistics/export?${query.toString()}`;
 }
 
 /**

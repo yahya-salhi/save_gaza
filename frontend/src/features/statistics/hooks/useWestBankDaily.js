@@ -27,7 +27,7 @@ import { apiGet } from "../../../shared/api/client.js";
 export function useWestBankDaily() {
   return useQuery({
     queryKey: ["statistics", "west-bank"],
-    queryFn: () => apiGet("/api/v1/statistics/west-bank"),
+    queryFn: () => apiGet("/statistics/west-bank"),
     staleTime: 5 * 60 * 1000,
     refetchInterval: 30_000,
   });

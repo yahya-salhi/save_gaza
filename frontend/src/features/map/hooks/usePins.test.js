@@ -30,13 +30,13 @@ afterEach(() => {
 
 describe("buildPinsEndpoint", () => {
   it("omits the query string without a bbox", () => {
-    expect(buildPinsEndpoint(undefined)).toBe("/api/v1/incidents/pins");
-    expect(buildPinsEndpoint(null)).toBe("/api/v1/incidents/pins");
+    expect(buildPinsEndpoint(undefined)).toBe("/incidents/pins");
+    expect(buildPinsEndpoint(null)).toBe("/incidents/pins");
   });
 
   it("serializes the bbox tuple in minLng,minLat,maxLng,maxLat order", () => {
     expect(buildPinsEndpoint([34.4, 31.4, 34.5, 31.6])).toBe(
-      "/api/v1/incidents/pins?bbox=34.4,31.4,34.5,31.6",
+      "/incidents/pins?bbox=34.4,31.4,34.5,31.6",
     );
   });
 });

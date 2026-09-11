@@ -43,7 +43,7 @@ export function buildHistoryEndpoint(params = {}) {
   if (endDate) query.set("endDate", endDate);
   query.set("page", String(page));
   query.set("limit", String(limit));
-  return `/api/v1/statistics/history?${query.toString()}`;
+  return `/statistics/history?${query.toString()}`;
 }
 
 /**

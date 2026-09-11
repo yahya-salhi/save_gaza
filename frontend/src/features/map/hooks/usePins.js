@@ -24,8 +24,8 @@ import { apiGet } from "../../../shared/api/client.js";
  * @returns {string} endpoint path consumed by `apiGet`
  */
 export function buildPinsEndpoint(bbox) {
-  if (!bbox) return "/api/v1/incidents/pins";
-  return `/api/v1/incidents/pins?bbox=${bbox.join(",")}`;
+  if (!bbox) return "/incidents/pins";
+  return `/incidents/pins?bbox=${bbox.join(",")}`;
 }
 
 /**

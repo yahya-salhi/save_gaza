@@ -38,7 +38,7 @@ import { apiGet } from "../../../shared/api/client.js";
 export function useGazaDaily() {
   return useQuery({
     queryKey: ["statistics", "gaza"],
-    queryFn: () => apiGet("/api/v1/statistics/gaza"),
+    queryFn: () => apiGet("/statistics/gaza"),
     staleTime: 5 * 60 * 1000,
     refetchInterval: 30_000,
   });
