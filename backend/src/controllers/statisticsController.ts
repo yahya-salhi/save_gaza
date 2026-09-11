@@ -1,8 +1,9 @@
 import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
 import { successResponse } from "../middlewares/envelope.js";
-import { CachedGazaStatistics } from "../infrastructure/cache/CachedGazaStatistics.js";
-import { CachedWestBankStatistics } from "../infrastructure/cache/CachedWestBankStatistics.js";
+import { makeCachedGazaStatistics } from "../infrastructure/cache/CachedGazaStatistics.js";
+import { makeCachedWestBankStatistics } from "../infrastructure/cache/CachedWestBankStatistics.js";
+import { InMemoryCache } from "../infrastructure/cache/InMemoryCache.js";
 import { SyncCasualtiesUseCase } from "../application/use-cases/SyncCasualtiesUseCase.js";
 import { SyncWestBankUseCase } from "../application/use-cases/SyncWestBankUseCase.js";
 import { GetHistoryUseCase } from "../application/use-cases/GetHistoryUseCase.js";
@@ -49,10 +50,18 @@ async function fetchLatestWestBankDirect(): Promise<WestBankDaily> {
   return last;
 }
 
-const cachedStats = new CachedGazaStatistics(syncUseCase, fetchLatestGazaDirect);
+export const gazaCache = new InMemoryCache();
+export const westBankCache = new InMemoryCache();
 
-const cachedWestBankStats = new CachedWestBankStatistics(
+const cachedStats = makeCachedGazaStatistics(
+  syncUseCase,
+  gazaCache,
+  fetchLatestGazaDirect,
+);
+
+const cachedWestBankStats = makeCachedWestBankStatistics(
   westBankSyncUseCase,
+  westBankCache,
   fetchLatestWestBankDirect,
 );
 
