@@ -31,17 +31,12 @@ async function throwApiError(res) {
 }
 
 /**
- * Unwrap the backend response envelope, returning `data` or throwing.
- * @param {Response} res
- * @returns {Promise<unknown>}
+ * Unwrap a pre-parsed JSON payload: backend envelope → `data`, anything
+ * else (dev upstream passthrough) returned as-is.
+ * @param {unknown} json
+ * @returns {unknown}
  */
-async function unwrapResponse(res) {
-  if (!res.ok) {
-    await throwApiError(res);
-  }
-  const json = await res.json();
-
-  // Standard backend envelope unwrapping
+function unwrapJson(json) {
   if (json && typeof json === "object" && "success" in json) {
     if (!json.success) {
       throw new ApiError(
@@ -57,12 +52,66 @@ async function unwrapResponse(res) {
 }
 
 /**
+ * Unwrap the backend response envelope, returning `data` or throwing.
+ * @param {Response} res
+ * @returns {Promise<unknown>}
+ */
+async function unwrapResponse(res) {
+  if (!res.ok) {
+    await throwApiError(res);
+  }
+  return unwrapJson(await res.json());
+}
+
+/**
+ * Unwrap a dev-fallback daily-rows payload: pick the latest-date row so the
+ * UI receives the same single-object shape the backend serves. Enveloped
+ * payloads (test stubs) fall through to standard unwrapping; empty feeds
+ * yield `null` (empty state).
+ * @param {Response} res
+ * @returns {Promise<unknown>}
+ */
+async function unwrapDevRows(res) {
+  if (!res.ok) {
+    await throwApiError(res);
+  }
+  const json = await res.json();
+  const rows = Array.isArray(json)
+    ? json
+    : Array.isArray(json?.data)
+      ? json.data
+      : null;
+  if (!rows) {
+    return unwrapJson(json);
+  }
+  let latest = null;
+  for (const row of rows) {
+    if (
+      row &&
+      typeof row.report_date === "string" &&
+      (!latest || row.report_date > latest.report_date)
+    ) {
+      latest = row;
+    }
+  }
+  return latest;
+}
+
+/**
  * GET from the backend envelope API.
  * @param {string} endpoint - Path starting with "/", e.g. "/statistics/gaza".
  * @returns {Promise<unknown>}
  */
 export async function apiGet(endpoint) {
   let url = `${API_BASE}${endpoint}`;
+
+  // Dev-only upstream fallback when VITE_API_BASE is empty. The daily rows
+  // endpoints additionally pick the latest snapshot (backend shape) — see
+  // `unwrapDevRows` — so the UI renders without a backend running.
+  const devRowsEndpoint =
+    !API_BASE &&
+    import.meta.env.DEV &&
+    (endpoint === "/statistics/gaza" || endpoint === "/statistics/west-bank");
 
   // Dev-only fallback when VITE_API_BASE is empty
   if (!API_BASE && import.meta.env.DEV) {
@@ -79,6 +128,9 @@ export async function apiGet(endpoint) {
     headers: { Accept: "application/json" },
   });
 
+  if (devRowsEndpoint) {
+    return unwrapDevRows(res);
+  }
   return unwrapResponse(res);
 }
 

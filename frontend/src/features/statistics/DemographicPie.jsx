@@ -1,12 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { formatCount as formatFigure } from "../../shared/format.js";
 import styles from "./TimeSeriesChart.module.css";
-
-/**
- * @param {number} n
- */
-function formatFigure(n) {
-  return n.toLocaleString("en-US");
-}
 
 /**
  * BreakdownTooltip — custom Recharts tooltip content owned by design

@@ -5,6 +5,7 @@ import ErrorState from "../../../shared/ui/ErrorState.jsx";
 import EmptyState from "../../../shared/ui/EmptyState.jsx";
 import VerifiedDot from "../../../shared/ui/VerifiedDot.jsx";
 import LiveTicker from "./LiveTicker.jsx";
+import { formatCount } from "../../../shared/format.js";
 import styles from "./Hero.module.css";
 
 /**
@@ -34,17 +35,6 @@ import styles from "./Hero.module.css";
  * @property {string} [errorMessage] - Human-readable error message.
  * @property {(() => void) | null} [onRetry] - Retry callback for error state.
  */
-
-/**
- * Format a count with en-US grouping (73,658). Falls back to "—" when
- * the value is missing so partial payloads never render "undefined".
- *
- * @param {number | undefined | null} value
- * @returns {string}
- */
-function formatCount(value) {
-  return typeof value === "number" ? value.toLocaleString("en-US") : "—";
-}
 
 /**
  * Hero — Observational Telemetry Monument.
@@ -116,7 +106,7 @@ export default function Hero({
                 dir="ltr"
                 className={`font-mono tabular-nums [unicode-bidi:isolate] ${styles.tally}`}
               >
-                {summary.gaza.killed.total.toLocaleString("en-US")}
+                {formatCount(summary.gaza.killed.total)}
               </p>
             </div>
             <div className={styles.accentRule} aria-hidden="true" />

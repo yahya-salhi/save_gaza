@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCount } from "../../shared/format.js";
 import styles from "./TimeSeriesChart.module.css";
 
 /**
@@ -26,7 +27,7 @@ function compact(value) {
  * @param {unknown} value
  */
 function formatFull(value) {
-  return Number(value).toLocaleString("en-US");
+  return formatCount(Number(value));
 }
 
 /**

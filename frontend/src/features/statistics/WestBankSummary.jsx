@@ -1,4 +1,5 @@
 import { useWestBankDaily } from "./hooks/useWestBankDaily.js";
+import { formatCount as formatFigure } from "../../shared/format.js";
 import styles from "./GazaSummary.module.css";
 
 /**
@@ -9,15 +10,6 @@ import styles from "./GazaSummary.module.css";
  * the v2 feed carries cumulative counters only. No arrests data exists
  * upstream, so arrests are out of scope.
  */
-
-/**
- * Format a figure with US grouping so rendering is identical in every
- * browser locale (bare toLocaleString() yields "1 114" under fr-FR).
- * @param {number} n
- */
-function formatFigure(n) {
-  return n.toLocaleString("en-US");
-}
 
 export function WestBankSummary() {
   const { data, isLoading, isError, error } = useWestBankDaily();

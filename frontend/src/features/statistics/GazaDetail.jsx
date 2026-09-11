@@ -1,4 +1,5 @@
 import { useGazaDaily } from "./hooks/useGazaDaily.js";
+import { formatCount as formatFigure } from "../../shared/format.js";
 import styles from "./GazaSummary.module.css";
 
 /**
@@ -14,15 +15,6 @@ import styles from "./GazaSummary.module.css";
  * states, so this section renders a skeleton while loading and nothing on
  * error or empty — avoiding duplicate alerts on the page.
  */
-
-/**
- * Format a figure with US grouping so rendering is identical in every
- * browser locale (bare toLocaleString() yields "73 669" under fr-FR).
- * @param {number} n
- */
-function formatFigure(n) {
-  return n.toLocaleString("en-US");
-}
 
 /** @type {Array<{ title: string, rows: Array<{ label: string, key: string }> }>} */
 const GROUPS = [

@@ -156,3 +156,44 @@ describe("apiPatch", () => {
     expect(init.body).toBeUndefined();
   });
 });
+
+describe("apiGet dev rows fallback", () => {
+  it("returns the latest-date row from an upstream array", async () => {
+    stubFetch({
+      body: [
+        { report_date: "2026-09-08", killed_cum: 72850 },
+        { report_date: "2026-09-09", killed_cum: 73000 },
+      ],
+    });
+    const data = await apiGet("/statistics/gaza");
+    expect(data).toEqual({ report_date: "2026-09-09", killed_cum: 73000 });
+  });
+
+  it("accepts the { data: rows } envelope shape", async () => {
+    stubFetch({
+      body: {
+        data: [{ report_date: "2026-09-09", killed_cum: 1010 }],
+      },
+    });
+    const data = await apiGet("/statistics/west-bank");
+    expect(data).toEqual({ report_date: "2026-09-09", killed_cum: 1010 });
+  });
+
+  it("returns null for an empty feed", async () => {
+    stubFetch({ body: [] });
+    await expect(apiGet("/statistics/gaza")).resolves.toBeNull();
+  });
+
+  it("still unwraps enveloped payloads (stub compat)", async () => {
+    stubFetch({
+      body: successEnvelope({ report_date: "2026-09-09", killed_cum: 73000 }),
+    });
+    const data = await apiGet("/statistics/gaza");
+    expect(data.report_date).toBe("2026-09-09");
+  });
+
+  it("throws normalized error when upstream fails", async () => {
+    stubFetch({ ok: false, status: 503, body: {} });
+    await expect(apiGet("/statistics/gaza")).rejects.toBeInstanceOf(ApiError);
+  });
+});

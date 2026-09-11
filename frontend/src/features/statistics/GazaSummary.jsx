@@ -1,4 +1,5 @@
 import { useGazaDaily } from "./hooks/useGazaDaily.js";
+import { formatCount as formatFigure } from "../../shared/format.js";
 import styles from "./GazaSummary.module.css";
 
 /**
@@ -14,15 +15,6 @@ const SOURCE_LABELS = {
   moh: "MoH",
   gmo: "GMO",
 };
-
-/**
- * Format a figure with US grouping so rendering is identical in every
- * browser locale (bare toLocaleString() yields "73 669" under fr-FR).
- * @param {number} n
- */
-function formatFigure(n) {
-  return n.toLocaleString("en-US");
-}
 
 /**
  * @param {unknown} source

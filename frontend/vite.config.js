@@ -8,6 +8,25 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": "http://localhost:3000",
+      // Prefix-less client paths (the envelope client sends e.g.
+      // "/statistics/gaza"; API_BASE supplies "/api/v1" only in prod).
+      // Rewrite them onto the backend's /api/v1 mount in dev.
+      "/statistics": {
+        target: "http://localhost:3000",
+        rewrite: (path) => `/api/v1${path}`,
+      },
+      "/spatial": {
+        target: "http://localhost:3000",
+        rewrite: (path) => `/api/v1${path}`,
+      },
+      "/incidents": {
+        target: "http://localhost:3000",
+        rewrite: (path) => `/api/v1${path}`,
+      },
+      "/summary": {
+        target: "http://localhost:3000",
+        rewrite: (path) => `/api/v1${path}`,
+      },
     },
   },
   build: {

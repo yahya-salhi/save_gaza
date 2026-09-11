@@ -6,17 +6,9 @@ import ErrorState from "../../../shared/ui/ErrorState.jsx";
 import VerifiedDot from "../../../shared/ui/VerifiedDot.jsx";
 import { useRegion } from "../hooks/useRegion.js";
 import { useGazaDaily } from "../../statistics/hooks/useGazaDaily.js";
+import { formatCount as formatFigure } from "../../../shared/format.js";
 import mapStyles from "./MapContainer.module.css";
 import styles from "./RegionInfo.module.css";
-
-/**
- * Format a cumulative figure with en-US grouping, or an em dash when absent.
- *
- * @param {number|undefined} value
- */
-function formatFigure(value) {
-  return typeof value === "number" ? value.toLocaleString("en-US") : "—";
-}
 
 /**
  * RegionInfo — side details panel for the selected Gaza governorate.
